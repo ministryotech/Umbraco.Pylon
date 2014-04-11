@@ -1,0 +1,105 @@
+﻿@using System.Configuration;
+
+<!doctype html>
+@* ReSharper disable UnknownCssClass *@
+<!--[if lt IE 7]> <html class="no-js lt-ie9 lt-ie8 lt-ie7" lang="en"> <![endif]-->
+<!--[if IE 7]>    <html class="no-js lt-ie9 lt-ie8" lang="en"> <![endif]-->
+<!--[if IE 8]>    <html class="no-js lt-ie9" lang="en"> <![endif]-->
+<!--[if gt IE 8]><!-->
+    <html class="no-js" lang="en">
+<!--<![endif]-->
+@* ReSharper restore UnknownCssClass *@
+<head>
+    <meta charset="utf-8" />
+    <title>@ViewBag.Title</title>
+    <meta name="description" content="Holistic Technical Counsel - Agile Software Development & Management with a difference" />
+    <meta name="viewport" content="width=device-width" />
+    <!-- For non-Retina iPhone, iPod Touch, and Android 2.1+ devices: -->
+    <link rel="apple-touch-icon-precomposed" href="/images/apple-touch-icon-precomposed.png" />
+    <!-- For first-generation iPad: -->
+    <link rel="apple-touch-icon-precomposed" sizes="72x72" href="/images/apple-touch-icon-72x72-precomposed.png" />
+    <!-- For iPhone 4 with high-resolution Retina display: -->
+    <link rel="apple-touch-icon-precomposed" sizes="114x114" href="/images/apple-touch-icon-114x114-precomposed.png" />
+    <!-- Core styles -->
+    <link rel="stylesheet" href="/css/html5.css" />
+    <link rel="stylesheet" href="/css/style.css" />
+    <link rel="stylesheet" href="/css/mobile.css" />
+    <link rel="stylesheet" href="/css/html5_post.css" />
+    <!--[if lt IE 10]><link rel="stylesheet" type="text/css" href="/css/ie-9.css" /><![endif]-->
+    <!--[if lt IE 9]><link rel="stylesheet" type="text/css" href="/css/ie-8.css" /><![endif]-->
+    <!--[if lt IE 8]><link rel="stylesheet" type="text/css" href="/css/ie-7.css" /><![endif]-->
+    <!--[if IE]><link rel="stylesheet" type="text/css" href="/css/all-ie.css" /><![endif]-->
+    @RenderSection("Stylesheets", required: false)
+    <!-- RSS Feed (See http://www.rssboard.org/rss-specification) write output to RSS in Umbraco or using spec. -->
+    <link rel="alternate" type="application/rss+xml" title="RSS" href="@Url.Content("~/blog/rss.xml")" />
+    <!-- References -->
+    <link rel="author" href="/humans.txt" />
+    <script type="text/javascript" src="/scripts/modernizr-2.5.3.min.js"></script>
+</head>
+<body>
+    <div id="outer">
+        <div id="container">
+            <!--[if lt IE 7]><div class=ie6Wrapper><![endif]-->
+            <!-- Override option required to pass alternative models through MVC Framework -->
+            @if (IsSectionDefined("NavOverride"))
+            {
+                @RenderSection("NavOverride")
+            }
+            else
+            {
+                @Html.Partial("_Navigation", (IPublishedContent)Model.Content)
+            }
+            <div class="clearfix"></div>
+            <!--[if lt IE 7]></div><![endif]-->
+            <header>
+                <div id="headerText">
+                    <h1>The Ministry of Technology</h1>
+                    @if (IsSectionDefined("PageTitle"))
+                    {
+                        <h2>@RenderSection("PageTitle")</h2>
+                    }
+                    <!--[if lt IE 7]><p>This site is optimised for HTML5 and CSS3 and is not supported by IE6 or lower. <a href="http://browsehappy.com/">Upgrade to a different browser</a> or <a href="http://www.google.com/chromeframe/?redirect=true">install Google Chrome Frame</a> to experience this site.</p><![endif]-->
+                </div>
+                <!--[if lt IE 7]><div class=ie6Wrapper><![endif]-->
+                <section id="logo">
+                    <a href="/"><img src="/images/logo.png" alt="The Ministry of Technology" /></a>
+                </section>
+                <!--[if lt IE 7]></div><![endif]-->
+                <div class="clearfix"></div>
+            </header>
+            <!--[if lt IE 7]><div class=ie6Wrapper><![endif]-->
+            <div id="content">
+                @RenderBody()
+            </div>
+            <!--[if lt IE 7]></div><![endif]-->
+        </div>
+        <footer>
+            <small>Copyright 2013 The Ministry Of Technology Ltd. - Consultancy, Software Development, Technical
+                Architecture & Agile Evangelism - ASP.Net, C#, MVC, SQL, Cloud, Azure, Office 365, SCRUM, Kanban, Agile for
+                an Alternative audience. </small>
+            <section>
+                <small><a href="@Url.Content("~/elements/cookies-policy")">Cookies Policy</a></small>
+                &nbsp;|&nbsp;
+                <small><a href="@Url.Content("~/elements/terms-and-conditions")">Terms & Conditions</a></small>
+            </section>
+            <div class="clearfix"></div>
+        </footer>
+    </div>
+    <!-- JavaScript at the bottom for fast page loading -->
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+    <script type="text/javascript">        window.jQuery || document.write('<script type="text/javascript" src="/scripts/jQuery/jquery.js"><\/script>')</script>
+    <script type="text/javascript" src="/scripts/jQuery/plugins.js"></script>
+    <script type="text/javascript" src="http://www.geoplugin.net/javascript.gp"></script>
+    <script type="text/javascript" src="/scripts/jQuery/cookieControl-4.1.min.js"></script>
+    <script type="text/javascript" src="/scripts/cookie-control.js"></script>
+    <script type="text/javascript" src="/Scripts/twitter-loader.js"></script>
+    @if (IsSectionDefined("PartialScript"))
+    {
+        @RenderSection("PartialScript")
+    }
+    @if (ConfigurationManager.AppSettings["AnalyticsEnabled"].AsBool())
+    {
+        <script type="text/javascript" src="/scripts/analytics.js"></script>
+    }
+</body>
+</html>

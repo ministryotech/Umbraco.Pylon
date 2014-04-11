@@ -12,6 +12,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{AED4F8
 		.nuget\NuGet.targets = .nuget\NuGet.targets
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PylonSampleWeb", "PylonSampleWeb\PylonSampleWeb.csproj", "{22F9F601-8A13-48BC-B39E-40EF65FA5B93}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Umbraco.Pylon.Sample", "Umbraco.Pylon.Sample\Umbraco.Pylon.Sample.csproj", "{1D1574BE-27E4-47F5-8ADE-4D1B462AC3F0}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -22,6 +26,14 @@ Global
 		{894DA5FF-101B-44E6-A300-A0F198994833}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{894DA5FF-101B-44E6-A300-A0F198994833}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{894DA5FF-101B-44E6-A300-A0F198994833}.Release|Any CPU.Build.0 = Release|Any CPU
+		{22F9F601-8A13-48BC-B39E-40EF65FA5B93}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{22F9F601-8A13-48BC-B39E-40EF65FA5B93}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{22F9F601-8A13-48BC-B39E-40EF65FA5B93}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{22F9F601-8A13-48BC-B39E-40EF65FA5B93}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1D1574BE-27E4-47F5-8ADE-4D1B462AC3F0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1D1574BE-27E4-47F5-8ADE-4D1B462AC3F0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1D1574BE-27E4-47F5-8ADE-4D1B462AC3F0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1D1574BE-27E4-47F5-8ADE-4D1B462AC3F0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -8,7 +8,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyDescription("Core classes to aid with more code orientated Umbraco implementations.")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Minotech Ltd. (The Ministry of Technology)")]
-[assembly: AssemblyProduct("Umbraco.Pylon")]
+[assembly: AssemblyProduct("Umbraco.Pylon (Ministry)")]
 [assembly: AssemblyCopyright("Copyright © 2014 Minotech Ltd.")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]

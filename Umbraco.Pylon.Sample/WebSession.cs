@@ -1,5 +1,5 @@
 ﻿using System.Web;
-using Ministry.Abstracts;
+using Ministry.StrongTyped;
 
 namespace Umbraco.Pylon.Sample
 {

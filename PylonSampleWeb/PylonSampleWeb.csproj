@@ -128,12 +128,9 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\MiniProfiler.2.1.0\lib\net40\MiniProfiler.dll</HintPath>
     </Reference>
-    <Reference Include="Ministry.Abstracts, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="Ministry.StrongTyped, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\Ministry.Abstracts.1.0.0.0\lib\net40\Ministry.Abstracts.dll</HintPath>
-    </Reference>
-    <Reference Include="Ministry.Web.Mvc">
-      <HintPath>..\packages\Ministry.Web.Mvc.0.1.0.0\lib\net40\Ministry.Web.Mvc.dll</HintPath>
+      <HintPath>..\packages\Ministry.StrongTyped.1.0.0.0\lib\net40\Ministry.StrongTyped.dll</HintPath>
     </Reference>
     <Reference Include="MySql.Data, Version=6.6.5.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>

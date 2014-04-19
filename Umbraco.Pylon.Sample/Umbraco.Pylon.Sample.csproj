@@ -90,8 +90,8 @@
     <Reference Include="MiniProfiler">
       <HintPath>..\packages\MiniProfiler.2.1.0\lib\net40\MiniProfiler.dll</HintPath>
     </Reference>
-    <Reference Include="Ministry.Abstracts">
-      <HintPath>..\packages\Ministry.Abstracts.1.0.0.2\lib\net45\Ministry.Abstracts.dll</HintPath>
+    <Reference Include="Ministry.StrongTyped">
+      <HintPath>..\packages\Ministry.StrongTyped.1.0.0.0\lib\net40\Ministry.StrongTyped.dll</HintPath>
     </Reference>
     <Reference Include="MySql.Data">
       <HintPath>..\packages\MySql.Data.6.6.5\lib\net40\MySql.Data.dll</HintPath>
@@ -206,6 +206,7 @@
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
+    <None Include="app.config" />
     <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

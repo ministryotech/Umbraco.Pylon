@@ -1,6 +1,6 @@
 ﻿using Autofac;
 using Autofac.Integration.Mvc;
-using Ministry.Abstracts;
+using Ministry.StrongTyped;
 using Umbraco.Pylon.Sample;
 using Umbraco.Pylon.Sample.Repositories;
 

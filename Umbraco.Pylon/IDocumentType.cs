@@ -30,7 +30,7 @@ namespace Umbraco.Pylon
         string Url { get; }
 
         /// <summary>
-        /// Gets a value indicating whether this <see cref="Article" /> has content.
+        /// Gets a value indicating whether this item has content.
         /// </summary>
         /// <value>
         ///   <c>true</c> if has content; otherwise, <c>false</c>.

@@ -156,3 +156,5 @@ $RECYCLE.BIN/
 .DS_Store
 packages/
 *.nupkg
+PylonSampleWeb/App_Data/TEMP/
+PylonSampleWeb/App_Data/Logs/UmbracoTraceLog.txt

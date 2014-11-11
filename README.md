@@ -1,6 +1,9 @@
 # Umbraco.Pylon #
 This project is set up to provide base classes and structures for developing well architected, developer focussed Umbraco solutions that maximise reuse and testability.
 
+### Versioning ###
+To keep it straightforward, nuget packages of Umbraco.Pylon will always reflect the Umbraco version that they are intended to support / are dependent on.
+
 ## The Classes and Interfaces ##
 ### PublishedContentRepository | IPublishedContentRepository ###
 Umbraco.Pylon's heart is the abstract PublishedContentRepository and it's associated interface, IPublishedContentRepository. They contain a very slim selection of key methods for accessing content. As the project grows this may increase. The PublishedContentRepository effectively provides a testable wrapper that is created by providing either an UmbracoHelper or an UmbracoContext. The wrapper then provides access to content as needed.
@@ -34,6 +37,9 @@ This final base class brings everything together. There are effectively two slig
 ```C#
 var url = UmbracoSite.Content.ContentUrl(123);
 ```
+
+## Using PylonSampleWeb ##
+If you try and run PylonSampleWeb on it's own you'll find it doesn't work. It needs to be put on top of an existing Umbraco installation in order to see it working and the Umbraco installation must match the nearest available version of Umbraco.Pylon.
 
 ## The Ministry of Technology Open Source Products ##
 Welcome to The Ministry of Technology open source products. All open source Ministry of Technology products are distributed under the MIT License for maximum re-usability. Details on more of our products and services can be found on our website at http://www.ministryotech.co.uk

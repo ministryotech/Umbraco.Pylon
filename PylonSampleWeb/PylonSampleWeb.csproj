@@ -282,10 +282,6 @@
     <Folder Include="App_Plugins\" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Ministry.Ministryweb\Ministry.Ministryweb.csproj">
-      <Project>{221f19eb-8d3d-4862-b766-857c9f2cdd28}</Project>
-      <Name>Ministry.Ministryweb</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Umbraco.Pylon.Sample\Umbraco.Pylon.Sample.csproj">
       <Project>{1d1574be-27e4-47f5-8ade-4d1b462ac3f0}</Project>
       <Name>Umbraco.Pylon.Sample</Name>

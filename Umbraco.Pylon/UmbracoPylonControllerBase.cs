@@ -25,6 +25,24 @@ namespace Umbraco.Pylon
     {
         private IPublishedContentRepository contentRepo;
 
+        #region | Construction |
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="UmbracoPylonControllerBase{TPublishedContentRepository}"/> class.
+        /// </summary>
+        protected UmbracoPylonControllerBase()
+        { }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="UmbracoPylonControllerBase{TPublishedContentRepository}" /> class.
+        /// </summary>
+        /// <param name="umbracoContext">The umbraco context.</param>
+        protected UmbracoPylonControllerBase(UmbracoContext umbracoContext)
+            : base(umbracoContext)
+        { }
+
+        #endregion
+
         /// <summary>
         /// Gets or sets the content repository.
         /// </summary>
@@ -53,6 +71,16 @@ namespace Umbraco.Pylon
         /// Initializes a new instance of the <see cref="UmbracoPylonControllerBase{TPublishedContentRepository}"/> class.
         /// </summary>
         protected UmbracoPylonControllerBase()
+        {
+            EnableFileCheck = true;
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="UmbracoPylonControllerBase{TPublishedContentRepository}" /> class.
+        /// </summary>
+        /// <param name="umbracoContext">The umbraco context.</param>
+        protected UmbracoPylonControllerBase(UmbracoContext umbracoContext)
+            : base(umbracoContext)
         {
             EnableFileCheck = true;
         }

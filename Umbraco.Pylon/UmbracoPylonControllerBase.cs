@@ -11,53 +11,117 @@
 // FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION 
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-using System;
+using System.Web;
 using System.Web.Mvc;
+using System.Web.Routing;
 using Umbraco.Web;
 using Umbraco.Web.Mvc;
 
 namespace Umbraco.Pylon
 {
     /// <summary>
-    /// Base Controller class for a standard content repository.
+    /// Base Controller class for a custom umbraco controller.
     /// </summary>
-    public abstract class UmbracoPylonControllerBase : UmbracoPylonControllerBase<IPublishedContentRepository>
-    {
-        private IPublishedContentRepository contentRepo;
-
-        /// <summary>
-        /// Gets or sets the content repository.
-        /// </summary>
-        public override IPublishedContentRepository ContentRepo
-        {
-            get
-            {
-                if (contentRepo != null)
-                    return contentRepo;
-
-                return UmbracoContext != null ? new PublishedContentRepository(UmbracoContext) : new PublishedContentRepository();
-            }
-            set { contentRepo = value; }
-        }
-    }
-
-    /// <summary>
-    /// Base Controller class for a specified content repository.
-    /// </summary>
-    public abstract class UmbracoPylonControllerBase<TPublishedContentRepository> : RenderMvcController
-        where TPublishedContentRepository : IPublishedContentRepository
+    /// <remarks>
+    /// The main controller and the inner controller should share the same interfaces with methods passed through. This enables testing the inner controllers without pain.
+    /// </remarks>
+    public abstract class UmbracoPylonControllerBase : UmbracoPylonControllerBase<IPublishedContentRepository, UmbracoPylonInnerControllerBase>
     {
         #region | Construction |
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="UmbracoPylonControllerBase{TPublishedContentRepository}"/> class.
+        /// Initializes a new instance of the <see cref="UmbracoPylonControllerBase{TPublishedContentRepository, TInnerController}"/> class.
         /// </summary>
-        protected UmbracoPylonControllerBase()
+        /// <param name="innerController">The inner controller.</param>
+        protected UmbracoPylonControllerBase(UmbracoPylonInnerControllerBase innerController)
+            : base(innerController)
+        { }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="UmbracoPylonControllerBase{TPublishedContentRepository, TInnerController}" /> class.
+        /// </summary>
+        /// <param name="innerController">The inner controller.</param>
+        /// <param name="umbracoContext">The umbraco context.</param>
+        protected UmbracoPylonControllerBase(UmbracoPylonInnerControllerBase innerController, UmbracoContext umbracoContext)
+            : base(innerController, umbracoContext)
+        { }
+
+        #endregion
+    }
+
+    /// <summary>
+    /// Base Controller class for a custom umbraco controller.
+    /// </summary>
+    /// <remarks>
+    /// The main controller and the inner controller should share the same interfaces with methods passed through. This enables testing the inner controllers without pain.
+    /// </remarks>
+    public abstract class UmbracoPylonControllerBase<TPublishedContentRepository, TInnerController> : RenderMvcController, IUmbracoPylonController<TPublishedContentRepository> 
+        where TPublishedContentRepository : IPublishedContentRepository
+        where TInnerController : UmbracoPylonInnerControllerBase<TPublishedContentRepository>, IUmbracoPylonController<TPublishedContentRepository>
+    {
+        #region | Construction |
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="UmbracoPylonControllerBase{TPublishedContentRepository, TInnerController}"/> class.
+        /// </summary>
+        /// <param name="innerController">The inner controller.</param>
+        protected UmbracoPylonControllerBase(TInnerController innerController)
         {
-            EnableFileCheck = true;
+            InnerController = innerController;
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="UmbracoPylonControllerBase{TPublishedContentRepository, TInnerController}" /> class.
+        /// </summary>
+        /// <param name="innerController">The inner controller.</param>
+        /// <param name="umbracoContext">The umbraco context.</param>
+        protected UmbracoPylonControllerBase(TInnerController innerController, UmbracoContext umbracoContext)
+            : base(umbracoContext)
+        {
+            InnerController = innerController;
+            InnerController.UmbracoContext = umbracoContext;
+        }
+
+        /// <summary>
+        /// Initializes data that might not be available when the constructor is called.
+        /// </summary>
+        /// <param name="requestContext">The HTTP context and route data.</param>
+        /// <remarks>
+        /// This override allows passing of the context to the inner controller after it's been initialised.
+        /// </remarks>
+        protected override void Initialize(RequestContext requestContext)
+        {
+            base.Initialize(requestContext);
+            InnerController.ControllerContext = ControllerContext;
         }
 
         #endregion
+
+        /// <summary>
+        /// Gets the inner controller.
+        /// </summary>
+        /// <value>
+        /// The inner controller.
+        /// </value>
+        protected TInnerController InnerController { get; private set; }
+
+        /// <summary>
+        /// Gets the umbraco context.
+        /// </summary>
+        public new UmbracoContext UmbracoContext
+        {
+            get { return InnerController.UmbracoContext; }
+            set { InnerController.UmbracoContext = value; }
+        }
+
+        /// <summary>
+        /// Gets or sets the view string renderer.
+        /// </summary>
+        public IViewStringRenderer ViewStringRenderer
+        {
+            get { return InnerController.ViewStringRenderer; }
+            set { InnerController.ViewStringRenderer = value; }
+        }
 
         /// <summary>
         /// Gets or sets a value indicating whether file checking is enabled.
@@ -65,39 +129,29 @@ namespace Umbraco.Pylon
         /// <value>
         ///   <c>true</c> if file checking is enabled; otherwise, <c>false</c>.
         /// </value>
-        public bool EnableFileCheck { get; set; }
-
-        /// <summary>
-        /// Gets the umbraco context.
-        /// </summary>
-        protected new UmbracoContext UmbracoContext 
+        public bool EnableFileCheck
         {
-            get
-            {
-                try
-                {
-                    return base.UmbracoContext;
-                }
-                catch (Exception)
-                {
-                    return null;
-                }
-            }
+            get { return InnerController.EnableFileCheck; }
+            set { InnerController.EnableFileCheck = value; }
         }
 
         /// <summary>
         /// Gets or sets the content repository.
         /// </summary>
-        public abstract TPublishedContentRepository ContentRepo { get; set; }
+        public TPublishedContentRepository ContentRepo
+        {
+            get { return InnerController.ContentRepo; }
+            set { InnerController.ContentRepo = value; }
+        }
 
         /// <summary>
         /// Checks to make sure the physical view file exists on disk
         /// </summary>
         /// <param name="template"></param>
         /// <returns></returns>
-        protected new bool EnsurePhsyicalViewExists(string template)
+        public new bool EnsurePhsyicalViewExists(string template)
         {
-            return !EnableFileCheck || base.EnsurePhsyicalViewExists(template);
+            return InnerController.EnsurePhsyicalViewExists(template);
         }
 
         /// <summary>
@@ -109,14 +163,29 @@ namespace Umbraco.Pylon
         /// <remarks>
         /// If the template found in the route values doesn't physically exist, then an empty ContentResult will be returned.
         /// </remarks>
-        protected new ActionResult CurrentTemplate<TModel>(TModel model)
+        public new ActionResult CurrentTemplate<TModel>(TModel model)
         {
-            var template = ControllerContext.RouteData.Values["action"].ToString();
-            if (!EnsurePhsyicalViewExists(template))
-            {
-                return Content("");
-            }
-            return View(template, model);
+            return InnerController.CurrentTemplate(model);
+        }
+
+        /// <summary>
+        /// Renders a partial as a string.
+        /// </summary>
+        /// <param name="viewName">Name of the view.</param>
+        /// <param name="model">The model.</param>
+        /// <returns></returns>
+        protected string PartialAsString(string viewName, object model)
+        {
+            return InnerController.PartialAsString(viewName, model);
+        }
+
+        /// <summary>
+        /// Sets the ControllerContext to a defaults state when no existing ControllerContext is present       
+        /// </summary>
+        public ControllerContext SetDefaultContext()
+        {
+            ControllerContext = InnerController.SetDefaultContext();
+            return ControllerContext;
         }
     }
 }

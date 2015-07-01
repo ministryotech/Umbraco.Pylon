@@ -11,7 +11,6 @@
 // FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION 
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-using System;
 using System.Collections.Generic;
 using Umbraco.Core.Dynamics;
 using Umbraco.Core.Models;
@@ -22,72 +21,41 @@ namespace Umbraco.Pylon
     /// <summary>
     /// Base representation of a document type on a system without a custom published content repository.
     /// </summary>
-    public abstract class DocumentTypeBase : DocumentTypeBase<IPublishedContentRepository>
+    public abstract class DocumentTypeBase : IDocumentType
     { 
-        #region | Construction |
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="DocumentTypeBase"/> class.
-        /// </summary>
-        /// <param name="contentRepo">The content repo.</param>
-        protected DocumentTypeBase(IPublishedContentRepository contentRepo)
-            : base(contentRepo)
-        { }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="DocumentTypeBase"/> class.
-        /// </summary>
-        /// <param name="content">The content.</param>
-        /// <param name="contentRepo">The content repo.</param>
-        protected DocumentTypeBase(IPublishedContent content, IPublishedContentRepository contentRepo)
-            : base(content, contentRepo)
-        { }
-
-        #endregion
-    }
-
-
-    /// <summary>
-    /// Base representation of a document type on a system with a custom published content repository.
-    /// </summary>
-    public abstract class DocumentTypeBase<TPublishedContentRepository> : IDocumentType
-        where TPublishedContentRepository : IPublishedContentRepository
-    {
         private IPublishedContent content;
-
+        
         #region | Construction |
 
         /// <summary>
         /// Initializes a new instance of the <see cref="DocumentTypeBase"/> class.
         /// </summary>
-        /// <param name="contentRepo">The content repo.</param>
-        protected DocumentTypeBase(TPublishedContentRepository contentRepo)
+        protected DocumentTypeBase()
         {
-            ContentRepo = contentRepo;
+            Get = new ContentAccessor();
         }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="DocumentTypeBase"/> class.
         /// </summary>
         /// <param name="content">The content.</param>
-        /// <param name="contentRepo">The content repo.</param>
-        protected DocumentTypeBase(IPublishedContent content, TPublishedContentRepository contentRepo)
-            : this(contentRepo)
+        protected DocumentTypeBase(IPublishedContent content)
         {
+            Get = new ContentAccessor { ContentObject = content };
             Content = content;
         }
 
         #endregion
 
         /// <summary>
-        /// Gets the dynamic content.
+        /// Accessor for formatted content elements.
         /// </summary>
-        protected dynamic DynamicContent { get; set; }
+        protected IContentAccessor Get { get; private set; }
 
         /// <summary>
-        /// Gets the content repo.
+        /// Gets the dynamic content.
         /// </summary>
-        protected TPublishedContentRepository ContentRepo { get; private set; }
+        public dynamic DynamicContent { get; set; }
 
         /// <summary>
         /// Gets the typed content.
@@ -95,7 +63,11 @@ namespace Umbraco.Pylon
         public IPublishedContent Content 
         {
             get { return content ?? ConvertDynamicContent(); }
-            set { content = value; }
+            set
+            {
+                content = value;
+                Get.ContentObject = content;
+            }
         }
 
         /// <summary>
@@ -125,63 +97,6 @@ namespace Umbraco.Pylon
         /// Gets the child content.
         /// </summary>
         public IEnumerable<IPublishedContent> Children { get { return Content.Children; } }
-
-
-        #region | Protected Methods |
-
-        /// <summary>
-        /// Gets the content.
-        /// </summary>
-        /// <param name="propertyName">Name of the property.</param>
-        /// <returns></returns>
-        protected string GetContent(string propertyName)
-        {
-            if (Content == null) return null;
-
-            var objectContent = Content.GetProperty(propertyName);
-            if (objectContent == null) return null;
-
-            return objectContent.Value == null ? null : objectContent.Value.ToString();
-        }
-
-        /// <summary>
-        /// Gets the content in numeric form
-        /// </summary>
-        /// <param name="propertyName">Name of the property.</param>
-        /// <returns></returns>
-        protected int GetNumericContent(string propertyName)
-        {
-            var potentialContent = GetContent(propertyName);
-            int value;
-            return (potentialContent != null && int.TryParse(potentialContent, out value)) ? value : 0;
-        }
-
-        /// <summary>
-        /// Gets the content in boolean form
-        /// </summary>
-        /// <param name="propertyName">Name of the property.</param>
-        /// <returns></returns>
-        protected bool GetBooleanContent(string propertyName)
-        {
-            var potentialContent = GetContent(propertyName);
-            bool value;
-            return (potentialContent != null && bool.TryParse(potentialContent, out value)) && value;
-        }
-
-        /// <summary>
-        /// Gets the content in date form
-        /// </summary>
-        /// <param name="propertyName">Name of the property.</param>
-        /// <param name="defaultDateTime">The default date time.</param>
-        /// <returns></returns>
-        protected DateTime GetDateContent(string propertyName, DateTime defaultDateTime)
-        {
-            var potentialContent = GetContent(propertyName);
-            DateTime value;
-            return (potentialContent != null && DateTime.TryParse(potentialContent, out value)) ? value : defaultDateTime;
-        }
-
-        #endregion
 
         #region | Private Methods |
         

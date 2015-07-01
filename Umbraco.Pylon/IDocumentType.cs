@@ -11,6 +11,7 @@
 // FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION 
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
+using System.Collections.Generic;
 using Umbraco.Core.Models;
 
 namespace Umbraco.Pylon
@@ -25,8 +26,33 @@ namespace Umbraco.Pylon
         /// </summary>
         IPublishedContent Content { get; set; }
 
+        /// <summary>
+        /// Gets the dynamic content.
+        /// </summary>
+        dynamic DynamicContent { get; set; }
+
+        /// <summary>
+        /// Gets or sets the identifier.
+        /// </summary>
+        /// <value>
+        /// The identifier.
+        /// </value>
         int Id { get; }
+
+        /// <summary>
+        /// Gets or sets the name.
+        /// </summary>
+        /// <value>
+        /// The name.
+        /// </value>
         string Name { get; }
+
+        /// <summary>
+        /// Gets or sets the URL.
+        /// </summary>
+        /// <value>
+        /// The URL.
+        /// </value>
         string Url { get; }
 
         /// <summary>
@@ -36,5 +62,13 @@ namespace Umbraco.Pylon
         ///   <c>true</c> if has content; otherwise, <c>false</c>.
         /// </value>
         bool HasContent { get; }
+
+        /// <summary>
+        /// Gets the children.
+        /// </summary>
+        /// <value>
+        /// The children.
+        /// </value>
+        IEnumerable<IPublishedContent> Children { get; }
     }
 }

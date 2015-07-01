@@ -18,15 +18,39 @@ namespace Umbraco.Pylon
     /// <summary>
     /// An abstract base class for Umbraco views.
     /// </summary>
-    public abstract class UmbracoPylonViewPage : UmbracoPylonViewPage<UmbracoSite, PublishedContentRepository>
-    { }
+    public abstract class UmbracoPylonViewPage : UmbracoPylonViewPage<IUmbracoSite, IPublishedContentRepository>
+    {
+        #region | Construction |
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="UmbracoPylonViewPage"/> class.
+        /// </summary>
+        /// <param name="umbracoSite">The umbraco site.</param>
+        protected UmbracoPylonViewPage(IUmbracoSite umbracoSite)
+            : base(umbracoSite)
+        { }
+
+        #endregion
+    }
 
     /// <summary>
     /// An abstract base class for Umbraco views using strongly typed models.
     /// </summary>
     /// <typeparam name="TModel">The type of the model.</typeparam>
-    public abstract class UmbracoPylonViewPage<TModel> : UmbracoPylonViewPage<UmbracoSite, PublishedContentRepository, TModel>
-    { }
+    public abstract class UmbracoPylonViewPage<TModel> : UmbracoPylonViewPage<IUmbracoSite, IPublishedContentRepository, TModel>
+    { 
+        #region | Construction |
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="UmbracoPylonViewPage"/> class.
+        /// </summary>
+        /// <param name="umbracoSite">The umbraco site.</param>
+        protected UmbracoPylonViewPage(IUmbracoSite umbracoSite)
+            : base(umbracoSite)
+        { }
+
+        #endregion
+    }
 
     /// <summary>
     /// An abstract base class for Umbraco views with a specific content repository.
@@ -34,10 +58,29 @@ namespace Umbraco.Pylon
     /// <typeparam name="TUmbracoSite">The type of the umbraco site.</typeparam>
     /// <typeparam name="TPublishedContentRepository">The type of the published content repository.</typeparam>
     public abstract class UmbracoPylonViewPage<TUmbracoSite, TPublishedContentRepository> : UmbracoTemplatePage
-        where TUmbracoSite : UmbracoSite<TPublishedContentRepository>, new()
-        where TPublishedContentRepository : PublishedContentRepository, new()
+        where TUmbracoSite : IUmbracoSite<TPublishedContentRepository>
+        where TPublishedContentRepository : IPublishedContentRepository
     {
-        private TUmbracoSite umbracoSite;
+        private TUmbracoSite _umbracoSite;
+
+        #region | Construction |
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="UmbracoPylonViewPage{TUmbracoSite, TPublishedContentRepository}"/> class.
+        /// </summary>
+        protected UmbracoPylonViewPage()
+        { }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="UmbracoPylonViewPage{TUmbracoSite, TPublishedContentRepository}"/> class.
+        /// </summary>
+        /// <param name="umbracoSite">The umbraco site.</param>
+        protected UmbracoPylonViewPage(TUmbracoSite umbracoSite)
+        {
+            _umbracoSite = umbracoSite;
+        }
+
+        #endregion
 
         /// <summary>
         /// Gets the model in a dynamic form.
@@ -54,9 +97,10 @@ namespace Umbraco.Pylon
         {
             get
             {
-                umbracoSite = umbracoSite ?? new TUmbracoSite { Umbraco = Umbraco };
-                return umbracoSite;
+                ((UmbracoSite<TPublishedContentRepository>)(IUmbracoSite<TPublishedContentRepository>)_umbracoSite).Umbraco = Umbraco;
+                return _umbracoSite;
             }
+            set { _umbracoSite = value; }
         }
     }
 
@@ -67,10 +111,29 @@ namespace Umbraco.Pylon
     /// <typeparam name="TPublishedContentRepository">The type of the published content repository.</typeparam>
     /// <typeparam name="TModel">The type of the model.</typeparam>
     public abstract class UmbracoPylonViewPage<TUmbracoSite, TPublishedContentRepository, TModel> : UmbracoViewPage<TModel>
-        where TUmbracoSite : UmbracoSite<TPublishedContentRepository>, new()
-        where TPublishedContentRepository : PublishedContentRepository, new()
+        where TUmbracoSite : IUmbracoSite<TPublishedContentRepository>
+        where TPublishedContentRepository : IPublishedContentRepository
     {
-        private TUmbracoSite umbracoSite;
+        private TUmbracoSite _umbracoSite;
+
+        #region | Construction |
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="UmbracoPylonViewPage{TUmbracoSite, TPublishedContentRepository, TModel}"/> class.
+        /// </summary>
+        protected UmbracoPylonViewPage()
+        { }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="UmbracoPylonViewPage{TUmbracoSite, TPublishedContentRepository, TModel}"/> class.
+        /// </summary>
+        /// <param name="umbracoSite">The umbraco site.</param>
+        protected UmbracoPylonViewPage(TUmbracoSite umbracoSite)
+        {
+            _umbracoSite = umbracoSite;
+        }
+
+        #endregion
 
         /// <summary>
         /// Entry point for helper functions defined at root site level.
@@ -82,9 +145,10 @@ namespace Umbraco.Pylon
         {
             get
             {
-                umbracoSite = umbracoSite ?? new TUmbracoSite { Umbraco = Umbraco };
-                return umbracoSite;
+                ((UmbracoSite<TPublishedContentRepository>)(IUmbracoSite<TPublishedContentRepository>)_umbracoSite).Umbraco = Umbraco;
+                return _umbracoSite;
             }
+            set { _umbracoSite = value; }
         }
     }
 }

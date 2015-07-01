@@ -1,15 +1,16 @@
 ﻿using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("Umbraco.Pylon")]
-[assembly: AssemblyDescription("Core classes to aid with more code orientated Umbraco implementations.")]
+[assembly: AssemblyTitle("Umbraco.Pylon.TestSupport")]
+[assembly: AssemblyDescription("Umbraco Pylon Testing Support Library")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("The Ministry of Technology")]
 [assembly: AssemblyProduct("Umbraco.Pylon (Ministry)")]
-[assembly: AssemblyCopyright("Copyright © 2015 Minotech Ltd.")]
+[assembly: AssemblyCopyright("Copyright ©  2015 Minotech Ltd.")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -19,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("8fdbc95a-fa7e-4936-9bf5-d21b802bdf24")]
+[assembly: Guid("911272de-5a09-464d-9c95-5866e4c2c03b")]
 
 // Version information for an assembly consists of the following four values:
 //
@@ -31,5 +32,5 @@ using System.Runtime.InteropServices;
 // You can specify all the values or you can default the Build and Revision Numbers 
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("7.2.1.2")]
-[assembly: AssemblyFileVersion("7.2.1.2")]
+[assembly: AssemblyVersion("7.2.1.12")]
+[assembly: AssemblyFileVersion("7.2.1.12")]

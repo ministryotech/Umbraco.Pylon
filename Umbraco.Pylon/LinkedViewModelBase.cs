@@ -21,13 +21,26 @@ namespace Umbraco.Pylon
     public abstract class LinkedViewModelBase<TInnerObject>
         where TInnerObject : class, IDocumentType
     {
+        private TInnerObject _innerObject;
+
         /// <summary>
         /// Gets or sets the inner object.
         /// </summary>
         /// <value>
         /// The inner object.
         /// </value>
-        protected TInnerObject InnerObject { get; set; }
+        /// <remarks>
+        /// Changing the value of the InnerObject will trigger the InitModel() method.
+        /// </remarks>
+        protected TInnerObject InnerObject
+        {
+            get { return _innerObject; }
+            set
+            {
+                _innerObject = value;
+                InitModel();
+            }
+        }
 
         /// <summary>
         /// Gets a value indicating whether the model has content.
@@ -60,5 +73,10 @@ namespace Umbraco.Pylon
         /// The content.
         /// </value>
         public IPublishedContent Content { get { return InnerObject.Content; } }
+
+        /// <summary>
+        /// Initializes the model.
+        /// </summary>
+        protected abstract void InitModel();
     }
 }

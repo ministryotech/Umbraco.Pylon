@@ -16,25 +16,81 @@ using Umbraco.Web;
 namespace Umbraco.Pylon
 {
     /// <summary>
+    /// Elements for a site defined using a specified Published Content Repository.
+    /// </summary>
+    /// <remarks>
+    /// Make your own implementation of this.
+    /// </remarks>
+    public interface IUmbracoSite : IUmbracoSite<IPublishedContentRepository>
+    { }
+
+    // ReSharper disable once TypeParameterCanBeVariant
+    /// <summary>
+    /// Elements for a site defined using a specified Published Content Repository.
+    /// </summary>
+    /// <typeparam name="TPublishedContentRepository">The type of the published content repository.</typeparam>
+    /// <remarks>
+    /// Make your own implementation of this.
+    /// </remarks>
+    public interface IUmbracoSite<TPublishedContentRepository> where TPublishedContentRepository : IPublishedContentRepository
+    {
+        /// <summary>
+        /// Gets the content.
+        /// </summary>
+        /// <value>
+        /// The content.
+        /// </value>
+        TPublishedContentRepository Content { get; }
+    }
+
+
+    /// <summary>
     /// Elements for a site defined using a standard Published Content Repository.
     /// </summary>
-    public class UmbracoSite : UmbracoSite<PublishedContentRepository>
-    { }
+    public abstract class UmbracoSite : UmbracoSite<IPublishedContentRepository>
+    { 
+        #region | Construction |
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="UmbracoSite"/> class.
+        /// </summary>
+        /// <param name="contentRepo">The content repo.</param>
+        protected UmbracoSite(IPublishedContentRepository contentRepo)
+            : base(contentRepo)
+        { }
+
+        #endregion
+    }
 
     /// <summary>
     /// Elements for a site defined using a specified Published Content Repository.
     /// </summary>
     /// <typeparam name="TPublishedContentRepository">The type of the published content repository.</typeparam>
-    public class UmbracoSite<TPublishedContentRepository>
-        where TPublishedContentRepository : PublishedContentRepository, new()
+    /// <remarks>
+    /// Make your own implementation of this.
+    /// </remarks>
+    public abstract class UmbracoSite<TPublishedContentRepository> : IUmbracoSite<TPublishedContentRepository> where TPublishedContentRepository : IPublishedContentRepository
     {
+        #region | Construction |
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="UmbracoSite{TPublishedContentRepository}"/> class.
+        /// </summary>
+        /// <param name="contentRepo">The content repo.</param>
+        protected UmbracoSite(TPublishedContentRepository contentRepo)
+        {
+            Content = contentRepo;
+        }
+
+        #endregion
+
         /// <summary>
         /// Sets the umbraco helper instance.
         /// </summary>
         /// <value>
         /// The umbraco helper instance.
         /// </value>
-        internal UmbracoHelper Umbraco { set { Content = new TPublishedContentRepository { Umbraco = value }; } }
+        internal UmbracoHelper Umbraco { set { Content.Umbraco = value; } }
 
         /// <summary>
         /// Gets the content.

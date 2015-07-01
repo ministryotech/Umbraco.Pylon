@@ -6,7 +6,7 @@ To keep it straightforward, NuGet packages of Umbraco.Pylon will always reflect 
 
 The classic version of Pylon, which has since been retired, can be used on Umbraco 7.2.1 by installing version 7.2.1 or 7.2.1.1. To use the more up to date variation of Pylon on Umbraco 7.2.1 install version 7.2.1.2. The current iteration of Pylon is only available for Umbraco installations from 7.2.1 and above.
 
-## TODO ##
+## This Documentation is Being Rewritten ##
 
 ## The Classes and Interfaces ##
 ### PublishedContentRepository | IPublishedContentRepository ###
@@ -19,7 +19,7 @@ If you find you're adding commonly useful features to your site specific content
 ### UmbracoSite ###
 In a similar way to the PublishedContentRepository this is intended to be inherrited from (See the SampleSite class in the sample code project) in order to pass in the necessary implementation of PublishedContentRepository to wrap with the Content property. This class can be considered the root of your site from a code point of view. It's largely syntactic sugar, allowing you to write code like this...
 
-```
+```C#
 var mySite = new MyWebSite();
 var url = mySite.Content.ContentUrl(123);
 ```
@@ -29,7 +29,7 @@ The value of mySite would generally be provided by an IOC Implementation such as
 ### ContentAccessor \ IContentAccessor ###
 The actual obtaining of content is done through an implementation of IContentAccessor, a default of which, ContentAccessor is provided for you. The ContentAccessor provides many methods for returning property elements as strongly typed data but, most importantly, all of this uses a content object that is obtained by running the overridable function GetContentFunc(). This enables the content provision to be isolated from the rest of your code and enables a clean unit testing pattern where the GetContentFunc() can be replaced in order to return desired test data. A bit link this...
 
-```
+```C#
 var stubContentAccessor = new ContentAccessor();
 var mockContent = ArticleTestData.MockContentWithBasicProperties();
 var mockAuthorContent = TeamMemberTestData.MockContentWithBasicProperties(ArticleTestData.AuthorTestId);
@@ -57,7 +57,7 @@ The DocumentTypeBase class has the following key Methods...
 
 When using Pylon to build your Umbraco based app you should inherit from DocumentTypeBase to create an object for all of your document types that you will want to link to pages. It may not be necessary for small child document types such as links or list item types, but anything with an associated content page will want to have a child object. Here's a sample...
 
-```
+```C#
 public interface ICorporatePartner : IDocumentType
 {
     string SummaryText { get; }
@@ -92,7 +92,7 @@ TODO: ADD DOCUMENTTYPEFACTORY HERE WITH SAME EXAMPLE
 ### ContentFactoryBase \ IContentFactory ###
 This is an abstract class and interface pair that wraps a ContentAccessor and a MediaAccessor. IContentFactory is implemented by IDocumentTypeFactory and ContentFactoryBase is inherrited by DocumentTypeFactoryBase to provide the direct link between a Document Type and it's associated content although you may have need for a custom implementation of a ContentFactory outside of the standard usage within a DocumentType. In the example class below we are creating a factory class that specifically deals with wrapping a file, stored in media and has no associated document type...
 
-```
+```C#
 public interface IFileBuilder : IContentFactory
 {
     FileObject Build(int fileId, string fileContent);
@@ -159,7 +159,7 @@ This is another abstract class that is intended to be inherrited from in your si
 ### UmbracoPylonViewPage ###
 This final base class brings everything together. There are effectively two slight variants of this class with different generic parameters. One of these takes a model and effectively replaces the UmbracoViewPage class. All of your site views should inherit from this class when they have a defined model. The other does not take a model and exposes a dynamic object (It also wraps 'CurrentPage' with 'DynamicModel' as an effective alias for all those three people who preferred the DynamicModel to the CurrentPage syntax!). Both provide a property that allows easy access to the site's defined implementation of UmbracoSite, as follows...
 
-```
+```C#
 var url = UmbracoSite.Content.ContentUrl(123);
 ```
 

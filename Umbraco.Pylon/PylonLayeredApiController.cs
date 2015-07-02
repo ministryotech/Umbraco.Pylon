@@ -22,24 +22,24 @@ namespace Umbraco.Pylon
     /// <remarks>
     /// The main controller and the inner controller should share the same interfaces with methods passed through. This enables testing the inner controllers without pain.
     /// </remarks>
-    public abstract class UmbracoPylonApiControllerBase : UmbracoPylonApiControllerBase<IPublishedContentRepository, UmbracoPylonInnerApiControllerBase>
+    public abstract class PylonLayeredApiController : PylonLayeredApiController<IPublishedContentRepository, PylonInnerApiController>
     {
         #region | Construction |
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="UmbracoPylonApiControllerBase{TPublishedContentRepository, TInnerController}"/> class.
+        /// Initializes a new instance of the <see cref="PylonLayeredApiController{TPublishedContentRepository, TInnerController}"/> class.
         /// </summary>
         /// <param name="innerController">The inner controller.</param>
-        protected UmbracoPylonApiControllerBase(UmbracoPylonInnerApiControllerBase innerController)
+        protected PylonLayeredApiController(PylonInnerApiController innerController)
             : base(innerController)
         { }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="UmbracoPylonApiControllerBase{TPublishedContentRepository, TInnerController}" /> class.
+        /// Initializes a new instance of the <see cref="PylonLayeredApiController{TPublishedContentRepository, TInnerController}" /> class.
         /// </summary>
         /// <param name="innerController">The inner controller.</param>
         /// <param name="umbracoContext">The umbraco context.</param>
-        protected UmbracoPylonApiControllerBase(UmbracoPylonInnerApiControllerBase innerController, UmbracoContext umbracoContext)
+        protected PylonLayeredApiController(PylonInnerApiController innerController, UmbracoContext umbracoContext)
             : base(innerController, umbracoContext)
         { }
 
@@ -52,28 +52,28 @@ namespace Umbraco.Pylon
     /// <remarks>
     /// The main controller and the inner controller should share the same interfaces with methods passed through. This enables testing the inner controllers without pain.
     /// </remarks>
-    public abstract class UmbracoPylonApiControllerBase<TPublishedContentRepository, TInnerController> : UmbracoApiController, IUmbracoPylonApiController<TPublishedContentRepository>
+    public abstract class PylonLayeredApiController<TPublishedContentRepository, TInnerController> : UmbracoApiController, IPylonApiController<TPublishedContentRepository>
         where TPublishedContentRepository : IPublishedContentRepository
-        where TInnerController : UmbracoPylonInnerApiControllerBase<TPublishedContentRepository>, IUmbracoPylonApiController<TPublishedContentRepository>
+        where TInnerController : PylonInnerApiController<TPublishedContentRepository>, IPylonApiController<TPublishedContentRepository>
     {
         #region | Construction |
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="UmbracoPylonControllerBase{TPublishedContentRepository, TInnerController}"/> class.
+        /// Initializes a new instance of the <see cref="PylonLayeredController{TPublishedContentRepository, TInnerController}"/> class.
         /// </summary>
         /// <param name="innerController">The inner controller.</param>
-        protected UmbracoPylonApiControllerBase(TInnerController innerController)
+        protected PylonLayeredApiController(TInnerController innerController)
         {
             InnerController = innerController;
             InnerController.SetInnerRequest(Request);
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="UmbracoPylonControllerBase{TPublishedContentRepository, TInnerController}" /> class.
+        /// Initializes a new instance of the <see cref="PylonLayeredController{TPublishedContentRepository, TInnerController}" /> class.
         /// </summary>
         /// <param name="innerController">The inner controller.</param>
         /// <param name="umbracoContext">The umbraco context.</param>
-        protected UmbracoPylonApiControllerBase(TInnerController innerController, UmbracoContext umbracoContext)
+        protected PylonLayeredApiController(TInnerController innerController, UmbracoContext umbracoContext)
             : base(umbracoContext)
         {
             InnerController = innerController;

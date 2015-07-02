@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2014 Minotech Ltd.
+﻿// Copyright (c) 2015 Minotech Ltd.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files
 // (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, 
@@ -11,7 +11,6 @@
 // FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION 
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-using System.Web;
 using System.Web.Mvc;
 using System.Web.Routing;
 using Umbraco.Web;
@@ -25,24 +24,24 @@ namespace Umbraco.Pylon
     /// <remarks>
     /// The main controller and the inner controller should share the same interfaces with methods passed through. This enables testing the inner controllers without pain.
     /// </remarks>
-    public abstract class UmbracoPylonControllerBase : UmbracoPylonControllerBase<IPublishedContentRepository, UmbracoPylonInnerControllerBase>
+    public abstract class PylonLayeredController : PylonLayeredController<IPublishedContentRepository, PylonInnerController>
     {
         #region | Construction |
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="UmbracoPylonControllerBase{TPublishedContentRepository, TInnerController}"/> class.
+        /// Initializes a new instance of the <see cref="PylonLayeredController{TPublishedContentRepository, TInnerController}"/> class.
         /// </summary>
         /// <param name="innerController">The inner controller.</param>
-        protected UmbracoPylonControllerBase(UmbracoPylonInnerControllerBase innerController)
+        protected PylonLayeredController(PylonInnerController innerController)
             : base(innerController)
         { }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="UmbracoPylonControllerBase{TPublishedContentRepository, TInnerController}" /> class.
+        /// Initializes a new instance of the <see cref="PylonLayeredController{TPublishedContentRepository, TInnerController}" /> class.
         /// </summary>
         /// <param name="innerController">The inner controller.</param>
         /// <param name="umbracoContext">The umbraco context.</param>
-        protected UmbracoPylonControllerBase(UmbracoPylonInnerControllerBase innerController, UmbracoContext umbracoContext)
+        protected PylonLayeredController(PylonInnerController innerController, UmbracoContext umbracoContext)
             : base(innerController, umbracoContext)
         { }
 
@@ -55,27 +54,27 @@ namespace Umbraco.Pylon
     /// <remarks>
     /// The main controller and the inner controller should share the same interfaces with methods passed through. This enables testing the inner controllers without pain.
     /// </remarks>
-    public abstract class UmbracoPylonControllerBase<TPublishedContentRepository, TInnerController> : RenderMvcController, IUmbracoPylonController<TPublishedContentRepository>
+    public abstract class PylonLayeredController<TPublishedContentRepository, TInnerController> : RenderMvcController, IPylonController<TPublishedContentRepository>
         where TPublishedContentRepository : IPublishedContentRepository
-        where TInnerController : UmbracoPylonInnerControllerBase<TPublishedContentRepository>, IUmbracoPylonController<TPublishedContentRepository>
+        where TInnerController : PylonInnerController<TPublishedContentRepository>, IPylonController<TPublishedContentRepository>
     {
         #region | Construction |
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="UmbracoPylonControllerBase{TPublishedContentRepository, TInnerController}"/> class.
+        /// Initializes a new instance of the <see cref="PylonLayeredController{TPublishedContentRepository, TInnerController}"/> class.
         /// </summary>
         /// <param name="innerController">The inner controller.</param>
-        protected UmbracoPylonControllerBase(TInnerController innerController)
+        protected PylonLayeredController(TInnerController innerController)
         {
             InnerController = innerController;
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="UmbracoPylonControllerBase{TPublishedContentRepository, TInnerController}" /> class.
+        /// Initializes a new instance of the <see cref="PylonLayeredController{TPublishedContentRepository, TInnerController}" /> class.
         /// </summary>
         /// <param name="innerController">The inner controller.</param>
         /// <param name="umbracoContext">The umbraco context.</param>
-        protected UmbracoPylonControllerBase(TInnerController innerController, UmbracoContext umbracoContext)
+        protected PylonLayeredController(TInnerController innerController, UmbracoContext umbracoContext)
             : base(umbracoContext)
         {
             InnerController = innerController;

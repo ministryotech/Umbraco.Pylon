@@ -21,7 +21,7 @@ namespace Umbraco.Pylon
     /// <remarks>
     /// The main controller and the inner controller should share the same interfaces with methods passed through. This enables testing the inner controllers without pain.
     /// </remarks>
-    public interface IUmbracoPylonApiController<TPublishedContentRepository>
+    public interface IPylonApiController<TPublishedContentRepository>
         where TPublishedContentRepository : IPublishedContentRepository
     {
         /// <summary>

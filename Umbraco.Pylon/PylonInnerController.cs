@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2014 Minotech Ltd.
+﻿// Copyright (c) 2015 Minotech Ltd.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files
 // (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, 
@@ -24,26 +24,26 @@ namespace Umbraco.Pylon
     /// <remarks>
     /// The main controller and the inner controller should share the same interfaces with methods passed through. This enables testing the inner controllers without pain.
     /// </remarks>
-    public abstract class UmbracoPylonInnerControllerBase : UmbracoPylonInnerControllerBase<IPublishedContentRepository>
+    public abstract class PylonInnerController : PylonInnerController<IPublishedContentRepository>
     {
         #region | Construction |
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="UmbracoPylonInnerControllerBase{TPublishedContentRepository}" /> class.
+        /// Initializes a new instance of the <see cref="PylonInnerController{TPublishedContentRepository}" /> class.
         /// </summary>
         /// <param name="contentAccessor">The content accessor.</param>
         /// <param name="mediaAccessor">The media accessor.</param>
-        protected UmbracoPylonInnerControllerBase(IContentAccessor contentAccessor, IMediaAccessor mediaAccessor)
+        protected PylonInnerController(IContentAccessor contentAccessor, IMediaAccessor mediaAccessor)
             : base(new PublishedContentRepository(), contentAccessor, mediaAccessor)
         { }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="UmbracoPylonInnerControllerBase{TPublishedContentRepository}" /> class.
+        /// Initializes a new instance of the <see cref="PylonInnerController{TPublishedContentRepository}" /> class.
         /// </summary>
         /// <param name="contentAccessor">The content accessor.</param>
         /// <param name="mediaAccessor">The media accessor.</param>
         /// <param name="umbracoContext">The umbraco context.</param>
-        protected UmbracoPylonInnerControllerBase(IContentAccessor contentAccessor, IMediaAccessor mediaAccessor, UmbracoContext umbracoContext)
+        protected PylonInnerController(IContentAccessor contentAccessor, IMediaAccessor mediaAccessor, UmbracoContext umbracoContext)
             : base(new PublishedContentRepository(umbracoContext), contentAccessor, mediaAccessor)
         {
             UmbracoContext = umbracoContext;
@@ -59,18 +59,18 @@ namespace Umbraco.Pylon
     /// <remarks>
     /// The main controller and the inner controller should share the same interfaces with methods passed through. This enables testing the inner controllers without pain.
     /// </remarks>
-    public abstract class UmbracoPylonInnerControllerBase<TPublishedContentRepository> : Controller, IUmbracoPylonController<TPublishedContentRepository>
+    public abstract class PylonInnerController<TPublishedContentRepository> : Controller, IPylonController<TPublishedContentRepository>
         where TPublishedContentRepository : IPublishedContentRepository
     {
         #region | Construction |
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="UmbracoPylonInnerControllerBase{TPublishedContentRepository}" /> class.
+        /// Initializes a new instance of the <see cref="PylonInnerController{TPublishedContentRepository}" /> class.
         /// </summary>
         /// <param name="contentRepo">The content repo.</param>
         /// <param name="contentAccessor">The content accessor.</param>
         /// <param name="mediaAccessor">The media accessor.</param>
-        protected UmbracoPylonInnerControllerBase(TPublishedContentRepository contentRepo, IContentAccessor contentAccessor, IMediaAccessor mediaAccessor)
+        protected PylonInnerController(TPublishedContentRepository contentRepo, IContentAccessor contentAccessor, IMediaAccessor mediaAccessor)
         {
             GetContent = contentAccessor;
             GetMedia = mediaAccessor;

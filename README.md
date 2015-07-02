@@ -548,13 +548,13 @@ public IBlogRoll Build(IPublishedContent content, BlogType blogType)
 }
 ```
 
-### LinkedViewModelBase ###
-The DocumentTypeBase class is enhanced by the LinkedViewModelBase class which creates a ViewModel wrapper around any single document types. ViewModels in a Pylon based app are completely optional. Depending on your code style you may do styling elements in your views or, if you prefer more solidly testable code you may prefer to use a ViewModel class to structure the data from a DocumentType for you to keep the View code as simple as humanly possible. 
+### LinkedViewModel ###
+The DocumentTypeBase class is enhanced by the LinkedViewModel class which creates a ViewModel wrapper around any single document types. ViewModels in a Pylon based app are completely optional. Depending on your code style you may do styling elements in your views or, if you prefer more solidly testable code you may prefer to use a ViewModel class to structure the data from a DocumentType for you to keep the View code as simple as humanly possible. 
 
-A ViewModel class linked to a DocumentType must implement the abstarct method InitModel() which is responsible for populating the ViewModel's properties from the passed in IDocumentType implementation. When the InnerObject property is set the InitModel() method is automatically triggered. A sample ViewModel could look like this...
+A ViewModel class linked to a DocumentType must implement the abstract method InitModel() which is responsible for populating the ViewModel's properties from the passed in IDocumentType implementation. When the InnerObject property is set the InitModel() method is automatically triggered. A sample ViewModel could look like this...
 
 ```C#
-public class ArticleViewModel : LinkedViewModelBase<IArticle>
+public class ArticleViewModel : LinkedViewModel<IArticle>
 {
     #region | Construction |
 
@@ -637,7 +637,7 @@ public class ArticleViewModel : LinkedViewModelBase<IArticle>
 
 The ViewModel should never expose the InnerObject itself. This allows ViewModels to be easily mocked for testing and ensures no innapropriate leaks of data. To access properties on the inner IDocumentType implementation the ViewModel will have to be coded to pass the data through to it's own properties. A pragmatic approach is often necessary as to whether a given page is best served a DocumentType implementation or a custom ViewModel.
 
-### UmbracoPylonViewPage ###
+### PylonViewPage ###
 This final base class brings everything together. There are effectively two slight variants of this class with different generic parameters. One of these takes a model and effectively replaces the UmbracoViewPage class. All of your site views should inherit from this class when they have a defined model. The other does not take a model and exposes a dynamic object (It also wraps 'CurrentPage' with 'DynamicModel' as an effective alias for all those three people who preferred the DynamicModel to the CurrentPage syntax!). Both provide a property that allows easy access to the site's defined implementation of UmbracoSite, as follows...
 
 ```C#
@@ -647,7 +647,7 @@ var url = UmbracoSite.Content.ContentUrl(123);
 I recommend creating your own site wide base classes for views and inheriting the appropriate variations of UmbracoPylonViewPage to enable you to add your own layers. Fo the Ministry web site I wrote this...
 
 ```C#
-public abstract class MinistrywebViewPage : UmbracoPylonViewPage<IMinistrywebSite, IMinistrywebPublishedContentRepository>
+public abstract class MinistrywebViewPage : PylonViewPage<IMinistrywebSite, IMinistrywebPublishedContentRepository>
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="MinistrywebViewPage"/> class.
@@ -657,7 +657,7 @@ public abstract class MinistrywebViewPage : UmbracoPylonViewPage<IMinistrywebSit
     { }
 }
 
-public abstract class MinistrywebViewPage<TModel> : UmbracoPylonViewPage<IMinistrywebSite, IMinistrywebPublishedContentRepository, TModel>
+public abstract class MinistrywebViewPage<TModel> : PylonViewPage<IMinistrywebSite, IMinistrywebPublishedContentRepository, TModel>
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="MinistrywebViewPage"/> class.
@@ -680,7 +680,7 @@ API Controllers are a slightly different animal to standard controllers and they
 ### Simple Controllers (Untestable) ###
 
 ### Layered Controllers (Testable) ###
-To enable proper TDD it is necessary to build an Umbraco.Pylon controller in two layers. The interface for the controller can be shared between both layers but the implementations will be slightly different. The Inner controller inherits from UmbracoPylonInnerControllerBase and the wrapping controller inherits from UmbracoPyloControllerBase. The reason for this is that this then allows the class that inherits from the INNER controller to be fully unit tested while the external or wrapping controller is limited by it's inheritance tree dependency on Umbraco. The Inner Controller has the following key methods. Most of these are wrapped by and exposed by the outer controller. Where this is the case I will indicate '(exp)' after the method or property name...
+To enable proper TDD it is necessary to build an Umbraco.Pylon controller in two layers. The interface for the controller can be shared between both layers but the implementations will be slightly different. The Inner controller inherits from PylonInnerController and the wrapping controller inherits from PylonLayeredController. The reason for this is that this then allows the class that inherits from the INNER controller to be fully unit tested while the external or wrapping controller is limited by it's inheritance tree dependency on Umbraco. The Inner Controller has the following key methods. Most of these are wrapped by and exposed by the outer controller. Where this is the case I will indicate '(exp)' after the method or property name...
 * **ContentRepo** - (exp) This is the linked instance of your implementation of IPublishedContentrepository. This is passed into the constructor for the inner controller.
 * **GetContent / GetMedia** - The inner controller has it's own protected properties exposing the site's content and media accessors.
 * **ViewStringRenderer** - (exp) An instance of a renderer to convert view contents into strings.
@@ -699,12 +699,12 @@ Here is an example of a layered controller implementation from the Ministry site
     /// <remarks>
     /// The main controller and the inner controller should share the same interfaces with methods passed through. This enables testing the inner controllers without pain.
     /// </remarks>
-    public interface IProjectController : IUmbracoPylonController<IMinistrywebPublishedContentRepository>
+    public interface IProjectController : IPylonController<IMinistrywebPublishedContentRepository>
     {
         ActionResult Index(RenderModel model);
     }
 
-    public class ProjectController : UmbracoPylonControllerBase<IMinistrywebPublishedContentRepository, ProjectInnerController>, IProjectController
+    public class ProjectController : PylonLayeredController<IMinistrywebPublishedContentRepository, ProjectInnerController>, IProjectController
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="ProjectController" /> class.
@@ -725,7 +725,7 @@ Here is an example of a layered controller implementation from the Ministry site
     /// <summary>
     /// Custom Project Inner Controller.
     /// </summary>
-    public class ProjectInnerController : UmbracoPylonInnerControllerBase<IMinistrywebPublishedContentRepository>, IProjectController
+    public class ProjectInnerController : PylonInnerController<IMinistrywebPublishedContentRepository>, IProjectController
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="ProjectInnerController"/> class.

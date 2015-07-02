@@ -6,7 +6,8 @@ To keep it straightforward, NuGet packages of Umbraco.Pylon will always reflect 
 
 The classic version of Pylon, which has since been retired, can be used on Umbraco 7.2.1 by installing version 7.2.1 or 7.2.1.1. To use the more up to date variation of Pylon on Umbraco 7.2.1 install version 7.2.1.2. The current iteration of Pylon is only available for Umbraco installations from 7.2.1 and above.
 
-## The Classes and Interfaces ##
+## Core Classes and Interfaces ##
+
 ### PublishedContentRepository \ IPublishedContentRepository ###
 Umbraco.Pylon's heart is the abstract PublishedContentRepository and it's associated interface, IPublishedContentRepository. They contain a very slim selection of key methods for accessing content. The PublishedContentRepository effectively provides a testable wrapper that is created by providing either an UmbracoHelper or an UmbracoContext. The wrapper then provides access to content as needed using provided ContentAccessor and MediaAccessor instances (see below for details on these). You CAN create a repository without providing an UmbracoHelper or UmbracoContext but you won't get very far with it. As soon as you try to access content you will get a very explanatory error message to advise you that this is required. The use of the Umbraco property directly is discouraged now in favour of the GetContent and GetMedia properties that return the passed in instances of the ContentAccessor and MediaAccessor classes. The Umbraco property is used internally by these classes when accessing real data. While testing you can provide stub implementations of the ContentAccessor and MediaAccessor that return fake data to enable most of your methods on this calss and any dependencies to be well tested. The ContentAccessor and MediaAccessor are explained in more detail in their own sections below.
 
@@ -298,7 +299,31 @@ public static class Construct
     }
 }
 ```
-I can then simply call Construct.Site.Content.xxx whenever I need to access content in a static way from views etc.
+I can then simply call Construct.Site.Content.xxx whenever I need to access content in a static way from views etc. Your implementation of UmbracoSite is a good place for site wide elemenst to live. The base class contains a single publicly accessible property, 'Content', which exposes the site's implementation of IPublishedContentRepository. A sample site class would look like this - this class exposes both the key content and the custom navigation...
+
+```C#
+public interface IMinistrywebSite : IUmbracoSite<IMinistrywebPublishedContentRepository>
+{
+    INavigationBuilder Navigation { get; }
+}
+
+public class MinistrywebSite : UmbracoSite<IMinistrywebPublishedContentRepository>, IMinistrywebSite
+{
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="MinistrywebSite" /> class.
+    /// </summary>
+    /// <param name="contentRepo">The content repo.</param>
+    /// <param name="navigationBuilder">The navigation builder.</param>
+    public MinistrywebSite(IMinistrywebPublishedContentRepository contentRepo, INavigationBuilder navigationBuilder)
+        : base(contentRepo)
+    {
+        Navigation = navigationBuilder;
+    }
+
+    public INavigationBuilder Navigation { get; private set; }
+}
+```
 
 ### ContentAccessor \ IContentAccessor ###
 The actual obtaining of content is done through an implementation of IContentAccessor, a default of which, ContentAccessor is provided for you. The ContentAccessor provides many methods for returning property elements as strongly typed data but, most importantly, all of this uses a content object that is obtained by running the overridable function GetContentFunc(). This enables the content provision to be isolated from the rest of your code and enables a clean unit testing pattern where the GetContentFunc() can be replaced in order to return desired test data. A bit like this...
@@ -317,6 +342,69 @@ The ContentAccessor also has a key method for obtaining the content which takes 
 
 ### MediaAccessor \ IMediaAccessor ###
 The obtaining of media works through the MediaAccessor - The key elements are the same as the ContentAccessor, above, an overridable GetContentFunc() method and a Content() method that takes an Id. It lacks the conversion style methods but instead exposes methods to perform simple Media related taks like check that a given media item exists.
+
+### ContentFactoryBase \ IContentFactory ###
+This is an abstract class and interface pair that wraps a ContentAccessor and a MediaAccessor. IContentFactory is implemented by IDocumentTypeFactory and ContentFactoryBase is inherrited by DocumentTypeFactoryBase to provide the direct link between a Document Type and it's associated content although you may have need for a custom implementation of a ContentFactory outside of the standard usage within a DocumentType. In the example class below we are creating a factory class that specifically deals with wrapping a file, stored in media and has no associated document type...
+
+```C#
+public interface IFileBuilder : IContentFactory
+{
+    FileObject Build(int fileId, string fileContent);
+    FileObject Build(string fileContent);
+}
+
+public class FileBuilder : ContentFactoryBase, IFileBuilder
+{
+    /// <summary>
+    /// Initializes a new instance of the <see cref="FileBuilder" /> class.
+    /// </summary>
+    /// <param name="contentAccessor">The content repository.</param>
+    /// <param name="mediaAccessor">The media accessor.</param>
+    public FileBuilder(IContentAccessor contentAccessor, IMediaAccessor mediaAccessor)
+        : base(contentAccessor, mediaAccessor)
+    { }
+
+    /// <summary>
+    /// Builds the object.
+    /// </summary>
+    /// <param name="fileId">The file identifier.</param>
+    /// <param name="fileContent">Content of the file.</param>
+    /// <returns></returns>
+    public FileObject Build(int fileId, string fileContent)
+    {
+        var file = GetMedia.Content(fileId);
+        return GetFile(fileContent, file);
+    }
+
+    /// <summary>
+    /// Builds the object.
+    /// </summary>
+    /// <param name="fileContent">Content of the file.</param>
+    /// <returns></returns>
+    public FileObject Build(string fileContent)
+    {
+        return GetFile(fileContent);
+    }
+
+    /// <summary>
+    /// Gets the file.
+    /// </summary>
+    /// <param name="fileContent">Content of the file.</param>
+    /// <param name="file">The file.</param>
+    /// <returns></returns>
+    private static FileObject GetFile(string fileContent, IPublishedContent file = null)
+    {
+        return new FileObject
+        {
+            Content = fileContent,
+            FileUrl = file == null ? String.Empty : file.Url,
+            HasFileAttachment = file != null
+        };
+    }
+}
+```
+
+## Document Types, Models and Views ##
 
 ### DocumentTypeBase \ IDocumentType ###
 This is an abstract class and interface pair that tie a document type definition in with the isolating content repository that allows for both dynamic content and content using the IPublishedContent interface. All of your document types and interfaces should inherit from these.
@@ -460,67 +548,6 @@ public IBlogRoll Build(IPublishedContent content, BlogType blogType)
 }
 ```
 
-### ContentFactoryBase \ IContentFactory ###
-This is an abstract class and interface pair that wraps a ContentAccessor and a MediaAccessor. IContentFactory is implemented by IDocumentTypeFactory and ContentFactoryBase is inherrited by DocumentTypeFactoryBase to provide the direct link between a Document Type and it's associated content although you may have need for a custom implementation of a ContentFactory outside of the standard usage within a DocumentType. In the example class below we are creating a factory class that specifically deals with wrapping a file, stored in media and has no associated document type...
-
-```C#
-public interface IFileBuilder : IContentFactory
-{
-    FileObject Build(int fileId, string fileContent);
-    FileObject Build(string fileContent);
-}
-
-public class FileBuilder : ContentFactoryBase, IFileBuilder
-{
-    /// <summary>
-    /// Initializes a new instance of the <see cref="FileBuilder" /> class.
-    /// </summary>
-    /// <param name="contentAccessor">The content repository.</param>
-    /// <param name="mediaAccessor">The media accessor.</param>
-    public FileBuilder(IContentAccessor contentAccessor, IMediaAccessor mediaAccessor)
-        : base(contentAccessor, mediaAccessor)
-    { }
-
-    /// <summary>
-    /// Builds the object.
-    /// </summary>
-    /// <param name="fileId">The file identifier.</param>
-    /// <param name="fileContent">Content of the file.</param>
-    /// <returns></returns>
-    public FileObject Build(int fileId, string fileContent)
-    {
-        var file = GetMedia.Content(fileId);
-        return GetFile(fileContent, file);
-    }
-
-    /// <summary>
-    /// Builds the object.
-    /// </summary>
-    /// <param name="fileContent">Content of the file.</param>
-    /// <returns></returns>
-    public FileObject Build(string fileContent)
-    {
-        return GetFile(fileContent);
-    }
-
-    /// <summary>
-    /// Gets the file.
-    /// </summary>
-    /// <param name="fileContent">Content of the file.</param>
-    /// <param name="file">The file.</param>
-    /// <returns></returns>
-    private static FileObject GetFile(string fileContent, IPublishedContent file = null)
-    {
-        return new FileObject
-        {
-            Content = fileContent,
-            FileUrl = file == null ? String.Empty : file.Url,
-            HasFileAttachment = file != null
-        };
-    }
-}
-```
-
 ### LinkedViewModelBase ###
 The DocumentTypeBase class is enhanced by the LinkedViewModelBase class which creates a ViewModel wrapper around any single document types. ViewModels in a Pylon based app are completely optional. Depending on your code style you may do styling elements in your views or, if you prefer more solidly testable code you may prefer to use a ViewModel class to structure the data from a DocumentType for you to keep the View code as simple as humanly possible. 
 
@@ -610,15 +637,122 @@ public class ArticleViewModel : LinkedViewModelBase<IArticle>
 
 The ViewModel should never expose the InnerObject itself. This allows ViewModels to be easily mocked for testing and ensures no innapropriate leaks of data. To access properties on the inner IDocumentType implementation the ViewModel will have to be coded to pass the data through to it's own properties. A pragmatic approach is often necessary as to whether a given page is best served a DocumentType implementation or a custom ViewModel.
 
-### TO FIX UmbracoPylonControllerBase ###
-This is another abstract class that is intended to be inherrited from in your site as a base class for all of your controllers. It sits between your own controllers and Umbraco's 'RenderMvcController'. It gives access to content through the provided site's override of PublishedContentRepository (where provided) and adds an option using 'EnableFileCheck' that allows you to test that a template for the controller exists before attempting to render it. Again, samples for the simplest implementation in a code focussed site cam be found in the Sample code project, in this case in the SampleControllerBase class.
-
-### TO FIX UmbracoPylonViewPage ###
+### UmbracoPylonViewPage ###
 This final base class brings everything together. There are effectively two slight variants of this class with different generic parameters. One of these takes a model and effectively replaces the UmbracoViewPage class. All of your site views should inherit from this class when they have a defined model. The other does not take a model and exposes a dynamic object (It also wraps 'CurrentPage' with 'DynamicModel' as an effective alias for all those three people who preferred the DynamicModel to the CurrentPage syntax!). Both provide a property that allows easy access to the site's defined implementation of UmbracoSite, as follows...
 
 ```C#
 var url = UmbracoSite.Content.ContentUrl(123);
 ```
+
+I recommend creating your own site wide base classes for views and inheriting the appropriate variations of UmbracoPylonViewPage to enable you to add your own layers. Fo the Ministry web site I wrote this...
+
+```C#
+public abstract class MinistrywebViewPage : UmbracoPylonViewPage<IMinistrywebSite, IMinistrywebPublishedContentRepository>
+{
+    /// <summary>
+    /// Initializes a new instance of the <see cref="MinistrywebViewPage"/> class.
+    /// </summary>
+    protected MinistrywebViewPage()
+        : base(Construct.Site)
+    { }
+}
+
+public abstract class MinistrywebViewPage<TModel> : UmbracoPylonViewPage<IMinistrywebSite, IMinistrywebPublishedContentRepository, TModel>
+{
+    /// <summary>
+    /// Initializes a new instance of the <see cref="MinistrywebViewPage"/> class.
+    /// </summary>
+    protected MinistrywebViewPage()
+        : base(Construct.Site)
+    { }
+}
+```
+By doing this I am using the static Construct declaration to bind everything together through the IoC dependency resolver so I only need to register the dependencies in one place.
+
+## Controllers ##
+Controllers in Umbraco.Pylon are a little more involved and can be done the easy way or the hard way, depending on whether you want to unit test them or not. Currently unit testing Umbraco controllers is practically impossible. Pylon provides a solution of sorts for this however.
+
+### Controllers Primer ###
+Firstly, for a lot of your pages you will not need to wraite a controller. If you have a simple page with Dynamic content then the default Umbraco controller will do a pretty good job. If you need to use custom DocumentTyoe classes or any of the Umbraco Pylon app code level stuff though you'll want a custom controller. Routing in Umbraco is pretty simple. The routing engine will look for a controller that matches the name of the DocumentType for the item of content that it is trying to load so, if you have a document type of 'Project' and you create a 'ProjectController' then the Index method of your custom controller will be triggered.
+
+API Controllers are a slightly different animal to standard controllers and they have a slightly different inheritance tree and a different set of IoC dependency requirements (check out the IocHelper code for more info on this). API Controllers are accessed by going to {siteroot}/umbraco/api/{apicontrollername} with parameters passed in the querystring.
+
+### Simple Controllers (Untestable) ###
+
+### Layered Controllers (Testable) ###
+To enable proper TDD it is necessary to build an Umbraco.Pylon controller in two layers. The interface for the controller can be shared between both layers but the implementations will be slightly different. The Inner controller inherits from UmbracoPylonInnerControllerBase and the wrapping controller inherits from UmbracoPyloControllerBase. The reason for this is that this then allows the class that inherits from the INNER controller to be fully unit tested while the external or wrapping controller is limited by it's inheritance tree dependency on Umbraco. The Inner Controller has the following key methods. Most of these are wrapped by and exposed by the outer controller. Where this is the case I will indicate '(exp)' after the method or property name...
+* **ContentRepo** - (exp) This is the linked instance of your implementation of IPublishedContentrepository. This can be overridden (recommended - see below).
+* **GetContent / GetMedia** - The inner controller has it's own protected properties exposing the site's content and media accessors.
+* **ViewStringRenderer** - (exp) An instance of a renderer to convert view contents into strings.
+* **UmbracoContext** - (exp) The Umbraco context object.
+* **EnableFileCheck** - (exp) Gets or sets a value indicating whether file checking is enabled.
+* **EnsurePhysicalViewExists()** - (exp) Checks to make sure the physical view file exists on disk.
+* **CurrentTemplate()** - (exp) Generic Method that returns an ActionResult based on the template name found in the route values and the given model.
+* **PartialAsString()** - (exp) A protected method that returns a rendered partial as a string using the associated ViewStringRenderer.
+* **SetDefaultContext()** - (exp) Sets the ControllerContext to a default state when no existing ControllerContext is present.
+
+Here is an example of a layered controller implementation from the Ministry site. Notice the single Interface declaration and the two Controller classes...
+```C#
+    /// <summary>
+    /// Custom Project Controller interface.
+    /// </summary>
+    /// <remarks>
+    /// The main controller and the inner controller should share the same interfaces with methods passed through. This enables testing the inner controllers without pain.
+    /// </remarks>
+    public interface IProjectController : IUmbracoPylonController<IMinistrywebPublishedContentRepository>
+    {
+        ActionResult Index(RenderModel model);
+    }
+
+    public class ProjectController : UmbracoPylonControllerBase<IMinistrywebPublishedContentRepository, ProjectInnerController>, IProjectController
+    {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ProjectController" /> class.
+        /// </summary>
+        /// <param name="innerController">The inner controller.</param>
+        /// <param name="umbracoContext">The umbraco context.</param>
+        public ProjectController(ProjectInnerController innerController, UmbracoContext umbracoContext)
+            : base(innerController, umbracoContext)
+        { }
+
+        public override ActionResult Index(RenderModel model)
+        {
+            return InnerController.Index(model);
+        }
+    }
+
+
+    /// <summary>
+    /// Custom Project Inner Controller.
+    /// </summary>
+    public class ProjectInnerController : UmbracoPylonInnerControllerBase<IMinistrywebPublishedContentRepository>, IProjectController
+    {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ProjectInnerController"/> class.
+        /// </summary>
+        /// <param name="contentRepo">The content repo.</param>
+        /// <param name="contentAccessor">The content accessor.</param>
+        /// <param name="mediaAccessor">The media accessor.</param>
+        public ProjectInnerController(IMinistrywebPublishedContentRepository contentRepo, IContentAccessor contentAccessor,
+            IMediaAccessor mediaAccessor)
+            : base(contentAccessor, mediaAccessor)
+        { 
+            ContentRepo = contentRepo;
+        }
+        
+        public override sealed IMinistrywebPublishedContentRepository ContentRepo { get; set; }
+
+        public ActionResult Index(RenderModel model)
+        {
+            return CurrentTemplate(ContentRepo.Project(model.Content));
+        }
+    }
+```
+
+## Supporting Classes ##
+
+### ViewStringRenderer ###
+This class is used within the various controller classes and will convert the rendered output of a view into a string. This is useful for taking a view output as an HTML property for JSON output.
 
 ### IocHelper ###
 This static class provides a simple method for registering all of the dependencies required by Umbraco.Pylon with IoC. This assumes you are using Autofac as at the time of coding this was the default IoC used by Umbraco. If you want to take the plunge with a different IoC Container then the code in this class should give you an idea where to start.

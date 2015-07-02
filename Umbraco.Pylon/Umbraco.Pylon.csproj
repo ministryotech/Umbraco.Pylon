@@ -240,19 +240,21 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ContentFactoryBase.cs" />
+    <Compile Include="ContentFactory.cs" />
     <Compile Include="IContentAccessor.cs" />
     <Compile Include="IContentFactory.cs" />
     <Compile Include="IDocumentType.cs" />
+    <Compile Include="IDocumentTypeFactory.cs" />
     <Compile Include="IocHelper.cs" />
     <Compile Include="IPublishedContentRepository.cs" />
     <Compile Include="IPylonApiController.cs" />
     <Compile Include="IPylonController.cs" />
     <Compile Include="MediaAccessor.cs" />
     <Compile Include="ContentAccessor.cs" />
-    <Compile Include="DocumentTypeFactoryBase.cs" />
-    <Compile Include="LinkedViewModelBase.cs" />
+    <Compile Include="DocumentTypeFactory.cs" />
+    <Compile Include="LinkedViewModel.cs" />
     <Compile Include="Properties\Annotations.cs" />
+    <Compile Include="PylonController.cs" />
     <Compile Include="PylonLayeredApiController.cs" />
     <Compile Include="PylonInnerApiController.cs" />
     <Compile Include="PylonInnerController.cs" />
@@ -260,7 +262,7 @@
     <Compile Include="PylonViewPage.cs" />
     <Compile Include="UmbracoSite.cs" />
     <Compile Include="PublishedContentRepository.cs" />
-    <Compile Include="DocumentTypeBase.cs" />
+    <Compile Include="DocumentType.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ViewStringRenderer.cs" />
   </ItemGroup>

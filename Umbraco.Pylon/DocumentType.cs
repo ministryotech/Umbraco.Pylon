@@ -21,25 +21,25 @@ namespace Umbraco.Pylon
     /// <summary>
     /// Base representation of a document type on a system without a custom published content repository.
     /// </summary>
-    public abstract class DocumentTypeBase : IDocumentType
+    public abstract class DocumentType : IDocumentType
     { 
         private IPublishedContent content;
         
         #region | Construction |
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="DocumentTypeBase"/> class.
+        /// Initializes a new instance of the <see cref="DocumentType"/> class.
         /// </summary>
-        protected DocumentTypeBase()
+        protected DocumentType()
         {
             Get = new ContentAccessor();
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="DocumentTypeBase"/> class.
+        /// Initializes a new instance of the <see cref="DocumentType"/> class.
         /// </summary>
         /// <param name="content">The content.</param>
-        protected DocumentTypeBase(IPublishedContent content)
+        protected DocumentType(IPublishedContent content)
         {
             Get = new ContentAccessor { ContentObject = content };
             Content = content;

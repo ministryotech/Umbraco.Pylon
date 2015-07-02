@@ -5,7 +5,7 @@ namespace Umbraco.Pylon.TestSupport.Concretes
     /// <summary>
     /// A representation of a DocumentType
     /// </summary>
-    public class ConcreteDocumentType : DocumentTypeBase
+    public class ConcreteDocumentType : DocumentType
     {
         #region | Construction |
 

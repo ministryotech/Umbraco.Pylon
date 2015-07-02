@@ -11,40 +11,25 @@
 // FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION 
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
+using Umbraco.Core.Models;
 
 namespace Umbraco.Pylon
 {
+    // ReSharper disable once TypeParameterCanBeVariant
+
     /// <summary>
-    /// Base representation of a factory for constructing objects from content.
+    /// Base representation of a factory for constructing document types.
     /// </summary>
-    /// <remarks>
-    /// Use IDocumentTypeFactoryBase when linked to specific document types.
-    /// </remarks>
-    public abstract class ContentFactoryBase : IContentFactory
+    public interface IDocumentTypeFactory<TDocumentTypeInterface> : IContentFactory
+        where TDocumentTypeInterface : IDocumentType
     {
-        #region | Construction |
+        TDocumentTypeInterface Build(IPublishedContent content);
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="ContentFactoryBase" /> class.
+        /// Determines whether the content provided is of a valid document type for this builder.
         /// </summary>
-        /// <param name="contentAccessor">The content accessor.</param>
-        /// <param name="mediaAccessor">The media accessor.</param>
-        protected ContentFactoryBase(IContentAccessor contentAccessor, IMediaAccessor mediaAccessor)
-        {
-            Get = contentAccessor;
-            GetMedia = mediaAccessor;
-        }
-
-        #endregion
-
-        /// <summary>
-        /// Accessor for formatted content elements.
-        /// </summary>
-        public IContentAccessor Get { get; private set; }
-
-        /// <summary>
-        /// Accessor for media elements.
-        /// </summary>
-        public IMediaAccessor GetMedia { get; private set; }
+        /// <param name="content">The content.</param>
+        /// <returns></returns>
+        bool IsOfValidDocumentType(IPublishedContent content);
     }
 }

@@ -18,7 +18,7 @@ namespace Umbraco.Pylon
     /// <summary>
     /// A base view model class for view models wrapping a single document type content item.
     /// </summary>
-    public abstract class LinkedViewModelBase<TInnerObject>
+    public abstract class LinkedViewModel<TInnerObject>
         where TInnerObject : class, IDocumentType
     {
         private TInnerObject _innerObject;
@@ -53,25 +53,16 @@ namespace Umbraco.Pylon
         /// <summary>
         /// Gets the name.
         /// </summary>
-        /// <value>
-        /// The name.
-        /// </value>
         public virtual string Name { get { return InnerObject.Name; } }
 
         /// <summary>
         /// Gets the URL.
         /// </summary>
-        /// <value>
-        /// The URL.
-        /// </value>
         public string Url { get { return InnerObject.Url; } }
 
         /// <summary>
         /// Gets the content.
         /// </summary>
-        /// <value>
-        /// The content.
-        /// </value>
         public IPublishedContent Content { get { return InnerObject.Content; } }
 
         /// <summary>

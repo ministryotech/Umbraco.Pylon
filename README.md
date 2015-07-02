@@ -343,8 +343,8 @@ The ContentAccessor also has a key method for obtaining the content which takes 
 ### MediaAccessor \ IMediaAccessor ###
 The obtaining of media works through the MediaAccessor - The key elements are the same as the ContentAccessor, above, an overridable GetContentFunc() method and a Content() method that takes an Id. It lacks the conversion style methods but instead exposes methods to perform simple Media related taks like check that a given media item exists.
 
-### ContentFactoryBase \ IContentFactory ###
-This is an abstract class and interface pair that wraps a ContentAccessor and a MediaAccessor. IContentFactory is implemented by IDocumentTypeFactory and ContentFactoryBase is inherrited by DocumentTypeFactoryBase to provide the direct link between a Document Type and it's associated content although you may have need for a custom implementation of a ContentFactory outside of the standard usage within a DocumentType. In the example class below we are creating a factory class that specifically deals with wrapping a file, stored in media and has no associated document type...
+### ContentFactory \ IContentFactory ###
+This is an abstract class and interface pair that wraps a ContentAccessor and a MediaAccessor. IContentFactory is implemented by IDocumentTypeFactory and ContentFactory is inherrited by DocumentTypeFactory to provide the direct link between a Document Type and it's associated content although you may have need for a custom implementation of a ContentFactory outside of the standard usage within a DocumentType. In the example class below we are creating a factory class that specifically deals with wrapping a file, stored in media and has no associated document type...
 
 ```C#
 public interface IFileBuilder : IContentFactory
@@ -353,7 +353,7 @@ public interface IFileBuilder : IContentFactory
     FileObject Build(string fileContent);
 }
 
-public class FileBuilder : ContentFactoryBase, IFileBuilder
+public class FileBuilder : ContentFactory, IFileBuilder
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="FileBuilder" /> class.
@@ -406,10 +406,10 @@ public class FileBuilder : ContentFactoryBase, IFileBuilder
 
 ## Document Types, Models and Views ##
 
-### DocumentTypeBase \ IDocumentType ###
+### DocumentType \ IDocumentType ###
 This is an abstract class and interface pair that tie a document type definition in with the isolating content repository that allows for both dynamic content and content using the IPublishedContent interface. All of your document types and interfaces should inherit from these.
 
-The DocumentTypeBase class has the following key Methods...
+The DocumentType class has the following key Methods...
 * **Get()** - Exposes it's own ContentAccessor instance to allow direct access to the content object and methods for converting it's properties. This method is protected.
 * **Content** - Exposes the content as an IPublishedContent implementation. If the source content is dynamic then it is converted.
 * **DynamicContent** - Exposes the dynamic content if the object is created with a dynamic source.
@@ -427,7 +427,7 @@ public interface ICorporatePartner : IDocumentType
     string ExternalPartnerUrl { get; }
 }
 
-    public class CorporatePartner : DocumentTypeBase, ICorporatePartner
+    public class CorporatePartner : DocumentType, ICorporatePartner
     {
         public string SummaryText { get; set; }
         public IPublishedContent Badge { get; set; }
@@ -449,8 +449,8 @@ public interface ICorporatePartner : IDocumentType
     }
 ```
 
-### DocumentTypeFactoryBase \ IDocumentTypeFactory ###
-This is a generic pairing of an implementation of IDocumentType. The class and interface are very simple and inherit from ContentFactoryBase and IContentFactory respectively to provide access to a ContentAccessor and MediaAccessor for constructing the IDocumentType implementation. The base class has a single protected method 'InitBuild()' which should be called by the Build() method of any implementation passing in the initial content. It contains the following key methods...
+### DocumentTypeFactory \ IDocumentTypeFactory ###
+This is a generic pairing of an implementation of IDocumentType. The class and interface are very simple and inherit from ContentFactory and IContentFactory respectively to provide access to a ContentAccessor and MediaAccessor for constructing the IDocumentType implementation. The base class has a single protected method 'InitBuild()' which should be called by the Build() method of any implementation passing in the initial content. It contains the following key methods...
 * **Build()** - A default overridable implementation of a method that takes an IpublishedContent instance and turns it into an IDocumentType object. This should be overridden to build the object you need with data. This is generally overridden but if the content you are wrapping just has the key elements in the base DocumentType class (Name, Url etc.) then the standard Build() method will do. Any overridden Build() method should call InitBuild() to initiate the key object data first.
 * **IsOfValidDocumentType()** - This is an abstract declaration that must be implemented and allows calling code to interrogate whether the passed in content is of the correct type to be processed by the factory. This is extremely useful when parsing child content of multiple types.
 
@@ -459,7 +459,7 @@ A sample factory would look like this...
 public interface ICorporatePartnerBuilder : IDocumentTypeFactory<ICorporatePartner>
 { }
 
-public class CorporatePartnerBuilder : DocumentTypeFactoryBase<CorporatePartner, ICorporatePartner>, ICorporatePartnerBuilder
+public class CorporatePartnerBuilder : DocumentTypeFactory<CorporatePartner, ICorporatePartner>, ICorporatePartnerBuilder
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="CorporatePartnerBuilder" /> class.
@@ -549,7 +549,7 @@ public IBlogRoll Build(IPublishedContent content, BlogType blogType)
 ```
 
 ### LinkedViewModel ###
-The DocumentTypeBase class is enhanced by the LinkedViewModel class which creates a ViewModel wrapper around any single document types. ViewModels in a Pylon based app are completely optional. Depending on your code style you may do styling elements in your views or, if you prefer more solidly testable code you may prefer to use a ViewModel class to structure the data from a DocumentType for you to keep the View code as simple as humanly possible. 
+The DocumentType class is enhanced by the LinkedViewModel class which creates a ViewModel wrapper around any single document types. ViewModels in a Pylon based app are completely optional. Depending on your code style you may do styling elements in your views or, if you prefer more solidly testable code you may prefer to use a ViewModel class to structure the data from a DocumentType for you to keep the View code as simple as humanly possible. 
 
 A ViewModel class linked to a DocumentType must implement the abstract method InitModel() which is responsible for populating the ViewModel's properties from the passed in IDocumentType implementation. When the InnerObject property is set the InitModel() method is automatically triggered. A sample ViewModel could look like this...
 

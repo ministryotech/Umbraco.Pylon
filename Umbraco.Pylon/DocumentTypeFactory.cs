@@ -16,26 +16,11 @@ using Umbraco.Core.Models;
 namespace Umbraco.Pylon
 {
     // ReSharper disable once TypeParameterCanBeVariant
-    /// <summary>
-    /// Base representation of a factory for constructing document types.
-    /// </summary>
-    public interface IDocumentTypeFactory<TDocumentTypeInterface> : IContentFactory
-        where TDocumentTypeInterface : IDocumentType
-    {
-        TDocumentTypeInterface Build(IPublishedContent content);
-
-        /// <summary>
-        /// Determines whether the content provided is of a valid document type for this builder.
-        /// </summary>
-        /// <param name="content">The content.</param>
-        /// <returns></returns>
-        bool IsOfValidDocumentType(IPublishedContent content);
-    }
 
     /// <summary>
     /// Base representation of a factory for constructing document types.
     /// </summary>
-    public abstract class DocumentTypeFactoryBase<TDocumentType, TDocumentTypeInterface> : ContentFactoryBase, IDocumentTypeFactory<TDocumentTypeInterface>
+    public abstract class DocumentTypeFactoryBase<TDocumentType, TDocumentTypeInterface> : ContentFactory, IDocumentTypeFactory<TDocumentTypeInterface>
         where TDocumentTypeInterface : IDocumentType
         where TDocumentType : class, TDocumentTypeInterface, new()
     {

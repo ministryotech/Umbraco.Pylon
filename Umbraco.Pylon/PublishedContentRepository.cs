@@ -19,54 +19,6 @@ using Umbraco.Web;
 namespace Umbraco.Pylon
 {
     /// <summary>
-    /// An interface for accessing published content.
-    /// </summary>
-    public interface IPublishedContentRepository
-    {
-        /// <summary>
-        /// Gets the umbraco helper.
-        /// </summary>
-        /// <exception cref="UmbracoException">The Umbraco context property in the PublishedContentRepository is null. The value must be set by passing either an UmbracoContext or UmbracoHelper instance into the constructor.</exception>
-        UmbracoHelper Umbraco { get; set; }
-
-        /// <summary>
-        /// Gets the media item.
-        /// </summary>
-        /// <param name="id">The id of the item.</param>
-        /// <returns></returns>
-        IPublishedContent MediaItem(int id);
-
-        /// <summary>
-        /// Gets the URL for some media content.
-        /// </summary>
-        /// <param name="mediaId">The media id.</param>
-        /// <returns>A nicely formed Url.</returns>
-        string MediaUrl(int? mediaId);
-
-        /// <summary>
-        /// Gets the content URL.
-        /// </summary>
-        /// <param name="nodeId">The node id.</param>
-        /// <returns>A nicely formed Url.</returns>
-        string ContentUrl(int nodeId);
-
-        /// <summary>
-        /// Returns the content at a specific node.
-        /// </summary>
-        /// <param name="id">The node id.</param>
-        /// <returns>Dynamic content.</returns>
-        dynamic Content(int? id);
-
-        /// <summary>
-        /// Determines if a piece of media exists.
-        /// </summary>
-        /// <param name="mediaId">The media id.</param>
-        /// <returns></returns>
-        bool MediaExists(int? mediaId);
-    }
-
-
-    /// <summary>
     /// A repository for providing access to Umbraco media nodes.
     /// </summary>
     public class PublishedContentRepository : IPublishedContentRepository
@@ -178,7 +130,17 @@ namespace Umbraco.Pylon
         /// </value>
         public bool HasValidUmbracoHelper
         {
-            get { return umbraco != null; }
+            get
+            {
+                try
+                {
+                    return umbraco != null;
+                }
+                catch
+                {
+                    return false;
+                }
+            }
         }
 
         /// <summary>
@@ -216,11 +178,11 @@ namespace Umbraco.Pylon
         /// <summary>
         /// Gets the media item.
         /// </summary>
-        /// <param name="id">The id of the item.</param>
+        /// <param name="mediaId">The id of the item.</param>
         /// <returns></returns>
-        public IPublishedContent MediaItem(int id)
+        public IPublishedContent MediaItem(int mediaId)
         {
-            return GetMedia.Content(id);
+            return GetMedia.Content(mediaId);
         }
 
         /// <summary>s
@@ -230,10 +192,7 @@ namespace Umbraco.Pylon
         /// <returns>A nicely formed Url.</returns>
         public string MediaUrl(int? mediaId)
         {
-            // ReSharper disable once PossibleInvalidOperationException
-            return MediaExists(mediaId)
-                ? MediaItem(mediaId.Value).Url
-                : String.Empty;
+            return GetMedia.Url(mediaId);
         }
 
         /// <summary>
@@ -249,11 +208,11 @@ namespace Umbraco.Pylon
         /// <summary>
         /// Returns the content at a specific node.
         /// </summary>
-        /// <param name="id">The node id.</param>
+        /// <param name="nodeId">The node id.</param>
         /// <returns>Dynamic content.</returns>
-        public dynamic Content(int? id)
+        public dynamic Content(int? nodeId)
         {
-            return id == null || id.Value == 0 ? null : GetContent.Content(id.Value);
+            return nodeId == null || nodeId.Value == 0 ? null : GetContent.Content(nodeId.Value);
         }
     }
 }

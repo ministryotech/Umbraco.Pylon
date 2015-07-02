@@ -6,25 +6,299 @@ To keep it straightforward, NuGet packages of Umbraco.Pylon will always reflect 
 
 The classic version of Pylon, which has since been retired, can be used on Umbraco 7.2.1 by installing version 7.2.1 or 7.2.1.1. To use the more up to date variation of Pylon on Umbraco 7.2.1 install version 7.2.1.2. The current iteration of Pylon is only available for Umbraco installations from 7.2.1 and above.
 
-## This Documentation is Being Rewritten ##
-
 ## The Classes and Interfaces ##
-### TO FIX PublishedContentRepository | IPublishedContentRepository ###
-Umbraco.Pylon's heart is the abstract PublishedContentRepository and it's associated interface, IPublishedContentRepository. They contain a very slim selection of key methods for accessing content. As the project grows this may increase. The PublishedContentRepository effectively provides a testable wrapper that is created by providing either an UmbracoHelper or an UmbracoContext. The wrapper then provides access to content as needed.
+### PublishedContentRepository \ IPublishedContentRepository ###
+Umbraco.Pylon's heart is the abstract PublishedContentRepository and it's associated interface, IPublishedContentRepository. They contain a very slim selection of key methods for accessing content. The PublishedContentRepository effectively provides a testable wrapper that is created by providing either an UmbracoHelper or an UmbracoContext. The wrapper then provides access to content as needed using provided ContentAccessor and MediaAccessor instances (see below for details on these). You CAN create a repository without providing an UmbracoHelper or UmbracoContext but you won't get very far with it. As soon as you try to access content you will get a very explanatory error message to advise you that this is required. The use of the Umbraco property directly is discouraged now in favour of the GetContent and GetMedia properties that return the passed in instances of the ContentAccessor and MediaAccessor classes. The Umbraco property is used internally by these classes when accessing real data. While testing you can provide stub implementations of the ContentAccessor and MediaAccessor that return fake data to enable most of your methods on this calss and any dependencies to be well tested. The ContentAccessor and MediaAccessor are explained in more detail in their own sections below.
 
-It's not recommended that these classes be used directly in a nicely architected site. You must create a site specific implementation of the class and interface, as indicated in the sample project by SamplePublishedContentRepository. In your specific implementation you can set up methods to return special content items such as homepage site root IDs etc. Maintaining a matching interface still allows for a good testable framework.
+It's not recommended that these classes be used directly in a nicely architected site. You must create a site specific implementation of the class and interface, as indicated in the sample project by SamplePublishedContentRepository or in the example below taken from the Ministry website. In your specific implementation you can set up methods to return special content items such as homepage site root IDs etc. Maintaining a matching interface still allows for a good testable framework. The base class contains the following key methods...
+* **GetContent** - A protected property containing an instance of IContentAccessor for accessing site content.
+* **GetMedia** - A protected property containing an instance of IMediaAccessor for accessing site media.
+* **Umbraco** - Exposes the UmbracoHelper class - This is generally used by the GetContent and GetMedia properties now. There is a fair argument for this to become protected or even private.
+* **HasValidUmbracoHelper** - Will indicate to the caller if the UmbracoHelper instance is correctly populated or not. Useful for avoiding nasty exceptions.
+* **Content** - Returns a given node Id as Content or as null as appropriate.
+* **ContentUrl** - Returns the Url linked to the given Content node ID.
+* **MediaExists** - Indicates if a given Media ID exists.
+* **MediaItem** - Returns a given media Id as a Media Item.
+* **MediaUrl** - Returns the Url linked to the given media ID.
+In addition several methods are provided for accessing Media and Content directly which all through to the methods in the relevant accessors. These are Obsolete and the accessor alternatives should be used instead when writing new code.
 
 If you find you're adding commonly useful features to your site specific content repository, consider proposing the properties / methods be integrated into the base class within the Pylon project.
 
-### TO FIX UmbracoSite ###
-In a similar way to the PublishedContentRepository this is intended to be inherrited from (See the SampleSite class in the sample code project) in order to pass in the necessary implementation of PublishedContentRepository to wrap with the Content property. This class can be considered the root of your site from a code point of view. It's largely syntactic sugar, allowing you to write code like this...
+```C#
+    /// <summary>
+    /// A repository for providing access to Umbraco media nodes.
+    /// </summary>
+    public interface IMinistrywebPublishedContentRepository : IPublishedContentRepository
+    {
+        IPublishedContent RootAncestor { get; }
+        string RootAncestorName { get; }
+        IArticle Article(int id);
+        IArticle Article(IPublishedContent content);
+        IList<IArticle> ArticlesByServiceCategory(string serviceCategory);
+        bool CategoryHasArticles(string serviceCategory);
+        IBlogRoll BlogRoll { get; }
+        IBlogRoll DeveloperBlogRoll { get; }
+        IBlogRoll BlogRollByType(BlogType type);
+        IEnumerable<IService> Services { get; }
+    }
+
+
+    /// <summary>
+    /// A repository for providing access to Umbraco media nodes.
+    /// </summary>
+    [UsedImplicitly]
+    public class MinistrywebPublishedContentRepository : PublishedContentRepository, IMinistrywebPublishedContentRepository
+    {
+        private IArticleBuilder _articleBuilder;
+        private IBlogRollBuilder _blogRollBuilder;
+        private IServiceBuilder _serviceBuilder;
+        private IPublishedContent _rootAncestor;
+        private IList<IService> _servicesList;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="MinistrywebPublishedContentRepository" /> class.
+        /// </summary>
+        /// <param name="contentAccessor">The content accessor.</param>
+        /// <param name="mediaAccessor">The media accessor.</param>
+        /// <param name="blogRollBuilder">The blog roll builder.</param>
+        /// <param name="articleBuilder">The article builder.</param>
+        /// <param name="serviceBuilder">The service builder.</param>
+        public MinistrywebPublishedContentRepository(IContentAccessor contentAccessor, IMediaAccessor mediaAccessor,
+            IBlogRollBuilder blogRollBuilder, IArticleBuilder articleBuilder, IServiceBuilder serviceBuilder)
+            : base(contentAccessor, mediaAccessor)
+        {
+            BindContentDependencies(blogRollBuilder, articleBuilder, serviceBuilder);
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="MinistrywebPublishedContentRepository" /> class.
+        /// </summary>
+        /// <param name="contentAccessor">The content accessor.</param>
+        /// <param name="mediaAccessor">The media accessor.</param>
+        /// <param name="blogRollBuilder">The blog roll builder.</param>
+        /// <param name="articleBuilder">The article builder.</param>
+        /// <param name="projectBuilder">The project builder.</param>
+        /// <param name="serviceBuilder">The service builder.</param>
+        /// <param name="summaryBlockBuilder">The summary block builder.</param>
+        /// <param name="corporatePartnerBuilder">The corporate partner builder.</param>
+        /// <param name="teamMemberBuilder">The team member builder.</param>
+        /// <param name="testimonialBuilder">The testimonial builder.</param>
+        /// <param name="context">The umbraco context.</param>
+        public MinistrywebPublishedContentRepository(IContentAccessor contentAccessor, IMediaAccessor mediaAccessor,
+            IBlogRollBuilder blogRollBuilder, IArticleBuilder articleBuilder, IServiceBuilder serviceBuilder, 
+            UmbracoContext context)
+            : base(contentAccessor, mediaAccessor, context)
+        {
+            BindContentDependencies(blogRollBuilder, articleBuilder, serviceBuilder);
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="MinistrywebPublishedContentRepository" /> class.
+        /// </summary>
+        /// <param name="contentAccessor">The content accessor.</param>
+        /// <param name="mediaAccessor">The media accessor.</param>
+        /// <param name="blogRollBuilder">The blog roll builder.</param>
+        /// <param name="articleBuilder">The article builder.</param>
+        /// <param name="projectBuilder">The project builder.</param>
+        /// <param name="serviceBuilder">The service builder.</param>
+        /// <param name="summaryBlockBuilder">The summary block builder.</param>
+        /// <param name="corporatePartnerBuilder">The corporate partner builder.</param>
+        /// <param name="teamMemberBuilder">The team member builder.</param>
+        /// <param name="testimonialBuilder">The testimonial builder.</param>
+        /// <param name="umbraco">The umbraco helper.</param>
+        public MinistrywebPublishedContentRepository(IContentAccessor contentAccessor, IMediaAccessor mediaAccessor,
+            IBlogRollBuilder blogRollBuilder, IArticleBuilder articleBuilder, IServiceBuilder serviceBuilder, 
+            UmbracoHelper umbraco)
+            : base(contentAccessor, mediaAccessor, umbraco)
+        {
+            BindContentDependencies(blogRollBuilder, articleBuilder, serviceBuilder);
+        }
+
+        /// <summary>
+        /// Binds the content dependencies.
+        /// </summary>
+        /// <param name="blogRollBuilder">The blog roll builder.</param>
+        /// <param name="articleBuilder">The article builder.</param>
+        /// <param name="serviceBuilder">The service builder.</param>
+        private void BindContentDependencies(IBlogRollBuilder blogRollBuilder, IArticleBuilder articleBuilder, IServiceBuilder serviceBuilder)
+        {
+            _articleBuilder = articleBuilder;
+            _blogRollBuilder = blogRollBuilder;
+            _serviceBuilder = serviceBuilder;
+        }
+
+        /// <summary>
+        /// Gets the root ancestor.
+        /// </summary>
+        public IPublishedContent RootAncestor
+        {
+            get { return _rootAncestor ?? (_rootAncestor = Umbraco.Content(MinistrywebPublishedContentNodeIds.RootAncestor)); }
+        }
+
+        /// <summary>
+        /// Gets the name of the root ancestor.
+        /// </summary>
+        public string RootAncestorName
+        {
+            get { return RootAncestor.Name; }
+        }
+
+        /// <summary>
+        /// Gets an article with the specified ID.
+        /// </summary>
+        /// <param name="id">The id.</param>
+        /// <returns></returns>
+        public IArticle Article(int id)
+        {
+            var content = GetContent.Content(id);
+            return content == null || content.Id < 1 ? null : Article(content);
+        }
+
+        /// <summary>
+        /// Geta an article from the specified content.
+        /// </summary>
+        /// <param name="content">The content.</param>
+        /// <returns></returns>
+        public IArticle Article(IPublishedContent content)
+        {
+            var article = (Article)_articleBuilder.Build(content);
+            return article;
+        }
+
+        /// <summary>
+        /// Gets all of the articles associated with a service category.
+        /// </summary>
+        /// <param name="serviceCategory">The service category.</param>
+        /// <returns></returns>
+        public IList<IArticle> ArticlesByServiceCategory(string serviceCategory)
+        {
+            var allArticleContent = GetAllArticleContent();
+
+            return (from item in allArticleContent 
+                    let prop = item.GetProperty(Models.Article.Properties.Categories) 
+                    where prop != null && prop.HasValue && prop.Value != null && prop.Value.ToString().Contains(serviceCategory) 
+                    select Article(item)).ToList();
+        }
+
+        /// <summary>
+        /// Gets a flag to indicate if the specified service category has any articles.
+        /// </summary>
+        /// <param name="serviceCategory">The service category.</param>
+        /// <returns></returns>
+        public bool CategoryHasArticles(string serviceCategory)
+        {
+            return ArticlesByServiceCategory(serviceCategory).Any();
+        }
+
+        /// <summary>
+        /// Gets the blog roll.
+        /// </summary>
+        public IBlogRoll BlogRoll
+        {
+            get
+            {
+                return _blogRollBuilder.Build(GetContent.Content(MinistrywebPublishedContentNodeIds.BlogRoll), BlogType.Standard);
+            }
+        }
+
+        /// <summary>
+        /// Gets the developer blog roll.
+        /// </summary>
+        public IBlogRoll DeveloperBlogRoll
+        {
+            get
+            {
+                return _blogRollBuilder.Build(GetContent.Content(MinistrywebPublishedContentNodeIds.DeveloperBlogRoll), BlogType.Developer);
+            }
+        }
+
+        /// <summary>
+        /// Gets a blog roll for a specific type.
+        /// </summary>
+        /// <param name="type">The type.</param>
+        /// <returns>A blog roll.</returns>
+        public IBlogRoll BlogRollByType(BlogType type)
+        {
+            return type == BlogType.Developer ? DeveloperBlogRoll : BlogRoll;
+        }
+
+        /// <summary>
+        /// Gets the services.
+        /// </summary>
+        public IEnumerable<IService> Services
+        {
+            get
+            {
+                LoadList(ref _servicesList, MinistrywebPublishedContentNodeIds.ServiceContainer, _serviceBuilder, true);
+                return _servicesList;
+            }
+        }
+
+        /// <summary>
+        /// Gets all of the article type content.
+        /// </summary>
+        /// <returns></returns>
+        private IEnumerable<IPublishedContent> GetAllArticleContent()
+        {
+            var allArticleContent = new List<IPublishedContent>();
+            allArticleContent.AddRange(GetContent.Content(MinistrywebPublishedContentNodeIds.BlogRoll).Children());
+            allArticleContent.AddRange(GetContent.Content(MinistrywebPublishedContentNodeIds.DeveloperBlogRoll).Children());
+            allArticleContent = allArticleContent.OrderByDescending(c => c.CreateDate).ToList();
+            return allArticleContent;
+        }
+
+        /// <summary>
+        /// Loads the lists.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="listToPopulate">The list to populate.</param>
+        /// <param name="rootId">The root identifier.</param>
+        /// <param name="modelBuilder">The model builder.</param>
+        /// <param name="lazy">if set to <c>true</c> [lazy].</param>
+        private void LoadList<T>(ref IList<T> listToPopulate, int rootId, IDocumentTypeFactory<T> modelBuilder, bool lazy = false)
+            where T : IDocumentType
+        {
+            if (lazy && listToPopulate != null) return;
+
+            var root = GetContent.Content(rootId);
+            listToPopulate = new List<T>();
+
+            foreach (var item in root.Children)
+            {
+                if (modelBuilder.IsOfValidDocumentType(item))
+                {
+                    listToPopulate.Add(modelBuilder.Build(item));
+                }
+            }
+        }
+    }
+```
+
+### UmbracoSite ###
+In a similar way to the PublishedContentRepository this is intended to be inherited from (See the SampleSite class in the sample code project and the sample below) in order to pass in the necessary implementation of PublishedContentRepository to wrap with the Content property. This class can be considered the root of your site from a code point of view. It's largely syntactic sugar, allowing you to write code like this...
 
 ```C#
 var mySite = new MyWebSite();
 var url = mySite.Content.ContentUrl(123);
 ```
 
-The value of mySite would generally be provided by an IOC Implementation such as Ninject or AutoFac or wrapped to make it more accessible (as done in UmbracoPylonViewPage below).
+The value of mySite would generally be provided by an IoC Implementation such as Ninject or AutoFac or wrapped to make it more accessible. In order to allow a good IoC implementation in my own sites I normally use a static class like this one below to load the site class up and store it...
+
+```C#
+public static class Construct
+{
+    private static IMyWebSite _site;
+
+    /// <summary>
+    /// Gets the site object.
+    /// </summary>
+    public static IMyWebSite Site
+    {
+        get { return _site ?? (_site = DependencyResolver.Current.GetService<IMyWebSite>()); }
+    }
+}
+```
+I can then simply call Construct.Site.Content.xxx whenever I need to access content in a static way from views etc.
 
 ### ContentAccessor \ IContentAccessor ###
 The actual obtaining of content is done through an implementation of IContentAccessor, a default of which, ContentAccessor is provided for you. The ContentAccessor provides many methods for returning property elements as strongly typed data but, most importantly, all of this uses a content object that is obtained by running the overridable function GetContentFunc(). This enables the content provision to be isolated from the rest of your code and enables a clean unit testing pattern where the GetContentFunc() can be replaced in order to return desired test data. A bit like this...
@@ -247,8 +521,94 @@ public class FileBuilder : ContentFactoryBase, IFileBuilder
 }
 ```
 
-### TO FIX LinkedViewModelBase ###
-The DocumentTypeBase class is enhanced by the LinkedViewModelBase class which creates a ViewModel wrapper around any single document types.
+### LinkedViewModelBase ###
+The DocumentTypeBase class is enhanced by the LinkedViewModelBase class which creates a ViewModel wrapper around any single document types. ViewModels in a Pylon based app are completely optional. Depending on your code style you may do styling elements in your views or, if you prefer more solidly testable code you may prefer to use a ViewModel class to structure the data from a DocumentType for you to keep the View code as simple as humanly possible. 
+
+A ViewModel class linked to a DocumentType must implement the abstarct method InitModel() which is responsible for populating the ViewModel's properties from the passed in IDocumentType implementation. When the InnerObject property is set the InitModel() method is automatically triggered. A sample ViewModel could look like this...
+
+```C#
+public class ArticleViewModel : LinkedViewModelBase<IArticle>
+{
+    #region | Construction |
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="ArticleViewModel" /> class.
+    /// </summary>
+    /// <param name="article">The article.</param>
+    public ArticleViewModel(IArticle article)
+    {
+        InnerObject = article;
+    }
+
+    /// <summary>
+    /// Initializes the model.
+    /// </summary>
+    protected override void InitModel()
+    {
+        BodyText = InnerObject.BodyText;
+        Categories = InnerObject.Categories;
+        DisplayDate = InnerObject.DateWritten.ToString("dd/MM/yyyy");
+        ParentBlog = InnerObject.ParentBlog;
+
+        AuthorName = InnerObject.Author != null
+            ? (InnerObject.Author.FirstName + " " + InnerObject.Author.LastName).Trim()
+            : String.Empty;
+
+        AuthorUrl = InnerObject.Author != null ? InnerObject.Author.Url : String.Empty;
+        AvatarPath = InnerObject.Author != null ? InnerObject.Author.AvatarPath : String.Empty;
+        Tags = new TagBuilder(InnerObject).BuildString();
+
+        if (InnerObject.LinkedImage != null)
+        {
+            LinkedImageUrl = InnerObject.LinkedImage.Url;
+        }
+    }
+
+    #endregion
+
+    public string BodyText { get; set; }
+    public IEnumerable<String> Categories { get; set; }
+    public string Tags { get; set; }
+    public string DisplayDate { get; set; }
+    public string AuthorName { get; set; }
+    public string AuthorUrl { get; set; }
+    public string AvatarPath { get; set; }
+
+    /// <summary>
+    /// Gets a value indicating whether to show a linked image.
+    /// </summary>
+    /// <value>
+    ///   <c>true</c> if show a linked image; otherwise, <c>false</c>.
+    /// </value>
+    public bool ShowLinkedImage
+    {
+        get { return !String.IsNullOrEmpty(LinkedImageUrl); }
+    }
+
+    public string LinkedImageUrl { get; set; }
+    public BlogType ParentBlog { get; set; }
+
+    /// <summary>
+    /// Gets the list of Categorieses as markup.
+    /// </summary>
+    /// <returns>Html markup.</returns>
+    public MvcHtmlString CategoriesAsMarkup()
+    {
+        var categoryBuilder = new StringBuilder();
+        foreach (var item in Categories)
+        {
+            if (categoryBuilder.Length > 0) { categoryBuilder.Append(", "); }
+            categoryBuilder.Append("<a href='/services/" + item.ToLower().Replace(" ", "-") + "'>");
+            categoryBuilder.Append(item);
+            categoryBuilder.Append("</a>");
+        }
+
+        return new MvcHtmlString(categoryBuilder.ToString());
+    }
+}
+```
+
+The ViewModel should never expose the InnerObject itself. This allows ViewModels to be easily mocked for testing and ensures no innapropriate leaks of data. To access properties on the inner IDocumentType implementation the ViewModel will have to be coded to pass the data through to it's own properties. A pragmatic approach is often necessary as to whether a given page is best served a DocumentType implementation or a custom ViewModel.
 
 ### TO FIX UmbracoPylonControllerBase ###
 This is another abstract class that is intended to be inherrited from in your site as a base class for all of your controllers. It sits between your own controllers and Umbraco's 'RenderMvcController'. It gives access to content through the provided site's override of PublishedContentRepository (where provided) and adds an option using 'EnableFileCheck' that allows you to test that a template for the controller exists before attempting to render it. Again, samples for the simplest implementation in a code focussed site cam be found in the Sample code project, in this case in the SampleControllerBase class.
@@ -259,6 +619,9 @@ This final base class brings everything together. There are effectively two slig
 ```C#
 var url = UmbracoSite.Content.ContentUrl(123);
 ```
+
+### IocHelper ###
+This static class provides a simple method for registering all of the dependencies required by Umbraco.Pylon with IoC. This assumes you are using Autofac as at the time of coding this was the default IoC used by Umbraco. If you want to take the plunge with a different IoC Container then the code in this class should give you an idea where to start.
 
 ## Using PylonSampleWeb ##
 If you try and run PylonSampleWeb on it's own you'll find it doesn't work. It needs to be put on top of an existing Umbraco installation in order to see it working and the Umbraco installation must match the nearest available version of Umbraco.Pylon.

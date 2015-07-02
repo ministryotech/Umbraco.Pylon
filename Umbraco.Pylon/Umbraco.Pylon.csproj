@@ -245,6 +245,7 @@
     <Compile Include="IContentFactory.cs" />
     <Compile Include="IDocumentType.cs" />
     <Compile Include="IocHelper.cs" />
+    <Compile Include="IPublishedContentRepository.cs" />
     <Compile Include="IUmbracoPylonApiController.cs" />
     <Compile Include="IUmbracoPylonController.cs" />
     <Compile Include="MediaAccessor.cs" />

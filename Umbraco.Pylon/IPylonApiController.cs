@@ -30,7 +30,7 @@ namespace Umbraco.Pylon
         /// <remarks>
         /// Avoid using this wherever possible for your own sanity.
         /// </remarks>
-        UmbracoContext UmbracoContext { get; set; }
+        UmbracoContext UmbracoContext { get; }
 
         /// <summary>
         /// Gets or sets the content repository.

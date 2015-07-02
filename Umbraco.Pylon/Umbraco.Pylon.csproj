@@ -254,6 +254,7 @@
     <Compile Include="DocumentTypeFactory.cs" />
     <Compile Include="LinkedViewModel.cs" />
     <Compile Include="Properties\Annotations.cs" />
+    <Compile Include="PylonApiController.cs" />
     <Compile Include="PylonController.cs" />
     <Compile Include="PylonLayeredApiController.cs" />
     <Compile Include="PylonInnerApiController.cs" />

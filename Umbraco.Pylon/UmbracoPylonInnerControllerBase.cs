@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2015 Minotech Ltd.
+﻿// Copyright (c) 2014 Minotech Ltd.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files
 // (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, 
@@ -24,10 +24,8 @@ namespace Umbraco.Pylon
     /// <remarks>
     /// The main controller and the inner controller should share the same interfaces with methods passed through. This enables testing the inner controllers without pain.
     /// </remarks>
-    public abstract class UmbracoPylonInnerControllerBase : UmbracoPylonInnerControllerBase<IPublishedContentRepository> 
+    public abstract class UmbracoPylonInnerControllerBase : UmbracoPylonInnerControllerBase<IPublishedContentRepository>
     {
-        private IPublishedContentRepository contentRepo;
-
         #region | Construction |
 
         /// <summary>
@@ -36,7 +34,7 @@ namespace Umbraco.Pylon
         /// <param name="contentAccessor">The content accessor.</param>
         /// <param name="mediaAccessor">The media accessor.</param>
         protected UmbracoPylonInnerControllerBase(IContentAccessor contentAccessor, IMediaAccessor mediaAccessor)
-            : base(contentAccessor, mediaAccessor)
+            : base(new PublishedContentRepository(), contentAccessor, mediaAccessor)
         { }
 
         /// <summary>
@@ -46,27 +44,12 @@ namespace Umbraco.Pylon
         /// <param name="mediaAccessor">The media accessor.</param>
         /// <param name="umbracoContext">The umbraco context.</param>
         protected UmbracoPylonInnerControllerBase(IContentAccessor contentAccessor, IMediaAccessor mediaAccessor, UmbracoContext umbracoContext)
-            : base(contentAccessor, mediaAccessor)
+            : base(new PublishedContentRepository(umbracoContext), contentAccessor, mediaAccessor)
         {
             UmbracoContext = umbracoContext;
         }
 
         #endregion
-
-        /// <summary>
-        /// Gets or sets the content repository.
-        /// </summary>
-        public override IPublishedContentRepository ContentRepo
-        {
-            get
-            {
-                if (contentRepo != null)
-                    return contentRepo;
-
-                return UmbracoContext != null ? new PublishedContentRepository(UmbracoContext) : new PublishedContentRepository();
-            }
-            set { contentRepo = value; }
-        }
     }
 
 
@@ -76,7 +59,7 @@ namespace Umbraco.Pylon
     /// <remarks>
     /// The main controller and the inner controller should share the same interfaces with methods passed through. This enables testing the inner controllers without pain.
     /// </remarks>
-    public abstract class UmbracoPylonInnerControllerBase<TPublishedContentRepository> : Controller, IUmbracoPylonController<TPublishedContentRepository> 
+    public abstract class UmbracoPylonInnerControllerBase<TPublishedContentRepository> : Controller, IUmbracoPylonController<TPublishedContentRepository>
         where TPublishedContentRepository : IPublishedContentRepository
     {
         #region | Construction |
@@ -84,12 +67,14 @@ namespace Umbraco.Pylon
         /// <summary>
         /// Initializes a new instance of the <see cref="UmbracoPylonInnerControllerBase{TPublishedContentRepository}" /> class.
         /// </summary>
+        /// <param name="contentRepo">The content repo.</param>
         /// <param name="contentAccessor">The content accessor.</param>
         /// <param name="mediaAccessor">The media accessor.</param>
-        protected UmbracoPylonInnerControllerBase(IContentAccessor contentAccessor, IMediaAccessor mediaAccessor)
+        protected UmbracoPylonInnerControllerBase(TPublishedContentRepository contentRepo, IContentAccessor contentAccessor, IMediaAccessor mediaAccessor)
         {
             GetContent = contentAccessor;
             GetMedia = mediaAccessor;
+            ContentRepo = contentRepo;
             ViewStringRenderer = new ViewStringRenderer();
 
             EnableFileCheck = true;
@@ -134,7 +119,7 @@ namespace Umbraco.Pylon
         /// <summary>
         /// Gets or sets the content repository.
         /// </summary>
-        public abstract TPublishedContentRepository ContentRepo { get; set; }
+        public TPublishedContentRepository ContentRepo { get; set; }
 
         /// <summary>
         /// Checks to make sure the physical view file exists on disk

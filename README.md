@@ -681,7 +681,7 @@ API Controllers are a slightly different animal to standard controllers and they
 
 ### Layered Controllers (Testable) ###
 To enable proper TDD it is necessary to build an Umbraco.Pylon controller in two layers. The interface for the controller can be shared between both layers but the implementations will be slightly different. The Inner controller inherits from UmbracoPylonInnerControllerBase and the wrapping controller inherits from UmbracoPyloControllerBase. The reason for this is that this then allows the class that inherits from the INNER controller to be fully unit tested while the external or wrapping controller is limited by it's inheritance tree dependency on Umbraco. The Inner Controller has the following key methods. Most of these are wrapped by and exposed by the outer controller. Where this is the case I will indicate '(exp)' after the method or property name...
-* **ContentRepo** - (exp) This is the linked instance of your implementation of IPublishedContentrepository. This can be overridden (recommended - see below).
+* **ContentRepo** - (exp) This is the linked instance of your implementation of IPublishedContentrepository. This is passed into the constructor for the inner controller.
 * **GetContent / GetMedia** - The inner controller has it's own protected properties exposing the site's content and media accessors.
 * **ViewStringRenderer** - (exp) An instance of a renderer to convert view contents into strings.
 * **UmbracoContext** - (exp) The Umbraco context object.
@@ -735,10 +735,8 @@ Here is an example of a layered controller implementation from the Ministry site
         /// <param name="mediaAccessor">The media accessor.</param>
         public ProjectInnerController(IMinistrywebPublishedContentRepository contentRepo, IContentAccessor contentAccessor,
             IMediaAccessor mediaAccessor)
-            : base(contentAccessor, mediaAccessor)
-        { 
-            ContentRepo = contentRepo;
-        }
+            : base(contentRepo, contentAccessor, mediaAccessor)
+        { }
         
         public override sealed IMinistrywebPublishedContentRepository ContentRepo { get; set; }
 
@@ -748,6 +746,15 @@ Here is an example of a layered controller implementation from the Ministry site
         }
     }
 ```
+
+### API Controllers ###
+Conceptually the usage of these classes is almost identical to the standard controllers described above, in both Simple and Layered variants. The inheritance tree of the controllers differs slightly as do the key exposed methods, which are...
+* **ContentRepo** - (exp) This is the linked instance of your implementation of IPublishedContentrepository. This is passed into the constructor for the inner controller.
+* **GetContent / GetMedia** - The inner controller has it's own protected properties exposing the site's content and media accessors.
+* **UmbracoContext** - (exp) The Umbraco context object.
+* **SetInnerRequest()** - A method specific to the inner controller which sets the value of the internal Request property.
+
+I'm not going to show a sample of an API controller here as the code would be almost identical to the standard controller code above except for the absence of the default Index method.
 
 ## Supporting Classes ##
 

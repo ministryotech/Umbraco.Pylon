@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2015 Minotech Ltd.
+﻿// Copyright (c) 2014 Minotech Ltd.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files
 // (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, 
@@ -11,6 +11,7 @@
 // FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION 
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
+using System.Web;
 using System.Web.Mvc;
 using System.Web.Routing;
 using Umbraco.Web;
@@ -54,7 +55,7 @@ namespace Umbraco.Pylon
     /// <remarks>
     /// The main controller and the inner controller should share the same interfaces with methods passed through. This enables testing the inner controllers without pain.
     /// </remarks>
-    public abstract class UmbracoPylonControllerBase<TPublishedContentRepository, TInnerController> : RenderMvcController, IUmbracoPylonController<TPublishedContentRepository> 
+    public abstract class UmbracoPylonControllerBase<TPublishedContentRepository, TInnerController> : RenderMvcController, IUmbracoPylonController<TPublishedContentRepository>
         where TPublishedContentRepository : IPublishedContentRepository
         where TInnerController : UmbracoPylonInnerControllerBase<TPublishedContentRepository>, IUmbracoPylonController<TPublishedContentRepository>
     {

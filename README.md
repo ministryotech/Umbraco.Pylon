@@ -9,14 +9,14 @@ The classic version of Pylon, which has since been retired, can be used on Umbra
 ## This Documentation is Being Rewritten ##
 
 ## The Classes and Interfaces ##
-### PublishedContentRepository | IPublishedContentRepository ###
+### TO FIX PublishedContentRepository | IPublishedContentRepository ###
 Umbraco.Pylon's heart is the abstract PublishedContentRepository and it's associated interface, IPublishedContentRepository. They contain a very slim selection of key methods for accessing content. As the project grows this may increase. The PublishedContentRepository effectively provides a testable wrapper that is created by providing either an UmbracoHelper or an UmbracoContext. The wrapper then provides access to content as needed.
 
 It's not recommended that these classes be used directly in a nicely architected site. You must create a site specific implementation of the class and interface, as indicated in the sample project by SamplePublishedContentRepository. In your specific implementation you can set up methods to return special content items such as homepage site root IDs etc. Maintaining a matching interface still allows for a good testable framework.
 
 If you find you're adding commonly useful features to your site specific content repository, consider proposing the properties / methods be integrated into the base class within the Pylon project.
 
-### UmbracoSite ###
+### TO FIX UmbracoSite ###
 In a similar way to the PublishedContentRepository this is intended to be inherrited from (See the SampleSite class in the sample code project) in order to pass in the necessary implementation of PublishedContentRepository to wrap with the Content property. This class can be considered the root of your site from a code point of view. It's largely syntactic sugar, allowing you to write code like this...
 
 ```C#
@@ -27,7 +27,7 @@ var url = mySite.Content.ContentUrl(123);
 The value of mySite would generally be provided by an IOC Implementation such as Ninject or AutoFac or wrapped to make it more accessible (as done in UmbracoPylonViewPage below).
 
 ### ContentAccessor \ IContentAccessor ###
-The actual obtaining of content is done through an implementation of IContentAccessor, a default of which, ContentAccessor is provided for you. The ContentAccessor provides many methods for returning property elements as strongly typed data but, most importantly, all of this uses a content object that is obtained by running the overridable function GetContentFunc(). This enables the content provision to be isolated from the rest of your code and enables a clean unit testing pattern where the GetContentFunc() can be replaced in order to return desired test data. A bit link this...
+The actual obtaining of content is done through an implementation of IContentAccessor, a default of which, ContentAccessor is provided for you. The ContentAccessor provides many methods for returning property elements as strongly typed data but, most importantly, all of this uses a content object that is obtained by running the overridable function GetContentFunc(). This enables the content provision to be isolated from the rest of your code and enables a clean unit testing pattern where the GetContentFunc() can be replaced in order to return desired test data. A bit like this...
 
 ```C#
 var stubContentAccessor = new ContentAccessor();
@@ -87,7 +87,55 @@ public interface ICorporatePartner : IDocumentType
     }
 ```
 
-TODO: ADD DOCUMENTTYPEFACTORY HERE WITH SAME EXAMPLE
+### DocumentTypeFactoryBase \ IDocumentTypeFactory ###
+This is a generic pairing of an implementation of IDocumentType. The class and interface are very simple and inherit from ContentFactoryBase and IContentFactory respectively to provide access to a ContentAccessor and MediaAccessor for constructing the IDocumentType implementation. The base class has a single protected method 'InitBuild()' which should be called by the Build() method of any implementation passing in the initial content. It contains the following key methods...
+* **Build()** - A default overridable implementation of a method that takes an IpublishedContent instance and turns it into an IDocumentType object. This should be overridden to build the object you need with data. This is generally overridden but if the content you are wrapping just has the key elements in the base DocumentType class (Name, Url etc.) then the standard Build() method will do. Any overridden Build() method should call InitBuild() to initiate the key object data first.
+* **IsOfValidDocumentType()** - This is an abstract declaration that must be implemented and allows calling code to interrogate whether the passed in content is of the correct type to be processed by the factory. This is extremely useful when parsing child content of multiple types.
+
+A sample factory would look like this...
+```C#
+public interface ICorporatePartnerBuilder : IDocumentTypeFactory<ICorporatePartner>
+{ }
+
+public class CorporatePartnerBuilder : DocumentTypeFactoryBase<CorporatePartner, ICorporatePartner>, ICorporatePartnerBuilder
+{
+    /// <summary>
+    /// Initializes a new instance of the <see cref="CorporatePartnerBuilder" /> class.
+    /// </summary>
+    /// <param name="contentAccessor">The content accessor.</param>
+    /// <param name="mediaAccessor">The media accessor.</param>
+    public CorporatePartnerBuilder(IContentAccessor contentAccessor, IMediaAccessor mediaAccessor)
+        : base(contentAccessor, mediaAccessor)
+    { }
+    #endregion
+
+    /// <summary>
+    /// Builds the specified content.
+    /// </summary>
+    /// <param name="content">The content.</param>
+    /// <returns></returns>
+    public override ICorporatePartner Build(IPublishedContent content)
+    {
+        var result = InitBuild(content);
+
+        result.SummaryText = Get.StringValue(CorporatePartner.Properties.SummaryText);
+        result.ExternalPartnerUrl = Get.StringValue(CorporatePartner.Properties.ExternalPartnerUrl);
+        result.Badge = GetMedia.Content(Get.NumericValue(CorporatePartner.Properties.Badge));
+
+        return result;
+    }
+
+    /// <summary>
+    /// Determines whether the content provided is of a valid document type for this builder.
+    /// </summary>
+    /// <param name="content">The content.</param>
+    /// <returns></returns>
+    public override bool IsOfValidDocumentType(IPublishedContent content)
+    {
+        return content.DocumentTypeAlias == "CorporatePartner";
+    }
+}
+```
 
 ### ContentFactoryBase \ IContentFactory ###
 This is an abstract class and interface pair that wraps a ContentAccessor and a MediaAccessor. IContentFactory is implemented by IDocumentTypeFactory and ContentFactoryBase is inherrited by DocumentTypeFactoryBase to provide the direct link between a Document Type and it's associated content although you may have need for a custom implementation of a ContentFactory outside of the standard usage within a DocumentType. In the example class below we are creating a factory class that specifically deals with wrapping a file, stored in media and has no associated document type...
@@ -150,13 +198,13 @@ public class FileBuilder : ContentFactoryBase, IFileBuilder
 }
 ```
 
-### LinkedViewModelBase ###
+### TO FIX LinkedViewModelBase ###
 The DocumentTypeBase class is enhanced by the LinkedViewModelBase class which creates a ViewModel wrapper around any single document types.
 
-### UmbracoPylonControllerBase ###
+### TO FIX UmbracoPylonControllerBase ###
 This is another abstract class that is intended to be inherrited from in your site as a base class for all of your controllers. It sits between your own controllers and Umbraco's 'RenderMvcController'. It gives access to content through the provided site's override of PublishedContentRepository (where provided) and adds an option using 'EnableFileCheck' that allows you to test that a template for the controller exists before attempting to render it. Again, samples for the simplest implementation in a code focussed site cam be found in the Sample code project, in this case in the SampleControllerBase class.
 
-### UmbracoPylonViewPage ###
+### TO FIX UmbracoPylonViewPage ###
 This final base class brings everything together. There are effectively two slight variants of this class with different generic parameters. One of these takes a model and effectively replaces the UmbracoViewPage class. All of your site views should inherit from this class when they have a defined model. The other does not take a model and exposes a dynamic object (It also wraps 'CurrentPage' with 'DynamicModel' as an effective alias for all those three people who preferred the DynamicModel to the CurrentPage syntax!). Both provide a property that allows easy access to the site's defined implementation of UmbracoSite, as follows...
 
 ```C#

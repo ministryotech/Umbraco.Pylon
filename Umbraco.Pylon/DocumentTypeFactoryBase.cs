@@ -19,20 +19,30 @@ namespace Umbraco.Pylon
     /// <summary>
     /// Base representation of a factory for constructing document types.
     /// </summary>
-    public interface IDocumentTypeFactory<TDocumentType> : IContentFactory
-        where TDocumentType : class, IDocumentType, new()
-    { }
+    public interface IDocumentTypeFactory<TDocumentTypeInterface> : IContentFactory
+        where TDocumentTypeInterface : IDocumentType
+    {
+        TDocumentTypeInterface Build(IPublishedContent content);
+
+        /// <summary>
+        /// Determines whether the content provided is of a valid document type for this builder.
+        /// </summary>
+        /// <param name="content">The content.</param>
+        /// <returns></returns>
+        bool IsOfValidDocumentType(IPublishedContent content);
+    }
 
     /// <summary>
     /// Base representation of a factory for constructing document types.
     /// </summary>
-    public abstract class DocumentTypeFactoryBase<TDocumentType> : ContentFactoryBase, IDocumentTypeFactory<TDocumentType> 
-        where TDocumentType : class, IDocumentType, new()
+    public abstract class DocumentTypeFactoryBase<TDocumentType, TDocumentTypeInterface> : ContentFactoryBase, IDocumentTypeFactory<TDocumentTypeInterface>
+        where TDocumentTypeInterface : IDocumentType
+        where TDocumentType : class, TDocumentTypeInterface, new()
     {
         #region | Construction |
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="DocumentTypeFactoryBase{TDocumentType}" /> class.
+        /// Initializes a new instance of the <see cref="DocumentTypeFactoryBase{TDocumentType, TDocumentTypeInterface}"/> class.
         /// </summary>
         /// <param name="contentAccessor">The content accessor.</param>
         /// <param name="mediaAccessor">The media accessor.</param>
@@ -43,6 +53,25 @@ namespace Umbraco.Pylon
         #endregion
 
         /// <summary>
+        /// Builds the specified content.
+        /// </summary>
+        /// <param name="content">The content.</param>
+        /// <returns></returns>
+        public virtual TDocumentTypeInterface Build(IPublishedContent content)
+        {
+            var result = InitBuild(content);
+
+            return result;
+        }
+
+        /// <summary>
+        /// Determines whether the content provided is of a valid document type for this builder.
+        /// </summary>
+        /// <param name="content">The content.</param>
+        /// <returns></returns>
+        public abstract bool IsOfValidDocumentType(IPublishedContent content);
+
+        /// <summary>
         /// Builds the specified content into a model.
         /// </summary>
         /// <param name="content">The content.</param>
@@ -50,7 +79,7 @@ namespace Umbraco.Pylon
         protected TDocumentType InitBuild(IPublishedContent content)
         {
             Get.ContentObject = content;
-            var retVal = new TDocumentType {Content = content};
+            var retVal = new TDocumentType { Content = content };
 
             return retVal;
         }

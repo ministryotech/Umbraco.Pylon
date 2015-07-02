@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2014 Minotech Ltd.
+﻿// Copyright (c) 2016 Minotech Ltd.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files
 // (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, 
@@ -32,27 +32,18 @@ namespace Umbraco.Pylon
         dynamic DynamicContent { get; set; }
 
         /// <summary>
-        /// Gets or sets the identifier.
+        /// Gets the identifier.
         /// </summary>
-        /// <value>
-        /// The identifier.
-        /// </value>
         int Id { get; }
 
         /// <summary>
         /// Gets or sets the name.
         /// </summary>
-        /// <value>
-        /// The name.
-        /// </value>
         string Name { get; }
 
         /// <summary>
         /// Gets or sets the URL.
         /// </summary>
-        /// <value>
-        /// The URL.
-        /// </value>
         string Url { get; }
 
         /// <summary>
@@ -66,9 +57,6 @@ namespace Umbraco.Pylon
         /// <summary>
         /// Gets the children.
         /// </summary>
-        /// <value>
-        /// The children.
-        /// </value>
         IEnumerable<IPublishedContent> Children { get; }
     }
 }

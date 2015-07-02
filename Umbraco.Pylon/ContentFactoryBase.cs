@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2014 Minotech Ltd.
+﻿// Copyright (c) 2016 Minotech Ltd.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files
 // (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, 
@@ -14,26 +14,6 @@
 
 namespace Umbraco.Pylon
 {
-    // ReSharper disable once TypeParameterCanBeVariant
-    /// <summary>
-    /// Base representation of a factory for constructing objects from content.
-    /// </summary>
-    /// <remarks>
-    /// Use IDocumentTypeFactoryBase when linked to specific document types.
-    /// </remarks>
-    public interface IContentFactory
-    {
-        /// <summary>
-        /// Accessor for formatted content elements.
-        /// </summary>
-        IContentAccessor Get { get; }
-
-        /// <summary>
-        /// Accessor for media elements.
-        /// </summary>
-        IMediaAccessor GetMedia { get; }
-    }
-
     /// <summary>
     /// Base representation of a factory for constructing objects from content.
     /// </summary>

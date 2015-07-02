@@ -241,6 +241,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ContentFactoryBase.cs" />
+    <Compile Include="IContentAccessor.cs" />
+    <Compile Include="IContentFactory.cs" />
+    <Compile Include="IDocumentType.cs" />
     <Compile Include="IocHelper.cs" />
     <Compile Include="IUmbracoPylonApiController.cs" />
     <Compile Include="IUmbracoPylonController.cs" />
@@ -257,7 +260,6 @@
     <Compile Include="UmbracoSite.cs" />
     <Compile Include="PublishedContentRepository.cs" />
     <Compile Include="DocumentTypeBase.cs" />
-    <Compile Include="IDocumentType.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ViewStringRenderer.cs" />
   </ItemGroup>

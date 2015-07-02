@@ -137,6 +137,55 @@ public class CorporatePartnerBuilder : DocumentTypeFactoryBase<CorporatePartner,
 }
 ```
 
+The strategy of using calls to InitBuild() rather than separating the code to populate from content in a different method was intentional as this gives far more flexibility to create additional overloaded versions of Build() that take different parameters. For example, the following code allows the same builder to be used for two different blogs within a site...
+```C#
+/// <summary>
+/// Builds the specified content.
+/// </summary>
+/// <param name="content">The content.</param>
+/// <returns></returns>
+public override IBlogRoll Build(IPublishedContent content)
+{
+    return Build(content, BlogType.Standard);
+}
+
+/// <summary>
+/// Builds a blog roll for the specified content.
+/// </summary>
+/// <param name="content">The content.</param>
+/// <param name="blogType">Type of the blog.</param>
+/// <returns></returns>
+/// <exception cref="System.ArgumentException">Invalid Blog Type;blogType</exception>
+public IBlogRoll Build(IPublishedContent content, BlogType blogType)
+{
+    var result = InitBuild(content);
+
+    result.Type = blogType;
+    result.ArticlesPerPage = Get.NumericValue(BlogRoll.Properties.ArticlesPerPage);
+
+    switch (blogType)
+    {
+        case BlogType.Standard:
+            result.FeedName = "Blog";
+            result.NavSource = "Main";
+            result.UrlRoot = "blog";
+            break;
+        case BlogType.Developer:
+            result.FeedName = "Developers Blog";
+            result.NavSource = "Developers";
+            result.UrlRoot = "developers/blog";
+            break;
+        default:
+            throw new ArgumentException("Invalid Blog Type", "blogType");
+    }
+
+    var articles = GetArticles(content);
+    result.Articles = articles.OrderByDescending(a => a.DateWritten).ToList();
+
+    return result;
+}
+```
+
 ### ContentFactoryBase \ IContentFactory ###
 This is an abstract class and interface pair that wraps a ContentAccessor and a MediaAccessor. IContentFactory is implemented by IDocumentTypeFactory and ContentFactoryBase is inherrited by DocumentTypeFactoryBase to provide the direct link between a Document Type and it's associated content although you may have need for a custom implementation of a ContentFactory outside of the standard usage within a DocumentType. In the example class below we are creating a factory class that specifically deals with wrapping a file, stored in media and has no associated document type...
 

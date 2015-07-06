@@ -317,7 +317,7 @@ public static class Construct
     }
 }
 ```
-I can then simply call Construct.Site.Content.xxx whenever I need to access content in a static way from views etc. Your implementation of UmbracoSite is a good place for site wide elements to live. The base class contains a single publicly accessible property, 'Content', which exposes the site's implementation of IPublishedContentRepository. A sample site class would look like this - this class exposes both the key content and the custom navigation...
+I can then simply call Construct.Site.Content.xxx whenever I need to access content in a static way from views etc. Your implementation of UmbracoSite is a good place for site wide elements to live. The base class contains a single publicly accessible property, `Content`, which exposes the site's implementation of IPublishedContentRepository. A sample site class would look like this - this class exposes both the key content and the custom navigation...
 
 ```C#
 public interface IMinistrywebSite : IUmbracoSite<IMinistrywebPublishedContentRepository>
@@ -468,8 +468,8 @@ public interface ICorporatePartner : IDocumentType
 ```
 
 ### DocumentTypeFactory \ IDocumentTypeFactory ###
-This is a generic pairing of an interface and class to factory build an implementation of IDocumentType. The class and interface are very simple and inherit from ContentFactory and IContentFactory respectively to provide access to a ContentAccessor and MediaAccessor for constructing the IDocumentType implementation. The base class has a single protected method 'InitBuild()' which should be called by the Build() method of any implementation passing in the initial content. It contains the following key methods...
-* **Build()** - A default overridable implementation of a method that takes an IPublishedContent instance and turns it into an IDocumentType object. This is generally overridden to populate the object you want to create with data although, if the content you are wrapping just has the key elements in the base DocumentType class (Name, Url etc.), then the standard Build() method will do. Any overridden Build() method should call InitBuild() to initiate the key object data first.
+This is a generic pairing of an interface and class to factory build an implementation of IDocumentType. The class and interface are very simple and inherit from ContentFactory and IContentFactory respectively to provide access to a ContentAccessor and MediaAccessor for constructing the IDocumentType implementation. The base class has a single protected method `InitBuild()` which should be called by the `Build()` method of any implementation passing in the initial content. It contains the following key methods...
+* **Build()** - A default overridable implementation of a method that takes an IPublishedContent instance and turns it into an IDocumentType object. This is generally overridden to populate the object you want to create with data although, if the content you are wrapping just has the key elements in the base DocumentType class (Name, Url etc.), then the standard `Build()` method will do. Any overridden `Build()` method should call `InitBuild()` to initiate the key object data first.
 * **IsOfValidDocumentType()** - This is an abstract declaration that must be implemented and allows calling code to interrogate whether the passed in content is of the correct type to be processed by the factory. This is extremely useful when parsing child content of multiple types.
 
 A sample factory would look like this...
@@ -657,7 +657,7 @@ public class ArticleViewModel : LinkedViewModel<IArticle>
 The ViewModel should never expose the InnerObject itself. This allows ViewModels to be easily mocked for testing and ensures no innapropriate leaks of data. To access properties on the inner IDocumentType implementation the ViewModel should be coded to pass the data through to it's own properties. A pragmatic approach is often necessary as to whether a given page is best served a DocumentType implementation or a custom ViewModel.
 
 ### PylonViewPage ###
-This final base class brings everything together. There are effectively two slight variants of this class with different generic parameters. One of these takes a model and effectively replaces the UmbracoViewPage class. All of your site views should inherit from this class when they have a defined model. The other does not take a model and exposes a dynamic object (It also wraps 'CurrentPage' with 'DynamicModel' as an effective alias for all those three people who preferred the DynamicModel to the CurrentPage syntax!). Both provide a property that allows easy access to the site's defined implementation of UmbracoSite, as follows...
+This final base class brings everything together. There are effectively two slight variants of this class with different generic parameters. One of these takes a model and effectively replaces the UmbracoViewPage class. All of your site views should inherit from this class when they have a defined model. The other does not take a model and exposes a dynamic object (It also wraps `CurrentPage` with `DynamicModel` as an effective alias for all those three people who preferred the DynamicModel to the CurrentPage syntax!). Both provide a property that allows easy access to the site's defined implementation of UmbracoSite, as follows...
 
 ```C#
 var url = UmbracoSite.Content.ContentUrl(123);
@@ -694,7 +694,7 @@ By doing this I am using the static Construct declaration to bind everything tog
 Controllers in Umbraco.Pylon are a little more involved and can be done the easy way or the hard way, depending on whether you want to unit test them or not. Currently unit testing Umbraco controllers is practically impossible (there are ways but it's rather painful). Pylon provides a solution of sorts for this however.
 
 ### Controllers Primer ###
-Firstly, for a lot of your pages you will not need to write a controller. If you have a simple page with Dynamic content then the default Umbraco controller will do a pretty good job. If you need to use custom DocumentType classes or any of the Umbraco Pylon app code level stuff though you'll want a custom controller. Routing in Umbraco is pretty simple. The routing engine will look for a controller that matches the name of the DocumentType for the item of content that it is trying to load so, if you have a document type of 'Project' and you create a 'ProjectController' then the Index method of your custom controller will be triggered.
+Firstly, for a lot of your pages you will not need to write a controller. If you have a simple page with Dynamic content then the default Umbraco controller will do a pretty good job. If you need to use custom DocumentType classes or any of the Umbraco Pylon app code level stuff though you'll want a custom controller. Routing in Umbraco is pretty simple. The routing engine will look for a controller that matches the name of the DocumentType for the item of content that it is trying to load so, if you have a document type of `Project` and you create a `ProjectController` then the Index method of your custom controller will be triggered.
 
 API Controllers are a slightly different animal to standard controllers, They have a slightly different inheritance tree with a different set of IoC dependency requirements (check out the IocHelper code for more info on this). API Controllers are accessed by going to {siteroot}/umbraco/api/{apicontrollername} with parameters passed in the querystring.
 

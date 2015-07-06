@@ -923,6 +923,50 @@ This class is used within the various controller classes and will convert the re
 ### IocHelper ###
 This static class provides a simple method for registering all of the dependencies required by Umbraco.Pylon with IoC. This assumes you are using Autofac as at the time of coding this was the default IoC used by Umbraco. If you want to take the plunge with a different IoC Container then the code in this class should give you an idea where to start.
 
+## Umbraco.Pylon.TestSupport ##
+This class is available as a separate NuGet install and provides a suite of base classes and helpers to make Unit Testing in a Pylon based Umbraco environment as painless as possible. The TestSupport library uses and is dependent on Moq.
+
+### Mock Objects ###
+The library declares specific classes for Mocked Media and Mocked Content. Each item is set up with the default Id, Name and Url properties and inherits from Mock<IPublishedContent>. The MockContent class also inclueds BodyText. Both have a 'Parent' property that can be set and is wired up appropriately. The MockContent class has thow following method...
+* **WithBasicProperties()** - Creates an instance with standard property values for quick testing.
+
+In addition to the two key Mock class declarations, adding the Umbraco.Pylon.TestSupport namespace to your test file will enable the following extension methods to be added to Mock<IPublishedContent>...
+* **SetupContentProperty()** - Adds a property to a piece of mocked content.
+* **VerifyContentPropertiesCalled()** - Verifies that the specified properties were called a certain number of times.
+
+### Concretes ###
+The Umbraco.Pylon.TestSupport.Concretes namespace contains several classes which act as concrete interface implementations for stubbing out test dependencies inclusing...
+* **ConcreteDocumentType** - A stub for Umbraco.Pylon.DocumentType
+* **ConcretePublishedContentProperty** - A stub for IPublishedProperty
+
+### TestBase ###
+TestBase is a generic class which takes the type of the Object Under Test as the generic parameter. This feeds a protected property called 'ObjUt' of this type. It also exposes a protected 'TearDown()' method that resets all of it's internal values to null. It exposes the following protected shortcut properties...
+* **MockContent** - Stores a MockContent instance.
+* **StubContentAccessor** - Stores a stubbed content accessor. If one is not set then an empty accessor is returned.
+* **StubMediaAccessor** - Stores a stubbed media accessor. If one is not set then an empty accessor is returned.
+* **MockContentAccessor** - Stores a mock content accessor. If one is not set then an empty mock accessor is returned.
+* **MockMediaAccessor** - Stores a mock media accessor. If one is not set then an empty mock accessor is returned.
+
+### ControllerTestBase / ApiControllerTestBase ###
+These two classes inherit from TestBase and provide additional items to shortcut testing controllers...
+* **MockHttpContext** - Stores a mocked HttpContext (This uses the Ministry.TestSupport projects). If one is not set then an empty instance is returned.
+* **MockRepo** - Stores a mocked implementation of the Content Repository. If one is not set then a default mock is returned for the interface.
+* **RouteData** - Stores a RouteData collection. If one is not set then an empty collection is returned.
+
+Using either of the controller test base classes requires overriding the following method. Here's an example...
+```C#
+protected override void SetUpControllerToTest()
+{
+    ObjUt = new ArticleInnerController(MockRepo.Object, StubContentAccessor, StubMediaAccessor)
+    {
+        EnableFileCheck = false,
+        ViewStringRenderer = mockViewStringRenderer.Object
+    };
+    ObjUt.ControllerContext = new ControllerContext(MockContext.Object, RouteData, ObjUt);
+}
+```
+Overriding this allows you to set up the controller context and properties of the controller to enable testing.
+
 ## Using PylonSampleWeb ##
 If you try and run PylonSampleWeb on it's own you'll find it doesn't work. It needs to be put on top of an existing Umbraco installation in order to see it working and the Umbraco installation must match the nearest available version of Umbraco.Pylon.
 

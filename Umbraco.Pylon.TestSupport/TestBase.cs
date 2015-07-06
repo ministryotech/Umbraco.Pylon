@@ -1,5 +1,4 @@
-﻿using Ministry.TestSupport.Mocks;
-using Moq;
+﻿using Moq;
 
 namespace Umbraco.Pylon.TestSupport
 {

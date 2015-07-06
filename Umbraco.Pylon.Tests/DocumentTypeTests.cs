@@ -12,8 +12,6 @@ namespace Umbraco.Pylon.Tests
     [Category("Model Test")]
     public class DocumentTypeTests
     {
-        // TODO: Tests with builders.
-
         private ConcreteDocumentType objUt;
 
         private Mock<IPublishedContent> mockContent;

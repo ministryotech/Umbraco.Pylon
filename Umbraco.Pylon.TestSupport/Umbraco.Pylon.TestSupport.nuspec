@@ -11,7 +11,7 @@
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>Test Support elements for developing well achitected, developer focussed Umbraco solutions with Umbraco.Pylon.</description>
     <copyright>Copyright 2015</copyright>
-    <releaseNotes>Initial TestSupport library release</releaseNotes>
+    <releaseNotes>Umbraco Upgrade</releaseNotes>
     <tags>Abstract Umbraco Wrapper Helper Testability Ministry</tags>
   </metadata>
 </package>

@@ -1,4 +1,4 @@
-// Copyright (c) 2014 Minotech Ltd.
+﻿// Copyright (c) 2015 Minotech Ltd.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files
 // (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, 
@@ -11,6 +11,8 @@
 // FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION 
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
+using System;
+using umbraco;
 using Umbraco.Core.Models;
 using Umbraco.Web;
 
@@ -22,23 +24,17 @@ namespace Umbraco.Pylon
     public interface IPublishedContentRepository
     {
         /// <summary>
-        /// Gets the media item.
-        /// </summary>
-        /// <param name="id">The id of the item.</param>
-        /// <returns></returns>
-        IPublishedContent MediaItem(int id);
-
-        /// <summary>
         /// Gets the umbraco helper.
         /// </summary>
-        UmbracoHelper Umbraco { get; }
+        /// <exception cref="UmbracoException">The Umbraco context property in the PublishedContentRepository is null. The value must be set by passing either an UmbracoContext or UmbracoHelper instance into the constructor.</exception>
+        UmbracoHelper Umbraco { get; set; }
 
         /// <summary>
-        /// Determines if a piece of media exists.
+        /// Gets the media item.
         /// </summary>
-        /// <param name="mediaId">The media id.</param>
+        /// <param name="mediaId">The id of the item.</param>
         /// <returns></returns>
-        bool MediaExists(int? mediaId);
+        IPublishedContent MediaItem(int mediaId);
 
         /// <summary>
         /// Gets the URL for some media content.
@@ -57,8 +53,15 @@ namespace Umbraco.Pylon
         /// <summary>
         /// Returns the content at a specific node.
         /// </summary>
-        /// <param name="id">The node id.</param>
+        /// <param name="nodeId">The node id.</param>
         /// <returns>Dynamic content.</returns>
-        dynamic Content(int? id);
+        dynamic Content(int? nodeId);
+
+        /// <summary>
+        /// Determines if a piece of media exists.
+        /// </summary>
+        /// <param name="mediaId">The media id.</param>
+        /// <returns></returns>
+        bool MediaExists(int? mediaId);
     }
 }

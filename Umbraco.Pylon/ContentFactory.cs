@@ -11,52 +11,40 @@
 // FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION 
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-using System.Collections.Generic;
-using Umbraco.Core.Models;
 
 namespace Umbraco.Pylon
 {
     /// <summary>
-    /// Structural interface of a document type.
+    /// Base representation of a factory for constructing objects from content.
     /// </summary>
-    public interface IDocumentType
+    /// <remarks>
+    /// Use IDocumentTypeFactoryBase when linked to specific document types.
+    /// </remarks>
+    public abstract class ContentFactory : IContentFactory
     {
-        /// <summary>
-        /// Gets the typed content.
-        /// </summary>
-        IPublishedContent Content { get; set; }
+        #region | Construction |
 
         /// <summary>
-        /// Gets the dynamic content.
+        /// Initializes a new instance of the <see cref="ContentFactory" /> class.
         /// </summary>
-        dynamic DynamicContent { get; set; }
+        /// <param name="contentAccessor">The content accessor.</param>
+        /// <param name="mediaAccessor">The media accessor.</param>
+        protected ContentFactory(IContentAccessor contentAccessor, IMediaAccessor mediaAccessor)
+        {
+            Get = contentAccessor;
+            GetMedia = mediaAccessor;
+        }
+
+        #endregion
 
         /// <summary>
-        /// Gets the identifier.
+        /// Accessor for formatted content elements.
         /// </summary>
-        int Id { get; }
+        public IContentAccessor Get { get; private set; }
 
         /// <summary>
-        /// Gets or sets the name.
+        /// Accessor for media elements.
         /// </summary>
-        string Name { get; }
-
-        /// <summary>
-        /// Gets or sets the URL.
-        /// </summary>
-        string Url { get; }
-
-        /// <summary>
-        /// Gets a value indicating whether this item has content.
-        /// </summary>
-        /// <value>
-        ///   <c>true</c> if has content; otherwise, <c>false</c>.
-        /// </value>
-        bool HasContent { get; }
-
-        /// <summary>
-        /// Gets the children.
-        /// </summary>
-        IEnumerable<IPublishedContent> Children { get; }
+        public IMediaAccessor GetMedia { get; private set; }
     }
 }

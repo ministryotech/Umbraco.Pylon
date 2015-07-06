@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+﻿<?xml version="1.0"?>
 <package >
   <metadata>
     <id>$id$</id>
@@ -9,9 +9,9 @@
     <licenseUrl>http://www.opensource.org/licenses/MIT</licenseUrl>
     <projectUrl>https://github.com/ministryotech/Umbraco.Pylon</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
-    <description>Base classes and structures for developing well achitected, developer focussed Umbraco solutions. Check out the GitHub project source at https://github.com/tiefling/Umbraco.Pylon for samples to indicate making the best use of the code.</description>
+    <description>Test Support elements for developing well achitected, developer focussed Umbraco solutions with Umbraco.Pylon.</description>
     <copyright>Copyright 2015</copyright>
-    <releaseNotes>Totally new version of Pylon</releaseNotes>
+    <releaseNotes>Initial TestSupport library release</releaseNotes>
     <tags>Abstract Umbraco Wrapper Helper Testability Ministry</tags>
   </metadata>
 </package>

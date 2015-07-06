@@ -11,52 +11,30 @@
 // FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION 
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-using System.Collections.Generic;
-using Umbraco.Core.Models;
+using Umbraco.Web;
 
 namespace Umbraco.Pylon
 {
     /// <summary>
-    /// Structural interface of a document type.
+    /// Definition for a custom umbraco data controller AND the data controller that sits inside it.
     /// </summary>
-    public interface IDocumentType
+    /// <remarks>
+    /// The main controller and the inner controller should share the same interfaces with methods passed through. This enables testing the inner controllers without pain.
+    /// </remarks>
+    public interface IPylonApiController<TPublishedContentRepository>
+        where TPublishedContentRepository : IPublishedContentRepository
     {
         /// <summary>
-        /// Gets the typed content.
+        /// Gets or Sets the umbraco context.
         /// </summary>
-        IPublishedContent Content { get; set; }
+        /// <remarks>
+        /// Avoid using this wherever possible for your own sanity.
+        /// </remarks>
+        UmbracoContext UmbracoContext { get; }
 
         /// <summary>
-        /// Gets the dynamic content.
+        /// Gets or sets the content repository.
         /// </summary>
-        dynamic DynamicContent { get; set; }
-
-        /// <summary>
-        /// Gets the identifier.
-        /// </summary>
-        int Id { get; }
-
-        /// <summary>
-        /// Gets or sets the name.
-        /// </summary>
-        string Name { get; }
-
-        /// <summary>
-        /// Gets or sets the URL.
-        /// </summary>
-        string Url { get; }
-
-        /// <summary>
-        /// Gets a value indicating whether this item has content.
-        /// </summary>
-        /// <value>
-        ///   <c>true</c> if has content; otherwise, <c>false</c>.
-        /// </value>
-        bool HasContent { get; }
-
-        /// <summary>
-        /// Gets the children.
-        /// </summary>
-        IEnumerable<IPublishedContent> Children { get; }
+        TPublishedContentRepository ContentRepo { get; set; }
     }
 }

@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2014 Minotech Ltd.
+﻿// Copyright (c) 2015 Minotech Ltd.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files
 // (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, 
@@ -18,16 +18,29 @@ namespace Umbraco.Pylon
     /// <summary>
     /// A base view model class for view models wrapping a single document type content item.
     /// </summary>
-    public abstract class LinkedViewModelBase<TInnerObject>
+    public abstract class LinkedViewModel<TInnerObject>
         where TInnerObject : class, IDocumentType
     {
+        private TInnerObject _innerObject;
+
         /// <summary>
         /// Gets or sets the inner object.
         /// </summary>
         /// <value>
         /// The inner object.
         /// </value>
-        protected TInnerObject InnerObject { get; set; }
+        /// <remarks>
+        /// Changing the value of the InnerObject will trigger the InitModel() method.
+        /// </remarks>
+        protected TInnerObject InnerObject
+        {
+            get { return _innerObject; }
+            set
+            {
+                _innerObject = value;
+                InitModel();
+            }
+        }
 
         /// <summary>
         /// Gets a value indicating whether the model has content.
@@ -40,25 +53,21 @@ namespace Umbraco.Pylon
         /// <summary>
         /// Gets the name.
         /// </summary>
-        /// <value>
-        /// The name.
-        /// </value>
         public virtual string Name { get { return InnerObject.Name; } }
 
         /// <summary>
         /// Gets the URL.
         /// </summary>
-        /// <value>
-        /// The URL.
-        /// </value>
         public string Url { get { return InnerObject.Url; } }
 
         /// <summary>
         /// Gets the content.
         /// </summary>
-        /// <value>
-        /// The content.
-        /// </value>
         public IPublishedContent Content { get { return InnerObject.Content; } }
+
+        /// <summary>
+        /// Initializes the model.
+        /// </summary>
+        protected abstract void InitModel();
     }
 }

@@ -11,52 +11,25 @@
 // FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION 
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-using System.Collections.Generic;
 using Umbraco.Core.Models;
 
 namespace Umbraco.Pylon
 {
+    // ReSharper disable once TypeParameterCanBeVariant
+
     /// <summary>
-    /// Structural interface of a document type.
+    /// Base representation of a factory for constructing document types.
     /// </summary>
-    public interface IDocumentType
+    public interface IDocumentTypeFactory<TDocumentTypeInterface> : IContentFactory
+        where TDocumentTypeInterface : IDocumentType
     {
-        /// <summary>
-        /// Gets the typed content.
-        /// </summary>
-        IPublishedContent Content { get; set; }
+        TDocumentTypeInterface Build(IPublishedContent content);
 
         /// <summary>
-        /// Gets the dynamic content.
+        /// Determines whether the content provided is of a valid document type for this builder.
         /// </summary>
-        dynamic DynamicContent { get; set; }
-
-        /// <summary>
-        /// Gets the identifier.
-        /// </summary>
-        int Id { get; }
-
-        /// <summary>
-        /// Gets or sets the name.
-        /// </summary>
-        string Name { get; }
-
-        /// <summary>
-        /// Gets or sets the URL.
-        /// </summary>
-        string Url { get; }
-
-        /// <summary>
-        /// Gets a value indicating whether this item has content.
-        /// </summary>
-        /// <value>
-        ///   <c>true</c> if has content; otherwise, <c>false</c>.
-        /// </value>
-        bool HasContent { get; }
-
-        /// <summary>
-        /// Gets the children.
-        /// </summary>
-        IEnumerable<IPublishedContent> Children { get; }
+        /// <param name="content">The content.</param>
+        /// <returns></returns>
+        bool IsOfValidDocumentType(IPublishedContent content);
     }
 }

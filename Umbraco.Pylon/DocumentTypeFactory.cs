@@ -20,18 +20,18 @@ namespace Umbraco.Pylon
     /// <summary>
     /// Base representation of a factory for constructing document types.
     /// </summary>
-    public abstract class DocumentTypeFactoryBase<TDocumentType, TDocumentTypeInterface> : ContentFactory, IDocumentTypeFactory<TDocumentTypeInterface>
+    public abstract class DocumentTypeFactory<TDocumentType, TDocumentTypeInterface> : ContentFactory, IDocumentTypeFactory<TDocumentTypeInterface>
         where TDocumentTypeInterface : IDocumentType
         where TDocumentType : class, TDocumentTypeInterface, new()
     {
         #region | Construction |
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="DocumentTypeFactoryBase{TDocumentType, TDocumentTypeInterface}"/> class.
+        /// Initializes a new instance of the <see cref="DocumentTypeFactory{TDocumentType, TDocumentTypeInterface}"/> class.
         /// </summary>
         /// <param name="contentAccessor">The content accessor.</param>
         /// <param name="mediaAccessor">The media accessor.</param>
-        protected DocumentTypeFactoryBase(IContentAccessor contentAccessor, IMediaAccessor mediaAccessor)
+        protected DocumentTypeFactory(IContentAccessor contentAccessor, IMediaAccessor mediaAccessor)
             : base(contentAccessor, mediaAccessor)
         { }
 

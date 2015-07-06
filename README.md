@@ -673,15 +673,14 @@ By doing this I am using the static Construct declaration to bind everything tog
 Controllers in Umbraco.Pylon are a little more involved and can be done the easy way or the hard way, depending on whether you want to unit test them or not. Currently unit testing Umbraco controllers is practically impossible. Pylon provides a solution of sorts for this however.
 
 ### Controllers Primer ###
-Firstly, for a lot of your pages you will not need to wraite a controller. If you have a simple page with Dynamic content then the default Umbraco controller will do a pretty good job. If you need to use custom DocumentTyoe classes or any of the Umbraco Pylon app code level stuff though you'll want a custom controller. Routing in Umbraco is pretty simple. The routing engine will look for a controller that matches the name of the DocumentType for the item of content that it is trying to load so, if you have a document type of 'Project' and you create a 'ProjectController' then the Index method of your custom controller will be triggered.
+Firstly, for a lot of your pages you will not need to write a controller. If you have a simple page with Dynamic content then the default Umbraco controller will do a pretty good job. If you need to use custom DocumentType classes or any of the Umbraco Pylon app code level stuff though you'll want a custom controller. Routing in Umbraco is pretty simple. The routing engine will look for a controller that matches the name of the DocumentType for the item of content that it is trying to load so, if you have a document type of 'Project' and you create a 'ProjectController' then the Index method of your custom controller will be triggered.
 
 API Controllers are a slightly different animal to standard controllers and they have a slightly different inheritance tree and a different set of IoC dependency requirements (check out the IocHelper code for more info on this). API Controllers are accessed by going to {siteroot}/umbraco/api/{apicontrollername} with parameters passed in the querystring.
 
-### Simple Controllers (Untestable) ###
-DOCUMENTATION TO DO
+Both sets of controllers come in two architectural models; Simple (untestable) and Layered (testable). We recommend using Layered controllers for good TDD and IoC practices. Each of the types also defines two potential base classes one that is generic and one that is not. The generic version of each controller type is the recommended usage as it allows you to provide the details for your own implementation of IPublishedContentRepository. The non-generic version assumes the default implementation which is of limited use. If you choose to start with a Simple controller implementation the standard naming convention for a Layered controller implementation is the same, as is the exposed interface, so you can split the controller into a Layered form at a later date with relative ease by consulting the differences in the examples below.
 
 ### Layered Controllers (Testable) ###
-To enable proper TDD it is necessary to build an Umbraco.Pylon controller in two layers. The interface for the controller can be shared between both layers but the implementations will be slightly different. The Inner controller inherits from PylonInnerController and the wrapping controller inherits from PylonLayeredController. The reason for this is that this then allows the class that inherits from the INNER controller to be fully unit tested while the external or wrapping controller is limited by it's inheritance tree dependency on Umbraco. The Inner Controller has the following key methods. Most of these are wrapped by and exposed by the outer controller. Where this is the case I will indicate '(exp)' after the method or property name...
+To enable proper TDD it is necessary to build a Pylon controller in two layers. The interface for the controller can be shared between both layers but the implementations will be slightly different. The Inner controller inherits from PylonInnerController and the wrapping controller inherits from PylonLayeredController. The reason for this is that this then allows the class that inherits from the INNER controller to be fully unit tested while the external or wrapping controller is limited by it's inheritance tree dependency on Umbraco. The Inner Controller has the following key methods. Most of these are wrapped by and exposed by the outer controller. Where this is the case I will indicate '(exp)' after the method or property name...
 * **ContentRepo** - (exp) This is the linked instance of your implementation of IPublishedContentrepository. This is passed into the constructor for the inner controller.
 * **GetContent / GetMedia** - The inner controller has it's own protected properties exposing the site's content and media accessors.
 * **ViewStringRenderer** - (exp) An instance of a renderer to convert view contents into strings.
@@ -694,68 +693,227 @@ To enable proper TDD it is necessary to build an Umbraco.Pylon controller in two
 
 Here is an example of a layered controller implementation from the Ministry site. Notice the single Interface declaration and the two Controller classes...
 ```C#
+/// <summary>
+/// Custom Project Controller interface.
+/// </summary>
+/// <remarks>
+/// The main controller and the inner controller should share the same interfaces with methods passed through. This enables testing the inner controllers without pain.
+/// </remarks>
+public interface IProjectController : IPylonController<IMinistrywebPublishedContentRepository>
+{
+    ActionResult Index(RenderModel model);
+}
+
+public class ProjectController : PylonLayeredController<IMinistrywebPublishedContentRepository, ProjectInnerController>, IProjectController
+{
     /// <summary>
-    /// Custom Project Controller interface.
+    /// Initializes a new instance of the <see cref="ProjectController" /> class.
     /// </summary>
-    /// <remarks>
-    /// The main controller and the inner controller should share the same interfaces with methods passed through. This enables testing the inner controllers without pain.
-    /// </remarks>
-    public interface IProjectController : IPylonController<IMinistrywebPublishedContentRepository>
+    /// <param name="innerController">The inner controller.</param>
+    /// <param name="umbracoContext">The umbraco context.</param>
+    public ProjectController(ProjectInnerController innerController, UmbracoContext umbracoContext)
+        : base(innerController, umbracoContext)
+    { }
+
+    public override ActionResult Index(RenderModel model)
     {
-        ActionResult Index(RenderModel model);
+        return InnerController.Index(model);
     }
-
-    public class ProjectController : PylonLayeredController<IMinistrywebPublishedContentRepository, ProjectInnerController>, IProjectController
-    {
-        /// <summary>
-        /// Initializes a new instance of the <see cref="ProjectController" /> class.
-        /// </summary>
-        /// <param name="innerController">The inner controller.</param>
-        /// <param name="umbracoContext">The umbraco context.</param>
-        public ProjectController(ProjectInnerController innerController, UmbracoContext umbracoContext)
-            : base(innerController, umbracoContext)
-        { }
-
-        public override ActionResult Index(RenderModel model)
-        {
-            return InnerController.Index(model);
-        }
-    }
+}
 
 
+/// <summary>
+/// Custom Project Inner Controller.
+/// </summary>
+public class ProjectInnerController : PylonInnerController<IMinistrywebPublishedContentRepository>, IProjectController
+{
     /// <summary>
-    /// Custom Project Inner Controller.
+    /// Initializes a new instance of the <see cref="ProjectInnerController"/> class.
     /// </summary>
-    public class ProjectInnerController : PylonInnerController<IMinistrywebPublishedContentRepository>, IProjectController
-    {
-        /// <summary>
-        /// Initializes a new instance of the <see cref="ProjectInnerController"/> class.
-        /// </summary>
-        /// <param name="contentRepo">The content repo.</param>
-        /// <param name="contentAccessor">The content accessor.</param>
-        /// <param name="mediaAccessor">The media accessor.</param>
-        public ProjectInnerController(IMinistrywebPublishedContentRepository contentRepo, IContentAccessor contentAccessor,
-            IMediaAccessor mediaAccessor)
-            : base(contentRepo, contentAccessor, mediaAccessor)
-        { }
-        
-        public override sealed IMinistrywebPublishedContentRepository ContentRepo { get; set; }
+    /// <param name="contentRepo">The content repo.</param>
+    /// <param name="contentAccessor">The content accessor.</param>
+    /// <param name="mediaAccessor">The media accessor.</param>
+    public ProjectInnerController(IMinistrywebPublishedContentRepository contentRepo, IContentAccessor contentAccessor,
+        IMediaAccessor mediaAccessor)
+        : base(contentRepo, contentAccessor, mediaAccessor)
+    { }
 
-        public ActionResult Index(RenderModel model)
-        {
-            return CurrentTemplate(ContentRepo.Project(model.Content));
-        }
+    public ActionResult Index(RenderModel model)
+    {
+        return CurrentTemplate(ContentRepo.Project(model.Content));
     }
+}
+```
+
+### Simple Controllers (Untestable) ###
+If testability of controllers is not a concern for you you can choose to implement a Pylon controller in a simple form. For testability and re-usability we recommend using the Layered Controllers approach below. Controllers are the heart of your app so should really be properly unit tested. The simple controller has the following key methods...
+* **ContentRepo** - This is the linked instance of your implementation of IPublishedContentrepository. This is passed into the constructor for the controller.
+* **GetContent / GetMedia** - The controller has it's own protected properties exposing the site's content and media accessors.
+* **ViewStringRenderer** - An instance of a renderer to convert view contents into strings.
+* **UmbracoContext** - The Umbraco context object.
+* **EnableFileCheck** - Gets or sets a value indicating whether file checking is enabled.
+* **EnsurePhysicalViewExists()** - Checks to make sure the physical view file exists on disk.
+* **CurrentTemplate()** - Generic Method that returns an ActionResult based on the template name found in the route values and the given model.
+* **PartialAsString()** - A protected method that returns a rendered partial as a string using the associated ViewStringRenderer.
+* **SetDefaultContext()** - Sets the ControllerContext to a default state when no existing ControllerContext is present.
+
+Here is the above example of for a layered controller implementation as a Simple controller...
+```C#
+/// <summary>
+/// Custom Project Controller interface.
+/// </summary>
+/// <remarks>
+/// The main controller and the inner controller should share the same interfaces with methods passed through. This enables testing the inner controllers without pain.
+/// </remarks>
+public interface IProjectController : IPylonController<IMinistrywebPublishedContentRepository>
+{
+    ActionResult Index(RenderModel model);
+}
+
+public class ProjectController : PylonController<IMinistrywebPublishedContentRepository>, IProjectController
+{
+    /// <summary>
+    /// Initializes a new instance of the <see cref="ProjectController" /> class.
+    /// </summary>
+    /// <param name="contentRepo">The content repo.</param>
+    /// <param name="contentAccessor">The content accessor.</param>
+    /// <param name="mediaAccessor">The media accessor.</param>
+    public ProjectController(IMinistrywebPublishedContentRepository contentRepo, IContentAccessor contentAccessor,
+        IMediaAccessor mediaAccessor)
+        : base(contentRepo, contentAccessor, mediaAccessor)
+    { }
+
+    public override ActionResult Index(RenderModel model)
+    {
+        return CurrentTemplate(ContentRepo.Project(model.Content));
+    }
+}
 ```
 
 ### API Controllers ###
 Conceptually the usage of these classes is almost identical to the standard controllers described above, in both Simple and Layered variants. The inheritance tree of the controllers differs slightly as do the key exposed methods, which are...
-* **ContentRepo** - (exp) This is the linked instance of your implementation of IPublishedContentrepository. This is passed into the constructor for the inner controller.
+* **ContentRepo** - (exp for Layered) This is the linked instance of your implementation of IPublishedContentrepository. This is passed into the constructor for the inner controller.
 * **GetContent / GetMedia** - The inner controller has it's own protected properties exposing the site's content and media accessors.
-* **UmbracoContext** - (exp) The Umbraco context object.
+* **UmbracoContext** - (exp for Layered) The Umbraco context object.
 * **SetInnerRequest()** - A method specific to the inner controller which sets the value of the internal Request property.
 
-I'm not going to show a sample of an API controller here as the code would be almost identical to the standard controller code above except for the absence of the default Index method.
+An example API Controller is very similar. Here's a Layered controller...
+```C#
+/// <summary>
+/// Blog API Controller interface.
+/// </summary>
+/// <remarks>
+/// The main controller and the inner controller should share the same interfaces with methods passed through. This enables testing the inner controllers without pain.
+/// </remarks>
+public interface IBlogApiController : IPylonApiController<IMinistrywebPublishedContentRepository>
+{
+    HttpResponseMessage ArticleSummary(int id);
+}
+
+public class BlogApiController : PylonLayeredApiController<IMinistrywebPublishedContentRepository, BlogInnerApiController>, IBlogApiController
+{
+    /// <summary>
+    /// Initializes a new instance of the <see cref="BlogApiController" /> class.
+    /// </summary>
+    /// <param name="innerController">The inner controller.</param>
+    /// <param name="umbracoContext">The umbraco context.</param>
+    public BlogApiController(BlogInnerApiController innerController, UmbracoContext umbracoContext)
+        : base(innerController, umbracoContext)
+    { }
+
+    /// <remarks>
+    /// GET: /umbraco/api/blogroll/articlesummary/1131
+    /// </remarks>
+    [HttpGet]
+    public HttpResponseMessage ArticleSummary(int id)
+    {
+        return InnerController.ArticleSummary(id);
+    }
+}
+
+/// <summary>
+/// Blog API Inner Controller.
+/// </summary>
+public class BlogInnerApiController : PylonInnerApiController<IMinistrywebPublishedContentRepository>, IBlogApiController
+{
+    /// <summary>
+    /// Initializes a new instance of the <see cref="BlogApiInnerController"/> class.
+    /// </summary>
+    /// <param name="contentRepo">The content repo.</param>
+    /// <param name="contentAccessor">The content accessor.</param>
+    /// <param name="mediaAccessor">The media accessor.</param>
+    public BlogApiInnerController(IMinistrywebPublishedContentRepository contentRepo, IContentAccessor contentAccessor,
+        IMediaAccessor mediaAccessor)
+        : base(contentRepo, contentAccessor, mediaAccessor)
+    { }
+
+    public HttpResponseMessage ArticleSummary(int id)
+    {
+        try
+        {
+            var returnItem = ContentRepo.Article(id);
+            return returnItem != null
+                    ? Request.CreateResponse(HttpStatusCode.OK, new ContentPartialViewJsonModel(returnItem, SummaryAsHtml(returnItem.Id)))
+                    : Request.CreateErrorResponse(HttpStatusCode.NotFound, NotFoundMessage);
+        }
+        catch (Exception ex)
+        {
+            return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, ex.Message);
+        }
+    }
+        
+    // Various formatting private methods removed for brevity.
+}
+```
+
+And the same controller written out in Simple form...
+```C#
+/// <summary>
+/// Blog API Controller interface.
+/// </summary>
+/// <remarks>
+/// The main controller and the inner controller should share the same interfaces with methods passed through. This enables testing the inner controllers without pain.
+/// </remarks>
+public interface IBlogApiController : IPylonApiController<IMinistrywebPublishedContentRepository>
+{
+    HttpResponseMessage ArticleSummary(int id);
+}
+
+public class BlogApiController : PylonApiController<IMinistrywebPublishedContentRepository>, IBlogApiController
+{
+    /// <summary>
+    /// Initializes a new instance of the <see cref="BlogApiController" /> class.
+    /// </summary>
+    /// <param name="contentRepo">The content repo.</param>
+    /// <param name="contentAccessor">The content accessor.</param>
+    /// <param name="mediaAccessor">The media accessor.</param>
+    public BlogApiController(IMinistrywebPublishedContentRepository contentRepo, IContentAccessor contentAccessor,
+        IMediaAccessor mediaAccessor)
+        : base(contentRepo, contentAccessor, mediaAccessor)
+    { }
+
+    /// <remarks>
+    /// GET: /umbraco/api/blogroll/articlesummary/1131
+    /// </remarks>
+    [HttpGet]
+    public HttpResponseMessage ArticleSummary(int id)
+    {
+        try
+        {
+            var returnItem = ContentRepo.Article(id);
+            return returnItem != null
+                    ? Request.CreateResponse(HttpStatusCode.OK, new ContentPartialViewJsonModel(returnItem, SummaryAsHtml(returnItem.Id)))
+                    : Request.CreateErrorResponse(HttpStatusCode.NotFound, NotFoundMessage);
+        }
+        catch (Exception ex)
+        {
+            return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, ex.Message);
+        }
+    }
+        
+    // Various formatting private methods removed for brevity.
+}
+```
 
 ## Supporting Classes ##
 

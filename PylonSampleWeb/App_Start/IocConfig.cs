@@ -1,6 +1,7 @@
 ﻿using Autofac;
 using Autofac.Integration.Mvc;
 using Ministry.StrongTyped;
+using Umbraco.Pylon;
 using Umbraco.Pylon.Sample;
 using Umbraco.Pylon.Sample.Repositories;
 
@@ -27,7 +28,8 @@ namespace PylonSampleWeb
         {
             var builder = new ContainerBuilder();
 
-            //register all controllers found in the Ministry.Ministryweb assembly
+            builder.RegisterUmbracoPylon();
+            //register all controllers found in the SampleSite assembly
             builder.RegisterControllers(typeof(SampleSite).Assembly);
 
             //add custom class to the container as Transient instance

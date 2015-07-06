@@ -968,7 +968,7 @@ protected override void SetUpControllerToTest()
 Overriding this allows you to set up the controller context and properties of the controller to enable testing.
 
 ## Using PylonSampleWeb ##
-If you try and run PylonSampleWeb on it's own you'll find it doesn't work. It needs to be put on top of an existing Umbraco installation in order to see it working and the Umbraco installation must match the nearest available version of Umbraco.Pylon.
+If you try and run PylonSampleWeb on it's own you'll find it doesn't work. It needs to be put on top of an existing Umbraco installation in order to see it working and the Umbraco installation must match the nearest available version of Umbraco.Pylon. There are also no Views or Layouts defined - Some basic views will need to be created.
 
 ## The Ministry of Technology Open Source Products ##
 Welcome to The Ministry of Technology open source products. All open source Ministry of Technology products are distributed under the MIT License for maximum re-usability. Details on more of our products and services can be found on our website at http://www.ministryotech.co.uk

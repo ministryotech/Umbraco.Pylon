@@ -217,6 +217,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+    <None Include="Umbraco.Pylon.TestSupport.nuspec" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Umbraco.Pylon\Umbraco.Pylon.csproj">

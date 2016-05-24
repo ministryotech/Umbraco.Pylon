@@ -101,13 +101,6 @@
     <Reference Include="MiniProfiler">
       <HintPath>..\packages\MiniProfiler.2.1.0\lib\net40\MiniProfiler.dll</HintPath>
     </Reference>
-    <Reference Include="Ministry.TestSupport, Version=1.0.1.1, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\Ministry.TestSupport.1.0.1.1\lib\net45\Ministry.TestSupport.dll</HintPath>
-    </Reference>
-    <Reference Include="Ministry.TestSupport.Moq">
-      <HintPath>..\packages\Ministry.TestSupport.Moq.1.1.5.0\lib\net45\Ministry.TestSupport.Moq.dll</HintPath>
-    </Reference>
     <Reference Include="Moq">
       <HintPath>..\packages\Moq.4.2.1402.2112\lib\net40\Moq.dll</HintPath>
       <Private>True</Private>
@@ -238,6 +231,9 @@
       <Project>{894da5ff-101b-44e6-a300-a0f198994833}</Project>
       <Name>Umbraco.Pylon</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{82A7F48D-3B50-4B1E-B82E-3ADA8210C358}" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />

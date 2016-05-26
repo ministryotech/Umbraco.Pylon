@@ -11,24 +11,28 @@
 // FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION 
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-using System;
-
 namespace Umbraco.Pylon.TestSupport
 {
     /// <summary>
-    /// Extensions to aid with custom assertions.
+    /// Factory interface for different implementations of the helpers.
     /// </summary>
-    public static class AssertionHelper
+    /// <remarks>To use this you will need to create a Support Factory implementation for your chosen unit testing framework.</remarks>
+    /// <example>
+    ///    public class NUnitSupportFactory : ISupportFactory
+    ///    {
+    ///        public NUnitSupportFactory()
+    ///        {
+    ///            AssertionFramework = new NUnitAssertionFramework();
+    ///        }
+    /// 
+    ///        public IAssertionFramework AssertionFramework { get; private set; }
+    ///    }
+    /// </example>
+    public interface ISupportFactory
     {
         /// <summary>
-        /// Determines if two strings are equal regardless of casing.
+        /// Gets the assertion framework.
         /// </summary>
-        /// <param name="expected">The val1.</param>
-        /// <param name="actual">The val2.</param>
-        /// <returns></returns>
-        public static bool IsCaseInsensitiveEqualTo(this object expected, object actual)
-        {
-            return StringComparer.InvariantCultureIgnoreCase.Compare(expected, actual) == 0;
-        }
+        IAssertionFramework AssertionFramework { get; }
     }
 }

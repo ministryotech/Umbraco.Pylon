@@ -11,7 +11,6 @@
 // FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION 
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-using NUnit.Framework;
 using System;
 using System.Net.Http;
 using System.Web.Http;
@@ -21,18 +20,25 @@ namespace Umbraco.Pylon.TestSupport.Routes
     /// <summary>
     /// A class that asserts Web Api Routing.
     /// </summary>
-    internal class WebApiRouteAsserter
+    public class WebApiRouteAsserter
     {
+        #region | Fields |
+
+        private IAssertionFramework assert;
+
+        #endregion
+
         #region | Construction |
 
         /// <summary>
         /// Initializes a new instance of the <see cref="MvcRouteAsserter"/> class.
         /// </summary>
-        public WebApiRouteAsserter()
-        { }
+        public WebApiRouteAsserter(IAssertionFramework assertionFramework)
+        {
+            assert = assertionFramework;
+        }
 
         #endregion
-
 
         #region | Assertions |
 
@@ -56,7 +62,7 @@ namespace Umbraco.Pylon.TestSupport.Routes
                 maps = false;
             }
 
-            Assert.IsTrue(maps, "Route not valid");
+            assert.IsTrue(maps, "Route not valid");
         }
 
         /// <summary>
@@ -80,7 +86,7 @@ namespace Umbraco.Pylon.TestSupport.Routes
                 maps = false;
             }
 
-            Assert.IsTrue(maps, "Route not valid");
+            assert.IsTrue(maps, "Route not valid");
         }
 
         /// <summary>
@@ -104,7 +110,7 @@ namespace Umbraco.Pylon.TestSupport.Routes
                 maps = false;
             }
 
-            Assert.IsFalse(maps, "Route is valid and should not be");
+            assert.IsFalse(maps, "Route is valid and should not be");
         }
 
         #endregion

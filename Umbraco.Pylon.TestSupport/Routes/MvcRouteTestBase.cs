@@ -21,8 +21,6 @@ namespace Umbraco.Pylon.TestSupport.Routes
     /// </summary>
     public abstract class MvcRouteTestBase
     {
-        private MvcRouteAsserter asserter;
-
         #region | Setup & TearDown |
 
         /// <summary>
@@ -46,9 +44,12 @@ namespace Umbraco.Pylon.TestSupport.Routes
         protected RouteCollection Routes { get; set; }
 
         /// <summary>
-        /// Gets the route asserter.
+        /// Gets or sets the test support factory.
         /// </summary>
-        MvcRouteAsserter RouteAssert { get { return asserter != null ? asserter : asserter = new MvcRouteAsserter(); } }
+        /// <value>
+        /// The test support factory.
+        /// </value>
+        protected ISupportFactoryForRoutes TestSupportFactory { get; set; }
 
         #endregion
 
@@ -64,7 +65,7 @@ namespace Umbraco.Pylon.TestSupport.Routes
         /// <param name="verb">The verb.</param>
         protected void AssertRouteIsValid(string urlElement, string controller, string action, string area = "", HttpVerbs verb = HttpVerbs.Get)
         {
-            RouteAssert.AssertRouteIsValid(urlElement, Routes, controller, action, area, verb);
+            TestSupportFactory.RouteAssert.AssertRouteIsValid(urlElement, Routes, controller, action, area, verb);
         }
 
         /// <summary>
@@ -78,7 +79,7 @@ namespace Umbraco.Pylon.TestSupport.Routes
         /// <param name="routeProperties">The route properties to assert.</param>
         public void AssertRouteIsValid(string urlElement, string controller, string action, string area, HttpVerbs verb, object routeProperties)
         {
-            RouteAssert.AssertRouteIsValid(urlElement, Routes, controller, action, area, verb, routeProperties);
+            TestSupportFactory.RouteAssert.AssertRouteIsValid(urlElement, Routes, controller, action, area, verb, routeProperties);
         }
 
         /// <summary>
@@ -87,7 +88,7 @@ namespace Umbraco.Pylon.TestSupport.Routes
         /// <param name="urlElement">The URL element.</param>
         protected void AssertRouteIsInvalid(string urlElement)
         {
-            RouteAssert.AssertRouteIsInvalid(urlElement, Routes);
+            TestSupportFactory.RouteAssert.AssertRouteIsInvalid(urlElement, Routes);
         }
 
         /// <summary>
@@ -100,7 +101,7 @@ namespace Umbraco.Pylon.TestSupport.Routes
         /// <param name="routeProperties">The route properties.</param>
         public void AssertOutgoingRouteUrlGeneration(string expectedUrl, string controller, string action, string routeName = null, object routeProperties = null)
         {
-            RouteAssert.AssertOutgoingRouteUrlGeneration(expectedUrl, Routes, controller, action, routeName, routeProperties);
+            TestSupportFactory.RouteAssert.AssertOutgoingRouteUrlGeneration(expectedUrl, Routes, controller, action, routeName, routeProperties);
         }
 
         #endregion

@@ -22,8 +22,6 @@ namespace Umbraco.Pylon.TestSupport.Routes
     /// </summary>
     public abstract class WebApiRouteTestBase
     {
-        private WebApiRouteAsserter asserter;
-
         #region | Setup & TearDown |
 
         /// <summary>
@@ -42,9 +40,12 @@ namespace Umbraco.Pylon.TestSupport.Routes
         #region | Properties |
 
         /// <summary>
-        /// Gets the API route asserter.
+        /// Gets or sets the test support factory.
         /// </summary>
-        WebApiRouteAsserter RouteAssert { get { return asserter != null ? asserter : asserter = new WebApiRouteAsserter(); } }
+        /// <value>
+        /// The test support factory.
+        /// </value>
+        protected virtual ISupportFactoryForRoutes TestSupportFactory { get; set; }
 
         #endregion
 
@@ -64,7 +65,7 @@ namespace Umbraco.Pylon.TestSupport.Routes
         /// <param name="action">The action.</param>
         protected void AssertRouteIsValid(string urlElement, string controller, string action)
         {
-            RouteAssert.AssertRouteIsValid(urlElement, ApiRoutesRegisterFunction, controller, action);
+            TestSupportFactory.ApiRouteAssert.AssertRouteIsValid(urlElement, ApiRoutesRegisterFunction, controller, action);
         }
 
         /// <summary>
@@ -76,7 +77,7 @@ namespace Umbraco.Pylon.TestSupport.Routes
         /// <param name="verb">The verb.</param>
         protected void AssertRouteIsValid(string urlElement, string controller, string action, HttpMethod verb)
         {
-            RouteAssert.AssertRouteIsValid(urlElement, ApiRoutesRegisterFunction, controller, action, verb);
+            TestSupportFactory.ApiRouteAssert.AssertRouteIsValid(urlElement, ApiRoutesRegisterFunction, controller, action, verb);
         }
 
         /// <summary>
@@ -88,7 +89,7 @@ namespace Umbraco.Pylon.TestSupport.Routes
         /// <param name="verb">The verb.</param>
         protected void AssertRouteIsInvalid(string urlElement, string controller, string action, HttpMethod verb)
         {
-            RouteAssert.AssertRouteIsInvalid(urlElement, ApiRoutesRegisterFunction, controller, action, verb);
+            TestSupportFactory.ApiRouteAssert.AssertRouteIsInvalid(urlElement, ApiRoutesRegisterFunction, controller, action, verb);
         }
 
         #endregion

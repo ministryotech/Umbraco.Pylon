@@ -11,7 +11,6 @@
 // FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION 
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-using NUnit.Framework;
 using System.Reflection;
 using System.Text;
 using System.Web.Mvc;
@@ -25,13 +24,22 @@ namespace Umbraco.Pylon.TestSupport.Routes
     /// </summary>
     public class MvcRouteAsserter
     {
+        #region | Fields |
+
+        private IAssertionFramework assert;
+
+        #endregion
+
         #region | Construction |
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="MvcRouteAsserter"/> class.
+        /// Initializes a new instance of the <see cref="MvcRouteAsserter" /> class.
         /// </summary>
-        internal MvcRouteAsserter()
-        { }
+        /// <param name="assertionFramework">The assertion framework.</param>
+        public MvcRouteAsserter(IAssertionFramework assertionFramework)
+        {
+            assert = assertionFramework;
+        }
 
         #endregion
 
@@ -51,10 +59,10 @@ namespace Umbraco.Pylon.TestSupport.Routes
             var httpContextMock = new MockHttpContext(new MockHttpRequest(urlElement, verb));
 
             RouteData routeData = routes.GetRouteData(httpContextMock.Object);
-            Assert.IsNotNull(routeData, "Should have found the route");
-            AreCaseInsensitiveEqual(controller, routeData.Values["controller"], "Expected a different controller");
-            AreCaseInsensitiveEqual(action, routeData.Values["action"], "Expected a different action");
-            if (area != string.Empty) AreCaseInsensitiveEqual(area, routeData.Values["area"], "Expected a different area");
+            assert.IsNotNull(routeData, "Should have found the route");
+            assert.AreCaseInsensitiveEqual(controller, routeData.Values["controller"], "Expected a different controller");
+            assert.AreCaseInsensitiveEqual(action, routeData.Values["action"], "Expected a different action");
+            if (area != string.Empty) assert.AreCaseInsensitiveEqual(area, routeData.Values["area"], "Expected a different area");
         }
 
         /// <summary>
@@ -72,10 +80,10 @@ namespace Umbraco.Pylon.TestSupport.Routes
             var httpContextMock = new MockHttpContext(new MockHttpRequest(urlElement, verb));
 
             RouteData routeData = routes.GetRouteData(httpContextMock.Object);
-            Assert.IsNotNull(routeData, "Should have found the route");
-            AreCaseInsensitiveEqual(controller, routeData.Values["controller"], "Expected a different controller");
-            AreCaseInsensitiveEqual(action, routeData.Values["action"], "Expected a different action");
-            if (area != string.Empty) AreCaseInsensitiveEqual(area, routeData.Values["area"], "Expected a different area");
+            assert.IsNotNull(routeData, "Should have found the route");
+            assert.AreCaseInsensitiveEqual(controller, routeData.Values["controller"], "Expected a different controller");
+            assert.AreCaseInsensitiveEqual(action, routeData.Values["action"], "Expected a different action");
+            if (area != string.Empty) assert.AreCaseInsensitiveEqual(area, routeData.Values["area"], "Expected a different area");
 
             if (routeProperties != null)
             {
@@ -85,7 +93,7 @@ namespace Umbraco.Pylon.TestSupport.Routes
                     if (!(routeData.Values.ContainsKey(pi.Name) && routeData.Values[pi.Name].IsCaseInsensitiveEqualTo(pi.GetValue(routeProperties, null))))
                     {
                         var propertyError = "The property '" + pi.Name + "' is not equal to the expected value or is not present";
-                        AreCaseInsensitiveEqual(pi.GetValue(routeProperties, null), routeData.Values[pi.Name], propertyError);
+                        assert.AreCaseInsensitiveEqual(pi.GetValue(routeProperties, null), routeData.Values[pi.Name], propertyError);
                         break;
                     }
                 }
@@ -117,7 +125,7 @@ namespace Umbraco.Pylon.TestSupport.Routes
                 resultString = result.ToString();
             }
 
-            Assert.IsNull(routeData,  resultString);
+            assert.IsNull(routeData,  resultString);
         }
 
         /// <summary>
@@ -138,38 +146,7 @@ namespace Umbraco.Pylon.TestSupport.Routes
 
             string result = UrlHelper.GenerateUrl(routeName, action, controller, routeValues, routes, context, true);
 
-            AreCaseInsensitiveEqual(expectedUrl, result);
-        }
-
-        #endregion
-
-        #region | Supporting Methods |
-
-        /// <summary>
-        /// Verifies that two strings are equal regardless of casing.
-        /// If they are not equal an NUnit.Framework.AssertionException
-        /// is thrown.
-        /// </summary>
-        /// <typeparam name="T">The type of the object to test.</typeparam>
-        /// <param name="expected">The value that is expected.</param>
-        /// <param name="actual">The actual value.</param>
-        public void AreCaseInsensitiveEqual<T>(T expected, T actual)
-        {
-            Assert.True(expected.IsCaseInsensitiveEqualTo(actual), "The values '" + expected + "' and '" + actual + "' differ by more than case.");
-        }
-
-        /// <summary>
-        /// Verifies that two strings are equal regardless of casing.
-        /// If they are not equal an NUnit.Framework.AssertionException
-        /// is thrown.
-        /// </summary>
-        /// <typeparam name="T">The type of the object to test.</typeparam>
-        /// <param name="expected">The value that is expected.</param>
-        /// <param name="actual">The actual value.</param>
-        /// <param name="message">The message to display in case of failure.</param>
-        public void AreCaseInsensitiveEqual<T>(T expected, T actual, string message)
-        {
-            Assert.True(expected.IsCaseInsensitiveEqualTo(actual), message + "\nThe values '" + expected + "' and '" + actual + "' differ by more than case.");
+            assert.AreCaseInsensitiveEqual(expectedUrl, result);
         }
 
         #endregion

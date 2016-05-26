@@ -13,5 +13,8 @@
     <copyright>Copyright 2015</copyright>
     <releaseNotes>BREAKING CHANGE: Removed dependency on a specific test framework. See examples on the ISupportFactory and IAssertionFramework interfaces to fix.</releaseNotes>
     <tags>Abstract Umbraco Wrapper Helper Testability Ministry</tags>
+    <dependencies>
+      <dependency id="Umbraco.Pylon" version="7.2.8" />
+    </dependencies>
   </metadata>
 </package>

@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>$id$</id>
+    <version>$version$</version>
+    <title>$title$</title>
+    <authors>The Ministry of Technology</authors>
+    <owners>The Ministry of Technology</owners>
+    <licenseUrl>http://www.opensource.org/licenses/MIT</licenseUrl>
+    <projectUrl>https://github.com/ministryotech/Umbraco.Pylon</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>Base classes and structures for developing well achitected, developer focussed Umbraco solutions. Check out the GitHub project source at https://github.com/tiefling/Umbraco.Pylon for samples to indicate making the best use of the code.</description>
+    <copyright>Copyright 2016</copyright>
+    <releaseNotes>Umbraco Upgrade</releaseNotes>
+    <tags>Abstract Umbraco Wrapper Helper Testability Ministry</tags>
+  </metadata>
+</package>

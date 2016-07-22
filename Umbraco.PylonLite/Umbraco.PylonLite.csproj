@@ -292,10 +292,12 @@
       <Link>Properties\AssemblyInfo.cs</Link>
     </Compile>
     <Compile Include="ContentFactory.cs" />
+    <Compile Include="FormsAuthWrapper.cs" />
     <Compile Include="IContentAccessor.cs" />
     <Compile Include="IContentFactory.cs" />
     <Compile Include="IDocumentType.cs" />
     <Compile Include="IDocumentTypeFactory.cs" />
+    <Compile Include="IFormsAuthWrapper.cs" />
     <Compile Include="IocHelper.cs" />
     <Compile Include="IPublishedContentRepository.cs" />
     <Compile Include="MediaAccessor.cs" />

@@ -1,4 +1,5 @@
 ﻿using Moq;
+using System;
 using System.Web.Routing;
 using Umbraco.PylonLite.TestSupport.Mocks;
 
@@ -9,7 +10,7 @@ namespace Umbraco.PylonLite.TestSupport
     /// </summary>
     /// <typeparam name="TObjUt">The type of the object under test.</typeparam>
     /// <typeparam name="TContentRepo"></typeparam>
-    public abstract class ControllerTestBase<TObjUt, TContentRepo> : TestBase<TObjUt>
+    public abstract class ContentServiceTestBase<TObjUt, TContentRepo> : ContentTestBase<TObjUt>
         where TContentRepo : class, IPublishedContentRepository
     {
         private MockHttpContext _mockContext;
@@ -35,6 +36,7 @@ namespace Umbraco.PylonLite.TestSupport
         /// <summary>
         /// Gets or sets the mock HTTP context.
         /// </summary>
+        [Obsolete()]
         protected MockHttpContext MockContext
         {
             get { return _mockContext ?? (_mockContext = new MockHttpContext()); }
@@ -53,6 +55,7 @@ namespace Umbraco.PylonLite.TestSupport
         /// <summary>
         /// The route data
         /// </summary>
+        [Obsolete()]
         protected RouteData RouteData
         {
             get { return _routeData ?? (_routeData = new RouteData()); }
@@ -62,6 +65,8 @@ namespace Umbraco.PylonLite.TestSupport
         /// <summary>
         /// Sets up the object under test.
         /// </summary>
-        protected abstract void SetUpControllerToTest();
+        [Obsolete()]
+        protected virtual void SetUpControllerToTest()
+        {   }
     }
 }

@@ -274,13 +274,12 @@
     </Compile>
     <Compile Include="Concretes\ConcreteDocumentType.cs" />
     <Compile Include="Concretes\ConcretePublishedContentProperty.cs" />
-    <Compile Include="ApiControllerTestBase.cs" />
     <Compile Include="IAssertionFramework.cs" />
     <Compile Include="ISupportFactory.cs" />
     <Compile Include="Routes\ISupportFactoryForRoutes.cs" />
     <Compile Include="MockContent.cs" />
     <Compile Include="MockMedia.cs" />
-    <Compile Include="ControllerTestBase.cs" />
+    <Compile Include="ContentServiceTestBase.cs" />
     <Compile Include="Mocks\MockHttpContext.cs" />
     <Compile Include="Mocks\MockHttpContextBuilder.cs" />
     <Compile Include="Mocks\MockHttpRequest.cs" />
@@ -292,7 +291,7 @@
     <Compile Include="Routes\RouteTestingHelper.cs" />
     <Compile Include="Routes\WebApiRouteAssert.cs" />
     <Compile Include="Routes\WebApiRouteTestBase.cs" />
-    <Compile Include="TestBase.cs" />
+    <Compile Include="ContentTestBase.cs" />
     <Compile Include="TestConstants.cs" />
     <Compile Include="UmbracoTestExtensions.cs" />
   </ItemGroup>

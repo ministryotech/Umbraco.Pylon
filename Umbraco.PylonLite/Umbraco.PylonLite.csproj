@@ -291,36 +291,37 @@
     <Compile Include="..\AssemblyInfo.cs">
       <Link>Properties\AssemblyInfo.cs</Link>
     </Compile>
-    <Compile Include="ContentFactory.cs" />
-    <Compile Include="IContentAccessor.cs" />
-    <Compile Include="IContentFactory.cs" />
-    <Compile Include="IDocumentType.cs" />
-    <Compile Include="IDocumentTypeFactory.cs" />
-    <Compile Include="IocHelper.cs" />
-    <Compile Include="IPublishedContentRepository.cs" />
-    <Compile Include="IPylonApiController.cs" />
-    <Compile Include="IPylonController.cs" />
-    <Compile Include="MediaAccessor.cs" />
-    <Compile Include="ContentAccessor.cs" />
-    <Compile Include="DocumentTypeFactory.cs" />
-    <Compile Include="LinkedViewModel.cs" />
+    <Compile Include="Unsorted\ContentFactory.cs" />
+    <Compile Include="Unsorted\IContentAccessor.cs" />
+    <Compile Include="Unsorted\IContentFactory.cs" />
+    <Compile Include="Unsorted\IDocumentType.cs" />
+    <Compile Include="Unsorted\IDocumentTypeFactory.cs" />
+    <Compile Include="Unsorted\IocHelper.cs" />
+    <Compile Include="Unsorted\IPublishedContentRepository.cs" />
+    <Compile Include="Unsorted\IPylonApiController.cs" />
+    <Compile Include="Unsorted\IPylonController.cs" />
+    <Compile Include="Unsorted\MediaAccessor.cs" />
+    <Compile Include="Unsorted\ContentAccessor.cs" />
+    <Compile Include="Unsorted\DocumentTypeFactory.cs" />
+    <Compile Include="Unsorted\LinkedViewModel.cs" />
     <Compile Include="Properties\Annotations.cs" />
-    <Compile Include="PylonApiController.cs" />
-    <Compile Include="PylonController.cs" />
-    <Compile Include="PylonLayeredApiController.cs" />
-    <Compile Include="PylonInnerApiController.cs" />
-    <Compile Include="PylonInnerController.cs" />
-    <Compile Include="PylonLayeredController.cs" />
-    <Compile Include="PylonViewPage.cs" />
-    <Compile Include="UmbracoSite.cs" />
-    <Compile Include="PublishedContentRepository.cs" />
-    <Compile Include="DocumentType.cs" />
+    <Compile Include="Unsorted\PylonApiController.cs" />
+    <Compile Include="Unsorted\PylonController.cs" />
+    <Compile Include="Unsorted\PylonLayeredApiController.cs" />
+    <Compile Include="Unsorted\PylonInnerApiController.cs" />
+    <Compile Include="Unsorted\PylonInnerController.cs" />
+    <Compile Include="Unsorted\PylonLayeredController.cs" />
+    <Compile Include="Unsorted\PylonViewPage.cs" />
+    <Compile Include="Unsorted\UmbracoSite.cs" />
+    <Compile Include="Unsorted\PublishedContentRepository.cs" />
+    <Compile Include="Unsorted\DocumentType.cs" />
+    <Compile Include="IViewStringRenderer.cs" />
     <Compile Include="ViewStringRenderer.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
     <None Include="packages.config" />
-    <None Include="Umbraco.PylonLite.nuspec" />
+    <None Include="Unsorted\Umbraco.PylonLite.nuspec" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />

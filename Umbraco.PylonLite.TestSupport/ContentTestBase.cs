@@ -6,7 +6,7 @@ namespace Umbraco.PylonLite.TestSupport
     /// Base test file
     /// </summary>
     /// <typeparam name="TObjUt">The type of the object under test.</typeparam>
-    public abstract class TestBase<TObjUt>
+    public abstract class ContentTestBase<TObjUt>
     {
         private IContentAccessor _contentAccessor = new ContentAccessor();
         private IMediaAccessor _mediaAccessor = new MediaAccessor();
@@ -25,6 +25,8 @@ namespace Umbraco.PylonLite.TestSupport
             MockContent = null;
             StubContentAccessor = null;
             StubMediaAccessor = null;
+            MockContentAccessor = null;
+            MockMediaAccessor = null;
         }
 
         #endregion

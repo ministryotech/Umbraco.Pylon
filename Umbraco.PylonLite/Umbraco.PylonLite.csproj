@@ -316,6 +316,7 @@
     <Compile Include="Unsorted\PublishedContentRepository.cs" />
     <Compile Include="Unsorted\DocumentType.cs" />
     <Compile Include="IViewStringRenderer.cs" />
+    <Compile Include="HttpResponseMessageGenerator.cs" />
     <Compile Include="ViewStringRenderer.cs" />
   </ItemGroup>
   <ItemGroup>

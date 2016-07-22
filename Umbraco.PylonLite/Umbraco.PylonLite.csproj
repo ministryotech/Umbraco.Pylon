@@ -291,22 +291,22 @@
     <Compile Include="..\AssemblyInfo.cs">
       <Link>Properties\AssemblyInfo.cs</Link>
     </Compile>
-    <Compile Include="Unsorted\ContentFactory.cs" />
-    <Compile Include="Unsorted\IContentAccessor.cs" />
-    <Compile Include="Unsorted\IContentFactory.cs" />
-    <Compile Include="Unsorted\IDocumentType.cs" />
-    <Compile Include="Unsorted\IDocumentTypeFactory.cs" />
-    <Compile Include="Unsorted\IocHelper.cs" />
-    <Compile Include="Unsorted\IPublishedContentRepository.cs" />
-    <Compile Include="Unsorted\MediaAccessor.cs" />
-    <Compile Include="Unsorted\ContentAccessor.cs" />
-    <Compile Include="Unsorted\DocumentTypeFactory.cs" />
-    <Compile Include="Unsorted\LinkedViewModel.cs" />
+    <Compile Include="ContentFactory.cs" />
+    <Compile Include="IContentAccessor.cs" />
+    <Compile Include="IContentFactory.cs" />
+    <Compile Include="IDocumentType.cs" />
+    <Compile Include="IDocumentTypeFactory.cs" />
+    <Compile Include="IocHelper.cs" />
+    <Compile Include="IPublishedContentRepository.cs" />
+    <Compile Include="MediaAccessor.cs" />
+    <Compile Include="ContentAccessor.cs" />
+    <Compile Include="DocumentTypeFactory.cs" />
+    <Compile Include="LinkedViewModel.cs" />
     <Compile Include="Properties\Annotations.cs" />
-    <Compile Include="Unsorted\PylonViewPage.cs" />
-    <Compile Include="Unsorted\UmbracoSite.cs" />
-    <Compile Include="Unsorted\PublishedContentRepository.cs" />
-    <Compile Include="Unsorted\DocumentType.cs" />
+    <Compile Include="PylonViewPage.cs" />
+    <Compile Include="UmbracoSite.cs" />
+    <Compile Include="PublishedContentRepository.cs" />
+    <Compile Include="DocumentType.cs" />
     <Compile Include="IViewStringRenderer.cs" />
     <Compile Include="HttpResponseMessageGenerator.cs" />
     <Compile Include="ViewStringRenderer.cs" />
@@ -314,7 +314,7 @@
   <ItemGroup>
     <None Include="app.config" />
     <None Include="packages.config" />
-    <None Include="Unsorted\Umbraco.PylonLite.nuspec" />
+    <None Include="Umbraco.PylonLite.nuspec" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />

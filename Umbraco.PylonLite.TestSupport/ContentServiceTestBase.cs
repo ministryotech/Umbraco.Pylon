@@ -7,7 +7,7 @@ namespace Umbraco.PylonLite.TestSupport
     /// </summary>
     /// <typeparam name="TObjUt">The type of the object under test.</typeparam>
     /// <typeparam name="TContentRepo"></typeparam>
-    public abstract class ContentServiceTestBase<TObjUt, TContentRepo> : ContentTestBase<TObjUt>
+    public abstract class ContentServiceTestBase<TObjUt, TContentRepo> : ContentBuilderTestBase<TObjUt>
         where TContentRepo : class, IPublishedContentRepository
     {
         private Mock<TContentRepo> _mockRepo;
@@ -20,7 +20,6 @@ namespace Umbraco.PylonLite.TestSupport
         protected new void TearDown()
         {
             base.TearDown();
-
             MockRepo = null;
         }
 

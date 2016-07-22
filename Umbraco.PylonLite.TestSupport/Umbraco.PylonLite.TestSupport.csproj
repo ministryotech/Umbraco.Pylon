@@ -291,7 +291,7 @@
     <Compile Include="Routes\RouteTestingHelper.cs" />
     <Compile Include="Routes\WebApiRouteAssert.cs" />
     <Compile Include="Routes\WebApiRouteTestBase.cs" />
-    <Compile Include="ContentTestBase.cs" />
+    <Compile Include="ContentBuilderTestBase.cs" />
     <Compile Include="TestConstants.cs" />
     <Compile Include="UmbracoTestExtensions.cs" />
   </ItemGroup>

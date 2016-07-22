@@ -1,5 +1,7 @@
 ﻿using System.IO;
+using System.Web;
 using System.Web.Mvc;
+using System.Web.Routing;
 
 namespace Umbraco.PylonLite
 {
@@ -18,6 +20,7 @@ namespace Umbraco.PylonLite
         public string Render(string viewName, object model, Controller caller)
         {
             caller.ViewData.Model = model;
+            SetDefaultContext(caller);
 
             using (var sw = new StringWriter())
             {
@@ -30,5 +33,32 @@ namespace Umbraco.PylonLite
                 return sw.GetStringBuilder().ToString();
             }
         }
+
+        #region | Private Methods |
+
+        /// <summary>
+        /// Sets a default context if none is present on the controller.
+        /// </summary>
+        /// <param name="controller">The controller.</param>
+        private void SetDefaultContext(Controller controller)
+        {
+            if (controller.ControllerContext != null)
+                return;
+
+            HttpContextBase wrapper = null;
+            if (HttpContext.Current != null)
+                wrapper = new HttpContextWrapper(HttpContext.Current);
+
+            var routeData = new RouteData();
+
+            if (!routeData.Values.ContainsKey("controller") && !routeData.Values.ContainsKey("Controller"))
+                routeData.Values.Add("controller", controller.GetType().Name
+                                                            .ToLower()
+                                                            .Replace("controller", ""));
+
+            controller.ControllerContext = new ControllerContext(wrapper, routeData, controller);
+        }
+
+        #endregion
     }
 }

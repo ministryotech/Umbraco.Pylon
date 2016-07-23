@@ -7,8 +7,8 @@
     <ProjectGuid>{08DA710A-4C5A-465A-B297-5AA0F64706C3}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Umbraco.PylonLite.TestSupport</RootNamespace>
-    <AssemblyName>Umbraco.PylonLite.TestSupport</AssemblyName>
+    <RootNamespace>Umbraco.Pylon.TestSupport</RootNamespace>
+    <AssemblyName>Umbraco.Pylon.TestSupport</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
@@ -269,13 +269,14 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="..\AssemblyInfo.cs">
-      <Link>Properties\AssemblyInfo.cs</Link>
+    <Compile Include="..\SharedAssemblyInfo.cs">
+      <Link>Properties\SharedAssemblyInfo.cs</Link>
     </Compile>
     <Compile Include="Concretes\ConcreteDocumentType.cs" />
     <Compile Include="Concretes\ConcretePublishedContentProperty.cs" />
     <Compile Include="IAssertionFramework.cs" />
     <Compile Include="ISupportFactory.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Routes\ISupportFactoryForRoutes.cs" />
     <Compile Include="MockContent.cs" />
     <Compile Include="MockMedia.cs" />

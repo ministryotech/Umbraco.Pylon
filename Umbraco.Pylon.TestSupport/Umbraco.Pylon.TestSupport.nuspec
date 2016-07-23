@@ -11,7 +11,7 @@
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>Test Support elements for developing well achitected, developer focussed Umbraco solutions with Umbraco.PylonLite.</description>
     <copyright>Copyright 2015</copyright>
-    <releaseNotes>BREAKING CHANGE: Removed dependency on a specific test framework. See examples on the ISupportFactory and IAssertionFramework interfaces to fix.</releaseNotes>
+    <releaseNotes>BREAKING CHANGES: Renamed TestBase and ControllerTestBase classes, removing some elements, to ContentBuilderTEstBase and ContentServiceTestBase to reflect new usage.</releaseNotes>
     <tags>Abstract Umbraco Wrapper Helper Testability Ministry</tags>
     <dependencies>
       <dependency id="Umbraco.PylonLite" version="7.3.8.5" />

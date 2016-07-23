@@ -4,11 +4,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{E5FE4187-DA3D-4DC6-BA30-F47A2F84AAB6}</ProjectGuid>
+    <ProjectGuid>{08DA710A-4C5A-465A-B297-5AA0F64706C3}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Umbraco.PylonLite.Tests</RootNamespace>
-    <AssemblyName>Umbraco.PylonLite.Tests</AssemblyName>
+    <RootNamespace>Umbraco.PylonLite.TestSupport</RootNamespace>
+    <AssemblyName>Umbraco.PylonLite.TestSupport</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
@@ -129,7 +129,6 @@
     </Reference>
     <Reference Include="Microsoft.Web.Infrastructure, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <Private>True</Private>
-      <HintPath>..\packages\Microsoft.Web.Infrastructure.1.0.0.0\lib\net40\Microsoft.Web.Infrastructure.dll</HintPath>
     </Reference>
     <Reference Include="MiniProfiler">
       <HintPath>..\packages\MiniProfiler.2.1.0\lib\net40\MiniProfiler.dll</HintPath>
@@ -145,9 +144,6 @@
     <Reference Include="Newtonsoft.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.6.0.8\lib\net45\Newtonsoft.Json.dll</HintPath>
       <Private>True</Private>
-    </Reference>
-    <Reference Include="nunit.framework, Version=2.6.3.13283, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL">
-      <HintPath>..\packages\NUnit.2.6.3\lib\nunit.framework.dll</HintPath>
     </Reference>
     <Reference Include="Owin, Version=1.0.0.0, Culture=neutral, PublicKeyToken=f0ebd12fd5e55cc5, processorArchitecture=MSIL">
       <HintPath>..\packages\Owin.1.0\lib\net40\Owin.dll</HintPath>
@@ -276,24 +272,39 @@
     <Compile Include="..\AssemblyInfo.cs">
       <Link>Properties\AssemblyInfo.cs</Link>
     </Compile>
-    <Compile Include="DocumentTypeTests.cs" />
+    <Compile Include="Concretes\ConcreteDocumentType.cs" />
+    <Compile Include="Concretes\ConcretePublishedContentProperty.cs" />
+    <Compile Include="IAssertionFramework.cs" />
+    <Compile Include="ISupportFactory.cs" />
+    <Compile Include="Routes\ISupportFactoryForRoutes.cs" />
+    <Compile Include="MockContent.cs" />
+    <Compile Include="MockMedia.cs" />
+    <Compile Include="ContentServiceTestBase.cs" />
+    <Compile Include="Mocks\MockHttpContext.cs" />
+    <Compile Include="Mocks\MockHttpContextBuilder.cs" />
+    <Compile Include="Mocks\MockHttpRequest.cs" />
+    <Compile Include="Mocks\MockHttpResponse.cs" />
+    <Compile Include="AssertionHelper.cs" />
+    <Compile Include="Routes\FakeRouteData.cs" />
+    <Compile Include="Routes\MvcRouteAssert.cs" />
+    <Compile Include="Routes\MvcRouteTestBase.cs" />
+    <Compile Include="Routes\RouteTestingHelper.cs" />
+    <Compile Include="Routes\WebApiRouteAssert.cs" />
+    <Compile Include="Routes\WebApiRouteTestBase.cs" />
+    <Compile Include="ContentBuilderTestBase.cs" />
+    <Compile Include="TestConstants.cs" />
+    <Compile Include="UmbracoTestExtensions.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
     <None Include="packages.config" />
+    <None Include="Umbraco.Pylon.TestSupport.nuspec" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Umbraco.PylonLite.TestSupport\Umbraco.PylonLite.TestSupport.csproj">
-      <Project>{08da710a-4c5a-465a-b297-5aa0f64706c3}</Project>
-      <Name>Umbraco.Pylon.TestSupport</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Umbraco.PylonLite\Umbraco.PylonLite.csproj">
+    <ProjectReference Include="..\Umbraco.Pylon\Umbraco.Pylon.csproj">
       <Project>{894da5ff-101b-44e6-a300-a0f198994833}</Project>
       <Name>Umbraco.Pylon</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <Service Include="{82A7F48D-3B50-4B1E-B82E-3ADA8210C358}" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />

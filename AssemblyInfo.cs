@@ -4,11 +4,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("Umbraco.PylonLite")]
+[assembly: AssemblyTitle("Umbraco.Pylon")]
 [assembly: AssemblyDescription("Core classes to aid with more code orientated Umbraco implementations.")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("The Ministry of Technology")]
-[assembly: AssemblyProduct("Umbraco.PylonLite (Ministry)")]
+[assembly: AssemblyProduct("Umbraco.Pylon (Ministry)")]
 [assembly: AssemblyCopyright("Copyright © 2016 Minotech Ltd.")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]

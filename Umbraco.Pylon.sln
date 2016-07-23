@@ -12,10 +12,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{AED4F8
 		.nuget\NuGet.targets = .nuget\NuGet.targets
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PylonSampleWeb", "PylonSampleWeb\PylonSampleWeb.csproj", "{22F9F601-8A13-48BC-B39E-40EF65FA5B93}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Umbraco.Pylon.Sample", "Umbraco.Pylon.Sample\Umbraco.Pylon.Sample.csproj", "{1D1574BE-27E4-47F5-8ADE-4D1B462AC3F0}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{BE054235-D079-4DD0-A8C8-C1E710768294}"
 	ProjectSection(SolutionItems) = preProject
 		README.md = README.md

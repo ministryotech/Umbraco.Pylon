@@ -15,7 +15,7 @@ using System;
 using System.Collections.Generic;
 using Umbraco.Core.Models;
 
-namespace Umbraco.PylonLite
+namespace Umbraco.Pylon
 {
     /// <summary>
     /// Accesses content elements

@@ -13,7 +13,7 @@
 
 using Umbraco.Core.Models;
 
-namespace Umbraco.PylonLite
+namespace Umbraco.Pylon
 {
     /// <summary>
     /// A base view model class for view models wrapping a single document type content item.

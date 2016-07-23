@@ -1,4 +1,4 @@
-﻿namespace Umbraco.PylonLite
+﻿namespace Umbraco.Pylon
 {
     /// <summary>
     /// Wraps basic Forms Authentication functions.

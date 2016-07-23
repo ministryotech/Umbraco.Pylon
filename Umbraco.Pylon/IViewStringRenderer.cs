@@ -1,7 +1,7 @@
 ﻿using System.IO;
 using System.Web.Mvc;
 
-namespace Umbraco.PylonLite
+namespace Umbraco.Pylon
 {
     /// <summary>
     /// Converts Views to strings.

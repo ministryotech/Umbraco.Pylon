@@ -1,7 +1,7 @@
 ﻿using Moq;
 using System.Web;
 
-namespace Umbraco.PylonLite.TestSupport.Mocks
+namespace Umbraco.Pylon.TestSupport.Mocks
 {
     /// <summary>
     /// A context structural mock.

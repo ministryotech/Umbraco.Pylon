@@ -1,6 +1,6 @@
 ﻿using Moq;
 
-namespace Umbraco.PylonLite.TestSupport
+namespace Umbraco.Pylon.TestSupport
 {
     /// <summary>
     /// Base test file

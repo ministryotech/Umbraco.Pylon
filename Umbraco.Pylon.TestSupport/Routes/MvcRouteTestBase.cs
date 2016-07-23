@@ -14,7 +14,7 @@
 using System.Web.Mvc;
 using System.Web.Routing;
 
-namespace Umbraco.PylonLite.TestSupport.Routes
+namespace Umbraco.Pylon.TestSupport.Routes
 {
     /// <summary>
     /// A base class to enable easy testing of MVC Routes

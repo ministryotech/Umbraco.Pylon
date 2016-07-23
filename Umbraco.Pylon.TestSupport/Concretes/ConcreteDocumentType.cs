@@ -1,6 +1,6 @@
 ﻿using Umbraco.Core.Models;
 
-namespace Umbraco.PylonLite.TestSupport.Concretes
+namespace Umbraco.Pylon.TestSupport.Concretes
 {
     /// <summary>
     /// A representation of a DocumentType

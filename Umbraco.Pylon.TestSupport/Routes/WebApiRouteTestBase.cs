@@ -15,7 +15,7 @@ using System;
 using System.Net.Http;
 using System.Web.Http;
 
-namespace Umbraco.PylonLite.TestSupport.Routes
+namespace Umbraco.Pylon.TestSupport.Routes
 {
     /// <summary>
     /// A base class to enable easy testing of Web API Routes

@@ -3,7 +3,7 @@ using System.Web;
 using System.Web.Mvc;
 using System.Web.Routing;
 
-namespace Umbraco.PylonLite
+namespace Umbraco.Pylon
 {
     /// <summary>
     /// Converts Views to strings.

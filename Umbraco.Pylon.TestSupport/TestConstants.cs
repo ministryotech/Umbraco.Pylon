@@ -1,4 +1,4 @@
-﻿namespace Umbraco.PylonLite.TestSupport
+﻿namespace Umbraco.Pylon.TestSupport
 {
     /// <summary>
     /// Class for building fake test strings.

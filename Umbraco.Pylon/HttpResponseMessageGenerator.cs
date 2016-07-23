@@ -2,7 +2,7 @@
 using System.Net;
 using System.Net.Http;
 
-namespace Umbraco.PylonLite
+namespace Umbraco.Pylon
 {
     /// <summary>
     /// Generates standard HttpResponseMessages depending on whether an item is null or not.

@@ -4,7 +4,7 @@ using Autofac.Integration.WebApi;
 using System.Reflection;
 using Umbraco.Web;
 
-namespace Umbraco.PylonLite
+namespace Umbraco.Pylon
 {
     /// <summary>
     /// IOC Aides.

@@ -15,7 +15,7 @@ using System;
 using System.Net.Http;
 using System.Web.Http;
 
-namespace Umbraco.PylonLite.TestSupport.Routes
+namespace Umbraco.Pylon.TestSupport.Routes
 {
     /// <summary>
     /// A class that asserts Web Api Routing.

@@ -13,7 +13,7 @@
 
 using Umbraco.Core.Models;
 
-namespace Umbraco.PylonLite
+namespace Umbraco.Pylon
 {
     // ReSharper disable once TypeParameterCanBeVariant
 

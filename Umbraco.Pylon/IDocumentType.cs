@@ -14,7 +14,7 @@
 using System.Collections.Generic;
 using Umbraco.Core.Models;
 
-namespace Umbraco.PylonLite
+namespace Umbraco.Pylon
 {
     /// <summary>
     /// Structural interface of a document type.

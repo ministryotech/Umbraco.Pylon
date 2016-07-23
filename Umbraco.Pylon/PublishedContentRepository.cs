@@ -16,7 +16,7 @@ using umbraco;
 using Umbraco.Core.Models;
 using Umbraco.Web;
 
-namespace Umbraco.PylonLite
+namespace Umbraco.Pylon
 {
     /// <summary>
     /// A repository for providing access to Umbraco media nodes.

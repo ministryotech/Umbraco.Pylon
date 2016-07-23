@@ -13,7 +13,7 @@
 
 using Umbraco.Web.Mvc;
 
-namespace Umbraco.PylonLite
+namespace Umbraco.Pylon
 {
     /// <summary>
     /// An abstract base class for Umbraco views.

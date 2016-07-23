@@ -1,7 +1,7 @@
 ﻿using Moq;
 using Umbraco.Core.Models;
 
-namespace Umbraco.PylonLite.TestSupport
+namespace Umbraco.Pylon.TestSupport
 {
     /// <summary>
     /// Class for mock content.

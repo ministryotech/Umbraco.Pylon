@@ -13,7 +13,7 @@
 
 using Umbraco.Web;
 
-namespace Umbraco.PylonLite
+namespace Umbraco.Pylon
 {
     /// <summary>
     /// Elements for a site defined using a specified Published Content Repository.

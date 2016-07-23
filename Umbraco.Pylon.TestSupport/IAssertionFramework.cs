@@ -11,7 +11,7 @@
 // FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION 
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-namespace Umbraco.PylonLite.TestSupport
+namespace Umbraco.Pylon.TestSupport
 {
     /// <summary>
     /// An Interface to wrap common assertion tasks of different unit testing frameworks.

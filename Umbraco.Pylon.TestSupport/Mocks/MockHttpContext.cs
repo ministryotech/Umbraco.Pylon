@@ -4,7 +4,7 @@ using System.Web;
 using System.Web.Mvc;
 using System.Web.Routing;
 
-namespace Umbraco.PylonLite.TestSupport.Mocks
+namespace Umbraco.Pylon.TestSupport.Mocks
 {
     /// <summary>
     /// A context structural mock.

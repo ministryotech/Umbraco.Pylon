@@ -3,10 +3,10 @@ using NUnit.Framework;
 using Moq;
 using Umbraco.Core.Models;
 using Umbraco.Core.Dynamics;
-using Umbraco.PylonLite.TestSupport;
-using Umbraco.PylonLite.TestSupport.Concretes;
+using Umbraco.Pylon.TestSupport;
+using Umbraco.Pylon.TestSupport.Concretes;
 
-namespace Umbraco.PylonLite.Tests
+namespace Umbraco.Pylon.Tests
 {
     [TestFixture]
     [Category("Model Test")]

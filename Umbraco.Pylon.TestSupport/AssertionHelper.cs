@@ -13,7 +13,7 @@
 
 using System;
 
-namespace Umbraco.PylonLite.TestSupport
+namespace Umbraco.Pylon.TestSupport
 {
     /// <summary>
     /// Extensions to aid with custom assertions.

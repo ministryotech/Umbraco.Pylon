@@ -14,7 +14,7 @@
 using System.Collections.Generic;
 using System.Web.Http.Routing;
 
-namespace Umbraco.PylonLite.TestSupport.Routes
+namespace Umbraco.Pylon.TestSupport.Routes
 {
     /// <summary>
     /// A fake passing object.

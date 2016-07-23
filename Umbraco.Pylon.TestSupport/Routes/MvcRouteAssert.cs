@@ -15,9 +15,9 @@ using System.Reflection;
 using System.Text;
 using System.Web.Mvc;
 using System.Web.Routing;
-using Umbraco.PylonLite.TestSupport.Mocks;
+using Umbraco.Pylon.TestSupport.Mocks;
 
-namespace Umbraco.PylonLite.TestSupport.Routes
+namespace Umbraco.Pylon.TestSupport.Routes
 {
     /// <summary>
     /// A class that asserts MVC Routing.

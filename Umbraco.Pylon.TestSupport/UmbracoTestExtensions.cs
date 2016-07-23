@@ -2,7 +2,7 @@
 using Moq;
 using Umbraco.Core.Models;
 
-namespace Umbraco.PylonLite.TestSupport
+namespace Umbraco.Pylon.TestSupport
 {
     /// <summary>
     /// Extension menthods to aid testing Umbraco data and simple mock builders.

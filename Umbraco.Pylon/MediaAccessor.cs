@@ -1,8 +1,8 @@
 using System;
 using Umbraco.Core.Models;
-using Umbraco.PylonLite.Annotations;
+using Umbraco.Pylon.Annotations;
 
-namespace Umbraco.PylonLite
+namespace Umbraco.Pylon
 {
     /// <summary>
     /// Accesses media elements

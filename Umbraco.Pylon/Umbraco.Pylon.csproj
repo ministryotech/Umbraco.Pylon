@@ -304,6 +304,14 @@
     <Compile Include="ContentAccessor.cs" />
     <Compile Include="DocumentTypeFactory.cs" />
     <Compile Include="LinkedViewModel.cs" />
+    <Compile Include="Obsolete\IPylonApiController.cs" />
+    <Compile Include="Obsolete\IPylonController.cs" />
+    <Compile Include="Obsolete\PylonApiController.cs" />
+    <Compile Include="Obsolete\PylonController.cs" />
+    <Compile Include="Obsolete\PylonInnerApiController.cs" />
+    <Compile Include="Obsolete\PylonInnerController.cs" />
+    <Compile Include="Obsolete\PylonLayeredApiController.cs" />
+    <Compile Include="Obsolete\PylonLayeredController.cs" />
     <Compile Include="Properties\Annotations.cs" />
     <Compile Include="PylonViewPage.cs" />
     <Compile Include="UmbracoSite.cs" />

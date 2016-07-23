@@ -16,7 +16,7 @@ using Umbraco.Core.Dynamics;
 using Umbraco.Core.Models;
 using Umbraco.Web;
 
-namespace Umbraco.PylonLite
+namespace Umbraco.Pylon
 {
     /// <summary>
     /// Base representation of a document type on a system without a custom published content repository.

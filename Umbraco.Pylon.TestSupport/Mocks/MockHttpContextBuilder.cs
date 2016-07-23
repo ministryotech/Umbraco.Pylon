@@ -17,7 +17,7 @@ using System.Web;
 using System.Web.Mvc;
 using Moq;
 
-namespace Umbraco.PylonLite.TestSupport.Mocks
+namespace Umbraco.Pylon.TestSupport.Mocks
 {
     /// <summary>
     /// Builder for contexts

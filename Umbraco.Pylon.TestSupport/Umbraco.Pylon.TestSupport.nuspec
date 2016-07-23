@@ -14,7 +14,7 @@
     <releaseNotes>BREAKING CHANGES: Renamed TestBase and ControllerTestBase classes, removing some elements, to ContentBuilderTEstBase and ContentServiceTestBase to reflect new usage.</releaseNotes>
     <tags>Abstract Umbraco Wrapper Helper Testability Ministry</tags>
     <dependencies>
-      <dependency id="Umbraco.Pylon" version="7.3.8.5" />
+      <dependency id="Umbraco.Pylon" version="7.3.8.10" />
     </dependencies>
   </metadata>
 </package>

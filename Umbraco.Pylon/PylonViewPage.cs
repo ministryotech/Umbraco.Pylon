@@ -150,5 +150,24 @@ namespace Umbraco.Pylon
             }
             set { _umbracoSite = value; }
         }
+
+        /// <summary>
+        /// Gets the current page if available.
+        /// </summary>
+        public dynamic CurrentPage
+        {
+            get
+            {
+                if (Model.GetType().IsSubclassOf(typeof(PylonRenderModel)))
+                    return (Model as PylonRenderModel).DynamicContent;
+
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Gets the model in a dynamic form if available.
+        /// </summary>
+        public dynamic DynamicModel { get { return CurrentPage; } }
     }
 }

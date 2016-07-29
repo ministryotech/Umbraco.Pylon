@@ -291,6 +291,7 @@
     <Compile Include="..\SharedAssemblyInfo.cs">
       <Link>Properties\SharedAssemblyInfo.cs</Link>
     </Compile>
+    <Compile Include="PylonRenderModel.cs" />
     <Compile Include="ContentFactory.cs" />
     <Compile Include="FormsAuthWrapper.cs" />
     <Compile Include="IContentAccessor.cs" />

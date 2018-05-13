@@ -8,7 +8,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("The Ministry of Technology")]
 [assembly: AssemblyProduct("Umbraco.Pylon (Ministry)")]
-[assembly: AssemblyCopyright("Copyright © 2016 Minotech Ltd.")]
+[assembly: AssemblyCopyright("Copyright © 2018 Minotech Ltd.")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -27,5 +27,5 @@ using System.Runtime.InteropServices;
 // You can specify all the values or you can default the Build and Revision Numbers
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("7.3.8.11")]
-[assembly: AssemblyFileVersion("7.3.8.11")]
+[assembly: AssemblyVersion("7.4.3.1")]
+[assembly: AssemblyFileVersion("7.4.3.1")]

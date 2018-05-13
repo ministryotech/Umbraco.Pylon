@@ -158,3 +158,4 @@ packages/
 *.nupkg
 PylonSampleWeb/App_Data/TEMP/
 PylonSampleWeb/App_Data/Logs/UmbracoTraceLog.txt
+.vs/Umbraco.Pylon/v15/Server/sqlite3/*

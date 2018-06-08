@@ -224,6 +224,10 @@
     </Compile>
     <Compile Include="FormsAuthWrapper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="PylonApiController.cs" />
+    <Compile Include="PylonMvcController.cs" />
+    <Compile Include="PylonSurfaceController.cs" />
+    <Compile Include="PublishedContentRepository.cs" />
     <Compile Include="ViewStringRenderer.cs" />
   </ItemGroup>
   <ItemGroup>

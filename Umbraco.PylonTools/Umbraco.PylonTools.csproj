@@ -230,6 +230,7 @@
     <Compile Include="Controllers\PylonMvcController.cs" />
     <Compile Include="Controllers\PylonSurfaceController.cs" />
     <Compile Include="PublishedContentRepository.cs" />
+    <Compile Include="PylonViewPage.cs" />
     <Compile Include="ViewStringRenderer.cs" />
   </ItemGroup>
   <ItemGroup>

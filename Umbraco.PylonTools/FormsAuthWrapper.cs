@@ -1,4 +1,5 @@
 ﻿using System.Web.Security;
+using Ministry;
 
 namespace Umbraco.PylonTools
 {
@@ -34,19 +35,14 @@ namespace Umbraco.PylonTools
         /// Sets the authentication cookie.
         /// </summary>
         /// <param name="username">The username.</param>
-        /// <param name="createPersistentCookie">if set to <c>true</c> [create persistent cookie].</param>
+        /// <param name="createPersistentCookie">if set to <c>true</c> creates a persistent cookie.</param>
         public void SetAuthCookie(string username, bool createPersistentCookie)
-        {
-            FormsAuthentication.SetAuthCookie(username, createPersistentCookie);
-        }
+            => FormsAuthentication.SetAuthCookie(username.ThrowIfNullOrEmpty(nameof(username)), createPersistentCookie);
 
 
         /// <summary>
         /// Signs out.
         /// </summary>
-        public void SignOut()
-        {
-            FormsAuthentication.SignOut();
-        }
+        public void SignOut() => FormsAuthentication.SignOut();
     }
 }

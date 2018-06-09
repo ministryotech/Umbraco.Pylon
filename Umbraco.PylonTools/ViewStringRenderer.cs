@@ -2,6 +2,7 @@
 using System.Web;
 using System.Web.Mvc;
 using System.Web.Routing;
+using Ministry;
 
 namespace Umbraco.PylonTools
 {
@@ -38,12 +39,12 @@ namespace Umbraco.PylonTools
         /// <returns></returns>
         public string Render(string viewName, object model, Controller caller)
         {
-            caller.ViewData.Model = model;
-            SetDefaultContext(caller);
+            caller.ViewData.Model = model.ThrowIfNull(nameof(model));
+            SetDefaultContext(caller.ThrowIfNull(nameof(caller)));
 
             using (var sw = new StringWriter())
             {
-                var viewResult = ViewEngines.Engines.FindPartialView(caller.ControllerContext, viewName);
+                var viewResult = ViewEngines.Engines.FindPartialView(caller.ControllerContext, viewName.ThrowIfNullOrEmpty(nameof(viewName)));
                 var viewContext = new ViewContext(caller.ControllerContext, viewResult.View, caller.ViewData,
                     caller.TempData, sw);
                 viewResult.View.Render(viewContext, sw);
@@ -59,7 +60,7 @@ namespace Umbraco.PylonTools
         /// Sets a default context if none is present on the controller.
         /// </summary>
         /// <param name="controller">The controller.</param>
-        private void SetDefaultContext(Controller controller)
+        private void SetDefaultContext(ControllerBase controller)
         {
             if (controller.ControllerContext != null)
                 return;

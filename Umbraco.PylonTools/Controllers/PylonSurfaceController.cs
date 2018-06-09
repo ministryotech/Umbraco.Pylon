@@ -1,11 +1,11 @@
 ﻿using Umbraco.Web.Mvc;
 
-namespace Umbraco.PylonTools
+namespace Umbraco.PylonTools.Controllers
 {
     /// <summary>
     /// Base class for a surface controller, to use for key CMS action bindings.
     /// </summary>
-    /// <seealso cref="PylonTools.PylonSurfaceController{IPublishedContentRepository}" />
+    /// <seealso cref="PylonSurfaceController{TSiteContentRepository}" />
     /// <seealso cref="SurfaceController" />
     public abstract class PylonSurfaceController : PylonSurfaceController<IPublishedContentRepository>
     {
@@ -26,7 +26,7 @@ namespace Umbraco.PylonTools
     /// Base class for a surface controller, to use for key CMS action bindings.
     /// </summary>
     /// <typeparam name="TSiteContentRepository">The type of the site content repository.</typeparam>
-    /// <seealso cref="PylonTools.PylonSurfaceController{IPublishedContentRepository}" />
+    /// <seealso cref="PylonSurfaceController{TSiteContentRepository}" />
     /// <seealso cref="SurfaceController" />
     public abstract class PylonSurfaceController<TSiteContentRepository> : SurfaceController
         where TSiteContentRepository : IPublishedContentRepository

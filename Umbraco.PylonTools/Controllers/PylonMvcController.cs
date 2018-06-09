@@ -1,11 +1,11 @@
 ﻿using Umbraco.Web.Mvc;
 
-namespace Umbraco.PylonTools
+namespace Umbraco.PylonTools.Controllers
 {
     /// <summary>
     /// Base class for an MVC controller, to use if you want to replace Umbraco's default behaviour for a content route or you need a route in the site with no content.
     /// </summary>
-    /// <seealso cref="PylonTools.PylonMvcController{IPublishedContentRepository}" />
+    /// <seealso cref="PylonMvcController{TSiteContentRepository}" />
     /// <remarks>
     /// Consider, before using this, whether a Surface Controller is actually more appropriate.
     /// </remarks>

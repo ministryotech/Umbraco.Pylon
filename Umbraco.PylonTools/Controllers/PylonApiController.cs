@@ -1,11 +1,11 @@
 ﻿using Umbraco.Web.WebApi;
 
-namespace Umbraco.PylonTools
+namespace Umbraco.PylonTools.Controllers
 {
     /// <summary>
     /// Base class for an API controller, to use when a traditional API output / input is required.
     /// </summary>
-    /// <seealso cref="PylonTools.PylonApiController{IPublishedContentRepository}" />
+    /// <seealso cref="PylonApiController{TSiteContentRepository}" />
     /// <remarks>
     /// API controllers should use traditional REST approaches using JSON for input and output and generating standard HTTP responses.
     /// If you need to return content then use a Surface Controller.
@@ -30,7 +30,7 @@ namespace Umbraco.PylonTools
     /// Base class for an API controller, to use when a traditional API output / input is required.
     /// </summary>
     /// <typeparam name="TSiteContentRepository">The type of the site content repository.</typeparam>
-    /// <seealso cref="PylonTools.PylonApiController{IPublishedContentRepository}" />
+    /// <seealso cref="PylonApiController{TSiteContentRepository}" />
     /// <remarks>
     /// API controllers should use traditional REST approaches using JSON for input and output and generating standard HTTP responses.
     /// If you need to return content then use a Surface Controller.

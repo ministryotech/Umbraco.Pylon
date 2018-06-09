@@ -1,4 +1,6 @@
-﻿using Umbraco.Core.Models;
+﻿using Ministry;
+using Umbraco.Core.Models;
+using Umbraco.PylonTools.Models;
 using Umbraco.Web;
 
 namespace Umbraco.PylonTools
@@ -22,7 +24,7 @@ namespace Umbraco.PylonTools
         /// </summary>
         /// <param name="nodeId">The id of the item.</param>
         /// <returns>Content</returns>
-        IPublishedContent MediaItem(int? nodeId);
+        MediaFile MediaItem(int? nodeId);
 
         /// <summary>
         /// Determines if a piece of content exists.
@@ -54,7 +56,7 @@ namespace Umbraco.PylonTools
         /// <param name="umbraco">The umbraco helper.</param>
         public PublishedContentRepository(UmbracoHelper umbraco)
         {
-            Umbraco = umbraco;
+            Umbraco = umbraco.ThrowIfNull(nameof(umbraco));
         }
 
         #endregion
@@ -76,8 +78,8 @@ namespace Umbraco.PylonTools
         /// </summary>
         /// <param name="nodeId">The id of the item.</param>
         /// <returns>Content</returns>
-        public IPublishedContent MediaItem(int? nodeId) 
-            => nodeId == null || nodeId.Value == 0 ? null : Umbraco.TypedMedia(nodeId);
+        public MediaFile MediaItem(int? nodeId) 
+            => nodeId == null || nodeId.Value == 0 ? null : new MediaFile(Umbraco.TypedMedia(nodeId));
 
         /// <summary>
         /// Determines if a piece of content exists.

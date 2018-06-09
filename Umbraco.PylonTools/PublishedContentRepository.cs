@@ -1,4 +1,5 @@
-﻿using Ministry;
+﻿using System;
+using Ministry;
 using Umbraco.Core.Models;
 using Umbraco.PylonTools.Models;
 using Umbraco.Web;
@@ -12,6 +13,14 @@ namespace Umbraco.PylonTools
     /// </summary>
     public interface IPublishedContentRepository
     {
+        /// <summary>
+        /// Sets the umbraco helper.
+        /// </summary>
+        /// <remarks>
+        /// Used to set the helper within a view when using <see cref="PylonViewPage"/>.
+        /// </remarks>
+        UmbracoHelper Umbraco { set; }
+
         /// <summary>
         /// Determines if a piece of media exists.
         /// </summary>
@@ -48,6 +57,8 @@ namespace Umbraco.PylonTools
     /// </summary>
     public class PublishedContentRepository : IPublishedContentRepository
     {
+        private UmbracoHelper umbraco;
+
         #region | Construction |
 
         /// <summary>
@@ -56,15 +67,37 @@ namespace Umbraco.PylonTools
         /// <param name="umbraco">The umbraco helper.</param>
         public PublishedContentRepository(UmbracoHelper umbraco)
         {
-            Umbraco = umbraco.ThrowIfNull(nameof(umbraco));
+            this.umbraco = umbraco.ThrowIfNull(nameof(umbraco));
         }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="PublishedContentRepository"/> class.
+        /// </summary>
+        /// <remarks>
+        /// If constructed without an Umbraco helper instance, the helper must be set before any methods are called.
+        /// </remarks>
+        public PublishedContentRepository()
+        { }
 
         #endregion
 
         /// <summary>
-        /// Gets the umbraco helper.
+        /// Gets or sets the umbraco helper.
         /// </summary>
-        protected UmbracoHelper Umbraco { get; }
+        /// <remarks>
+        /// The set is used to set the helper within a view when using <see cref="PylonViewPage"/>.
+        /// </remarks>
+        public UmbracoHelper Umbraco
+        {
+            protected get
+            {
+                if (umbraco == null)
+                    throw new ApplicationException("Unable to use methods on the Content Repository until the UmbracoHelper instance is set. " +
+                                                   "Either use the constructor that thakes a helper or check your IoC configuration.");
+                return umbraco;
+            }
+            set { umbraco = value; }
+        }
 
         /// <summary>
         /// Determines if a piece of media exists.

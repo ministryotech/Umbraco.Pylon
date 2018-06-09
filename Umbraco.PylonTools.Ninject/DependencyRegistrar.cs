@@ -1,4 +1,5 @@
-﻿using Ninject;
+﻿using System.Web.Mvc;
+using Ninject;
 using Ninject.Web.Common;
 using Umbraco.Core;
 using Umbraco.Core.Services;
@@ -23,6 +24,26 @@ namespace Umbraco.PylonTools.Ninject
                 .BindPylon();
 
         /// <summary>
+        /// Binds a custom content repository.
+        /// </summary>
+        /// <remarks>
+        /// Use this binding if you implement your own content repository (recommended).
+        /// </remarks>
+        /// <param name="kernel">The kernel.</param>
+        /// <returns>The kernel, for fluent bindings.</returns>
+        public static IKernel BindCustomContentRepository<TSiteContentRepository>(this IKernel kernel)
+            where TSiteContentRepository : IPublishedContentRepository, new()
+        {
+            kernel.Bind<IPublishedContentRepository>().ToMethod(repo
+                => new TSiteContentRepository
+                {
+                    Umbraco = DependencyResolver.Current.GetService<UmbracoHelper>()
+                }).InRequestScope();
+
+            return kernel;
+        }
+
+        /// <summary>
         /// Binds the default content repository.
         /// </summary>
         /// <remarks>
@@ -33,7 +54,8 @@ namespace Umbraco.PylonTools.Ninject
         /// <returns>The kernel, for fluent bindings.</returns>
         public static IKernel BindDefaultContentRepository(this IKernel kernel)
         {
-            kernel.Bind<IPublishedContentRepository>().To<PublishedContentRepository>();
+            kernel.Bind<IPublishedContentRepository>().ToConstructor(ctorArgs
+                => new PublishedContentRepository(ctorArgs.Inject<UmbracoHelper>())).InRequestScope();
             return kernel;
         }
 

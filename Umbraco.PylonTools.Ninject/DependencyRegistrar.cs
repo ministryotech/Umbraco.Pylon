@@ -80,33 +80,34 @@ namespace Umbraco.PylonTools.Ninject
         /// <returns>The kernel, for fluent bindings.</returns>
         private static IKernel BindUmbracoServices(this IKernel kernel)
         {
-            kernel.Bind<IApplicationTreeService>().ToMethod(context => ApplicationContext.Current.Services.ApplicationTreeService).InRequestScope();
-            kernel.Bind<IAuditService>().ToMethod(context => ApplicationContext.Current.Services.AuditService).InRequestScope();
-            kernel.Bind<IConsentService>().ToMethod(context => ApplicationContext.Current.Services.ConsentService).InRequestScope();
-            kernel.Bind<IContentService>().ToMethod(context => ApplicationContext.Current.Services.ContentService).InRequestScope();
-            kernel.Bind<IContentTypeService>().ToMethod(context => ApplicationContext.Current.Services.ContentTypeService).InRequestScope();
-            kernel.Bind<IDataTypeService>().ToMethod(context => ApplicationContext.Current.Services.DataTypeService).InRequestScope();
-            kernel.Bind<IDomainService>().ToMethod(context => ApplicationContext.Current.Services.DomainService).InRequestScope();
-            kernel.Bind<IEntityService>().ToMethod(context => ApplicationContext.Current.Services.EntityService).InRequestScope();
-            kernel.Bind<IExternalLoginService>().ToMethod(context => ApplicationContext.Current.Services.ExternalLoginService).InRequestScope();
-            kernel.Bind<IFileService>().ToMethod(context => ApplicationContext.Current.Services.FileService).InRequestScope();
-            kernel.Bind<ILocalizationService>().ToMethod(context => ApplicationContext.Current.Services.LocalizationService).InRequestScope();
-            kernel.Bind<IMacroService>().ToMethod(context => ApplicationContext.Current.Services.MacroService).InRequestScope();
-            kernel.Bind<IMediaService>().ToMethod(context => ApplicationContext.Current.Services.MediaService).InRequestScope();
-            kernel.Bind<IMemberService>().ToMethod(context => ApplicationContext.Current.Services.MemberService).InRequestScope();
-            kernel.Bind<IMemberTypeService>().ToMethod(context => ApplicationContext.Current.Services.MemberTypeService).InRequestScope();
-            kernel.Bind<IMigrationEntryService>().ToMethod(context => ApplicationContext.Current.Services.MigrationEntryService).InRequestScope();
-            kernel.Bind<INotificationService>().ToMethod(context => ApplicationContext.Current.Services.NotificationService).InRequestScope();
-            kernel.Bind<IPackagingService>().ToMethod(context => ApplicationContext.Current.Services.PackagingService).InRequestScope();
-            kernel.Bind<IPublicAccessService>().ToMethod(context => ApplicationContext.Current.Services.PublicAccessService).InRequestScope();
-            kernel.Bind<IRedirectUrlService>().ToMethod(context => ApplicationContext.Current.Services.RedirectUrlService).InRequestScope();
-            kernel.Bind<IRelationService>().ToMethod(context => ApplicationContext.Current.Services.RelationService).InRequestScope();
-            kernel.Bind<ISectionService>().ToMethod(context => ApplicationContext.Current.Services.SectionService).InRequestScope();
-            kernel.Bind<IServerRegistrationService>().ToMethod(context => ApplicationContext.Current.Services.ServerRegistrationService).InRequestScope();
-            kernel.Bind<ITagService>().ToMethod(context => ApplicationContext.Current.Services.TagService).InRequestScope();
-            kernel.Bind<ITaskService>().ToMethod(context => ApplicationContext.Current.Services.TaskService).InRequestScope();
-            kernel.Bind<ILocalizedTextService>().ToMethod(context => ApplicationContext.Current.Services.TextService).InRequestScope();
-            kernel.Bind<IUserService>().ToMethod(context => ApplicationContext.Current.Services.UserService).InRequestScope();
+            kernel.Bind<IApplicationTreeService>().ToMethod(srv => ApplicationContext.Current.Services.ApplicationTreeService).InRequestScope();
+            kernel.Bind<IAuditService>().ToMethod(srv => ApplicationContext.Current.Services.AuditService).InRequestScope();
+            kernel.Bind<IConsentService>().ToMethod(srv => ApplicationContext.Current.Services.ConsentService).InRequestScope();
+            kernel.Bind<IContentService>().ToMethod(srv => ApplicationContext.Current.Services.ContentService).InRequestScope();
+            kernel.Bind<IContentTypeService>().ToMethod(srv => ApplicationContext.Current.Services.ContentTypeService).InRequestScope();
+            kernel.Bind<IDataTypeService>().ToMethod(srv => ApplicationContext.Current.Services.DataTypeService).InRequestScope();
+            kernel.Bind<IDomainService>().ToMethod(srv => ApplicationContext.Current.Services.DomainService).InRequestScope();
+            kernel.Bind<IEntityService>().ToMethod(srv => ApplicationContext.Current.Services.EntityService).InRequestScope();
+            kernel.Bind<IExternalLoginService>().ToMethod(srv => ApplicationContext.Current.Services.ExternalLoginService).InRequestScope();
+            kernel.Bind<IFileService>().ToMethod(srv => ApplicationContext.Current.Services.FileService).InRequestScope();
+            kernel.Bind<ILocalizationService>().ToMethod(srv => ApplicationContext.Current.Services.LocalizationService).InRequestScope();
+            kernel.Bind<IMacroService>().ToMethod(srv => ApplicationContext.Current.Services.MacroService).InRequestScope();
+            kernel.Bind<IMediaService>().ToMethod(srv => ApplicationContext.Current.Services.MediaService).InRequestScope();
+            kernel.Bind<IMemberService>().ToMethod(srv => ApplicationContext.Current.Services.MemberService).InRequestScope();
+            kernel.Bind<IMemberGroupService>().ToMethod(srv => ApplicationContext.Current.Services.MemberGroupService).InRequestScope();
+            kernel.Bind<IMemberTypeService>().ToMethod(srv => ApplicationContext.Current.Services.MemberTypeService).InRequestScope();
+            kernel.Bind<IMigrationEntryService>().ToMethod(srv => ApplicationContext.Current.Services.MigrationEntryService).InRequestScope();
+            kernel.Bind<INotificationService>().ToMethod(srv => ApplicationContext.Current.Services.NotificationService).InRequestScope();
+            kernel.Bind<IPackagingService>().ToMethod(srv => ApplicationContext.Current.Services.PackagingService).InRequestScope();
+            kernel.Bind<IPublicAccessService>().ToMethod(srv => ApplicationContext.Current.Services.PublicAccessService).InRequestScope();
+            kernel.Bind<IRedirectUrlService>().ToMethod(srv => ApplicationContext.Current.Services.RedirectUrlService).InRequestScope();
+            kernel.Bind<IRelationService>().ToMethod(srv => ApplicationContext.Current.Services.RelationService).InRequestScope();
+            kernel.Bind<ISectionService>().ToMethod(srv => ApplicationContext.Current.Services.SectionService).InRequestScope();
+            kernel.Bind<IServerRegistrationService>().ToMethod(srv => ApplicationContext.Current.Services.ServerRegistrationService).InRequestScope();
+            kernel.Bind<ITagService>().ToMethod(srv => ApplicationContext.Current.Services.TagService).InRequestScope();
+            kernel.Bind<ITaskService>().ToMethod(srv => ApplicationContext.Current.Services.TaskService).InRequestScope();
+            kernel.Bind<ILocalizedTextService>().ToMethod(srv => ApplicationContext.Current.Services.TextService).InRequestScope();
+            kernel.Bind<IUserService>().ToMethod(srv => ApplicationContext.Current.Services.UserService).InRequestScope();
             return kernel;
         }
 

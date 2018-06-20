@@ -231,6 +231,8 @@
     <Compile Include="Controllers\PylonSurfaceController.cs" />
     <Compile Include="PublishedContentRepository.cs" />
     <Compile Include="PylonViewPage.cs" />
+    <Compile Include="DefaultUmbracoSite.cs" />
+    <Compile Include="UmbracoSite.cs" />
     <Compile Include="ViewStringRenderer.cs" />
   </ItemGroup>
   <ItemGroup>

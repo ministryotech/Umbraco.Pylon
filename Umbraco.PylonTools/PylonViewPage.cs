@@ -21,7 +21,20 @@ namespace Umbraco.PylonTools
     /// Use this over <see cref="UmbracoViewPage" /> to access your IPublishedContentRepository implementation.
     /// </remarks>
     public abstract class PylonViewPage<TModel> : PylonViewPage<DefaultUmbracoSite, PublishedContentRepository, TModel>
-    { }
+    {
+        #region | Construction |
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="PylonViewPage{TUmbracoSite, TSiteContentRepository, TModel}"/> class.
+        /// </summary>
+        protected PylonViewPage()
+        {
+            // ReSharper disable once VirtualMemberCallInConstructor
+            UmbracoSite = new DefaultUmbracoSite(new PublishedContentRepository(Umbraco, UmbracoContext));
+        }
+
+        #endregion
+    }
 
     /// <summary>
     /// A Pylon based view page using a custom model and a site specific content repository.
@@ -34,9 +47,30 @@ namespace Umbraco.PylonTools
     /// Of the three variants available, this is the preferred usage.
     /// </remarks>
     public abstract class PylonViewPage<TUmbracoSite, TSiteContentRepository> : PylonViewPage<TUmbracoSite, TSiteContentRepository, IPublishedContent>
-        where TUmbracoSite : class, IUmbracoSite<TSiteContentRepository>, new()
-        where TSiteContentRepository : class, IPublishedContentRepository, new()
-    { }
+    where TUmbracoSite : class, IUmbracoSite<TSiteContentRepository>
+    where TSiteContentRepository : class, IPublishedContentRepository
+    {
+        #region | Construction |
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="PylonViewPage{TUmbracoSite, TSiteContentRepository, TModel}"/> class.
+        /// </summary>
+        /// <remarks>
+        /// For subclass initialisation.
+        /// </remarks>
+        internal PylonViewPage()
+        { }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="PylonViewPage{TUmbracoSite, TSiteContentRepository, TModel}"/> class.
+        /// </summary>
+        /// <param name="umbracoSite">The umbraco site.</param>
+        protected PylonViewPage(TUmbracoSite umbracoSite)
+            : base(umbracoSite)
+        { }
+
+        #endregion
+    }
 
     /// <summary>
     /// A Pylon based view page using a custom model and a site specific content repository.
@@ -50,10 +84,30 @@ namespace Umbraco.PylonTools
     /// Of the three variants available, this is the preferred usage.
     /// </remarks>
     public abstract class PylonViewPage<TUmbracoSite, TSiteContentRepository, TModel> : UmbracoViewPage<TModel>
-        where TUmbracoSite : class, IUmbracoSite<TSiteContentRepository>, new()
-        where TSiteContentRepository : class, IPublishedContentRepository, new()
+        where TUmbracoSite : class, IUmbracoSite<TSiteContentRepository>
+        where TSiteContentRepository :class,  IPublishedContentRepository
     {
-        private TUmbracoSite umbracoSite;
+        #region | Construction |
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="PylonViewPage{TUmbracoSite, TSiteContentRepository, TModel}"/> class.
+        /// </summary>
+        /// <remarks>
+        /// For subclass initialisation.
+        /// </remarks>
+        internal PylonViewPage()
+        { }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="PylonViewPage{TUmbracoSite, TSiteContentRepository, TModel}"/> class.
+        /// </summary>
+        /// <param name="umbracoSite">The umbraco site.</param>
+        protected PylonViewPage(TUmbracoSite umbracoSite)
+        {
+            UmbracoSite = umbracoSite;
+        }
+
+        #endregion
 
         /// <summary>
         /// Entry point for specified site content.
@@ -64,9 +118,6 @@ namespace Umbraco.PylonTools
         /// <remarks>
         /// If the content repository has not yet been initialised then it will be done here.
         /// </remarks>
-        public TUmbracoSite UmbracoSite
-            => umbracoSite ?? (umbracoSite = new TUmbracoSite {
-                Content = new TSiteContentRepository { Umbraco = Umbraco, Context = UmbracoContext }
-            });
+        public TUmbracoSite UmbracoSite { get; protected set; }
     }
 }

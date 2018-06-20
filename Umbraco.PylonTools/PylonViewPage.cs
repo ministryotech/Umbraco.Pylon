@@ -28,6 +28,21 @@ namespace Umbraco.PylonTools
     /// </summary>
     /// <typeparam name="TUmbracoSite">The type of the umbraco site.</typeparam>
     /// <typeparam name="TSiteContentRepository">The type of the site content repository.</typeparam>
+    /// <seealso cref="UmbracoViewPage" />
+    /// <remarks>
+    /// Use this over <see cref="UmbracoViewPage" /> to access your IPublishedContentRepository implementation.
+    /// Of the three variants available, this is the preferred usage.
+    /// </remarks>
+    public abstract class PylonViewPage<TUmbracoSite, TSiteContentRepository> : PylonViewPage<TUmbracoSite, TSiteContentRepository, IPublishedContent>
+        where TUmbracoSite : class, IUmbracoSite<TSiteContentRepository>, new()
+        where TSiteContentRepository : class, IPublishedContentRepository, new()
+    { }
+
+    /// <summary>
+    /// A Pylon based view page using a custom model and a site specific content repository.
+    /// </summary>
+    /// <typeparam name="TUmbracoSite">The type of the umbraco site.</typeparam>
+    /// <typeparam name="TSiteContentRepository">The type of the site content repository.</typeparam>
     /// <typeparam name="TModel">The type of the model.</typeparam>
     /// <seealso cref="UmbracoViewPage" />
     /// <remarks>
@@ -51,7 +66,7 @@ namespace Umbraco.PylonTools
         /// </remarks>
         public TUmbracoSite UmbracoSite
             => umbracoSite ?? (umbracoSite = new TUmbracoSite {
-                Content = new TSiteContentRepository { Umbraco = Umbraco }
+                Content = new TSiteContentRepository { Umbraco = Umbraco, Context = UmbracoContext }
             });
     }
 }

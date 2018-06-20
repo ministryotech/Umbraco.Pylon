@@ -22,6 +22,14 @@ namespace Umbraco.PylonTools
         UmbracoHelper Umbraco { set; }
 
         /// <summary>
+        /// Gets or Sets the umbraco context.
+        /// </summary>
+        /// <remarks>
+        /// Used to set the context within a view when using <see cref="PylonViewPage"/>.
+        /// </remarks>
+        UmbracoContext Context { get; set; }
+
+        /// <summary>
         /// Determines if a piece of media exists.
         /// </summary>
         /// <param name="nodeId">The media id.</param>
@@ -57,9 +65,21 @@ namespace Umbraco.PylonTools
     /// </summary>
     public class PublishedContentRepository : IPublishedContentRepository
     {
+        private UmbracoContext context;
         private UmbracoHelper umbraco;
 
         #region | Construction |
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="PublishedContentRepository" /> class.
+        /// </summary>
+        /// <param name="umbraco">The umbraco helper.</param>
+        /// <param name="context">The context.</param>
+        public PublishedContentRepository(UmbracoHelper umbraco, UmbracoContext context)
+        {
+            this.umbraco = umbraco.ThrowIfNull(nameof(umbraco));
+            this.context = context.ThrowIfNull(nameof(context));
+        }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="PublishedContentRepository"/> class.
@@ -96,7 +116,25 @@ namespace Umbraco.PylonTools
                                                    "Either use the constructor that thakes a helper or check your IoC configuration.");
                 return umbraco;
             }
-            set { umbraco = value; }
+            set => umbraco = value;
+        }
+
+        /// <summary>
+        /// Gets or sets the umbraco helper.
+        /// </summary>
+        /// <remarks>
+        /// The set is used to set the helper within a view when using <see cref="PylonViewPage"/>.
+        /// </remarks>
+        public UmbracoContext Context
+        {
+            get
+            {
+                if (context == null)
+                    throw new ApplicationException("No context is available. " +
+                                                   "Either use the constructor that thakes a context or check your IoC configuration.");
+                return context;
+            }
+            set => context = value;
         }
 
         /// <summary>

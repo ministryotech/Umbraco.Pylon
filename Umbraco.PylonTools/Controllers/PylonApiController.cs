@@ -1,4 +1,5 @@
-﻿using Umbraco.Web.WebApi;
+﻿using Umbraco.Web;
+using Umbraco.Web.WebApi;
 
 namespace Umbraco.PylonTools.Controllers
 {
@@ -48,7 +49,7 @@ namespace Umbraco.PylonTools.Controllers
         /// <param name="umbracoSite">The umbraco site.</param>
         protected PylonApiController(TUmbracoSite umbracoSite)
         {
-            Site = umbracoSite;
+            UmbracoSite = umbracoSite;
         }
 
         #endregion
@@ -56,6 +57,20 @@ namespace Umbraco.PylonTools.Controllers
         /// <summary>
         /// Gets the site.
         /// </summary>
-        protected TUmbracoSite Site { get; }
+        protected TUmbracoSite UmbracoSite { get; }
+
+        /// <summary>
+        /// Blocks returning an UmbracoHelper object
+        /// </summary>
+        /// <exception cref="PylonException">The Umbraco Helper should only be accessed via the implementation of IPublishedContentRepository.</exception>
+        protected new UmbracoHelper Umbraco => throw new PylonException(
+            "The Umbraco Helper should only be accessed via the implementation of IPublishedContentRepository.");
+
+        /// <summary>
+        /// Blocks returning the current UmbracoContext
+        /// </summary>
+        /// <exception cref="PylonException">The Umbraco Context should only be accessed via the implementation of IPublishedContentRepository.</exception>
+        protected new UmbracoContext UmbracoContext => throw new PylonException(
+            "The Umbraco Context should only be accessed via the implementation of IPublishedContentRepository.");
     }
 }

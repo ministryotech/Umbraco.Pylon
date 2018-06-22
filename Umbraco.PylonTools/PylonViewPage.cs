@@ -1,4 +1,5 @@
-﻿using Umbraco.Core.Models;
+﻿using System;
+using Umbraco.Core.Models;
 using Umbraco.Web.Mvc;
 
 namespace Umbraco.PylonTools
@@ -119,5 +120,15 @@ namespace Umbraco.PylonTools
         /// If the content repository has not yet been initialised then it will be done here.
         /// </remarks>
         public TUmbracoSite UmbracoSite { get; protected set; }
+
+        #region | Obsolete Members |
+
+        /// <summary>
+        /// Gets the dynamic model.
+        /// </summary>
+        [Obsolete("Pylon is now fully committed to strongly typed modelling using tools such as Umbraco Models Builder. This property now returns 'Model' wrapped in a dynamic. Use 'Model' instead.")]
+        public dynamic DynamicModel => Model;
+
+        #endregion
     }
 }

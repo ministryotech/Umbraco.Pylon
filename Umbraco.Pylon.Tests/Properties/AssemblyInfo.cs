@@ -7,4 +7,4 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("Umbraco.Pylon.Tests")]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("911272de-5a09-464d-9c95-5866e4c2c03b")]
+[assembly: Guid("911272de-5a09-464d-9c95-5866e4c2c0c8")]

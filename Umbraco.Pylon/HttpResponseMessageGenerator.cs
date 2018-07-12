@@ -9,11 +9,12 @@ namespace Umbraco.Pylon
     /// </summary>
     public static class HttpResponseMessageGenerator
     {
-        private const string NotFoundMessage = "An item was not found at this address.";
+        private const string NOT_FOUND_MESSAGE = "An item was not found at this address.";
 
         /// <summary>
         /// Returns an HttpResponseMessage for a function.
         /// </summary>
+        /// <param name="request">The request.</param>
         /// <param name="function">The function.</param>
         /// <returns>
         /// OK, NotFound or Error as appropriate.
@@ -25,7 +26,7 @@ namespace Umbraco.Pylon
                 var returnItem = function();
                 return returnItem != null
                         ? request.CreateResponse(HttpStatusCode.OK, returnItem)
-                        : request.CreateErrorResponse(HttpStatusCode.NotFound, NotFoundMessage);
+                        : request.CreateErrorResponse(HttpStatusCode.NotFound, NOT_FOUND_MESSAGE);
             }
             catch (Exception ex)
             {

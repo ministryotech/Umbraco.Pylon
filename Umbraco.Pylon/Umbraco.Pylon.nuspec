@@ -11,7 +11,7 @@
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>Base classes and structures for developing well achitected, developer focused Umbraco solutions. Check out the GitHub project source at https://github.com/tiefling/Umbraco.Pylon for samples to indicate making the best use of the code.</description>
     <copyright>Copyright 2016</copyright>
-    <releaseNotes>BREAKING CHANGES: Pylon Controllers are now obsolete (and will be removed in the next version) - Please convert inner controllers into testable supporting controller classes.</releaseNotes>
+    <releaseNotes>BREAKING CHANGES: Pylon has been totally rewritten.</releaseNotes>
     <tags>Abstract Umbraco Wrapper Helper Testability Ministry</tags>
   </metadata>
 </package>

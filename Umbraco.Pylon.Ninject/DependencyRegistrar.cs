@@ -1,4 +1,5 @@
-﻿using System.Web.Mvc;
+﻿using System.Reflection;
+using System.Web.Mvc;
 using Ninject;
 using Ninject.Web.Common;
 using Umbraco.Core;
@@ -26,18 +27,24 @@ namespace Umbraco.Pylon.Ninject
         /// <summary>
         /// Binds a custom content repository.
         /// </summary>
+        /// <typeparam name="TRepoInterface">The type of the repo interface.</typeparam>
+        /// <typeparam name="TSiteContentRepository">The type of the site content repository.</typeparam>
+        /// <param name="kernel">The kernel.</param>
+        /// <returns>
+        /// The kernel, for fluent bindings.
+        /// </returns>
         /// <remarks>
         /// Use this binding if you implement your own content repository (recommended).
         /// </remarks>
-        /// <param name="kernel">The kernel.</param>
-        /// <returns>The kernel, for fluent bindings.</returns>
-        public static IKernel BindCustomContentRepository<TSiteContentRepository>(this IKernel kernel)
-            where TSiteContentRepository : IPublishedContentRepository, new()
+        public static IKernel BindCustomContentRepository<TRepoInterface, TSiteContentRepository>(this IKernel kernel)
+            where TRepoInterface : IPublishedContentRepository
+            where TSiteContentRepository : PublishedContentRepository, TRepoInterface, new()
         {
-            kernel.Bind<IPublishedContentRepository>().ToMethod(repo
+            kernel.Bind<TRepoInterface>().ToMethod(repo
                 => new TSiteContentRepository
                 {
-                    Umbraco = DependencyResolver.Current.GetService<UmbracoHelper>()
+                    Umbraco = DependencyResolver.Current.GetService<UmbracoHelper>(),
+                    Context = DependencyResolver.Current.GetService<UmbracoContext>()
                 }).InRequestScope();
 
             return kernel;

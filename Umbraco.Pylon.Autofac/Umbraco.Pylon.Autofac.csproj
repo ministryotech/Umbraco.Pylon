@@ -8,7 +8,7 @@
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Umbraco.Pylon.Autofac</RootNamespace>
-    <AssemblyName>Umbraco.Pylon.Autofac</AssemblyName>
+    <AssemblyName>UmbracoPylon.Autofac</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />

@@ -222,6 +222,7 @@
     <Compile Include="..\SharedAssemblyInfo.cs">
       <Link>Properties\SharedAssemblyInfo.cs</Link>
     </Compile>
+    <Compile Include="Controllers\PylonAuthorizedApiController.cs" />
     <Compile Include="FormsAuthWrapper.cs" />
     <Compile Include="HttpResponseMessageGenerator.cs" />
     <Compile Include="Models\Link.cs" />

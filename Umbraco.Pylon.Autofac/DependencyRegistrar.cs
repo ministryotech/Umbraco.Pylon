@@ -18,10 +18,13 @@ namespace Umbraco.Pylon.Autofac
         /// Registers bindings for all of the dependencies to support Umbraco Pylon based apps.
         /// </summary>
         /// <param name="builder">The builder.</param>
-        /// <returns>The builder, for fluent bindings.</returns>
-        public static ContainerBuilder RegisterUmbraco(this ContainerBuilder builder)
+        /// <param name="controllersAssembly">The controllers assembly to bind the local controllers.</param>
+        /// <returns>
+        /// The builder, for fluent bindings.
+        /// </returns>
+        public static ContainerBuilder RegisterUmbraco(this ContainerBuilder builder, Assembly controllersAssembly = null)
             => builder
-                .RegisterControllers()
+                .RegisterAllControllers(controllersAssembly)
                 .RegisterContexts()
                 .RegisterUmbracoServices()
                 .RegisterPylon();
@@ -29,18 +32,24 @@ namespace Umbraco.Pylon.Autofac
         /// <summary>
         /// Registers bindings for a custom content repository.
         /// </summary>
+        /// <typeparam name="TSiteContentRepository">The type of the site content repository.</typeparam>
+        /// <typeparam name="TRepoInterface">The type of the repo interface.</typeparam>
+        /// <param name="builder">The builder.</param>
+        /// <returns>
+        /// The builder, for fluent bindings.
+        /// </returns>
         /// <remarks>
         /// Use this binding if you implement your own content repository (recommended).
         /// </remarks>
-        /// <param name="builder">The builder.</param>
-        /// <returns>The builder, for fluent bindings.</returns>
-        public static ContainerBuilder RegisterCustomContentRepository<TSiteContentRepository>(this ContainerBuilder builder)
-            where TSiteContentRepository : IPublishedContentRepository, new()
+        public static ContainerBuilder RegisterCustomContentRepository<TSiteContentRepository, TRepoInterface>(this ContainerBuilder builder)
+            where TRepoInterface : IPublishedContentRepository
+            where TSiteContentRepository : PublishedContentRepository, TRepoInterface, new()
         {
             builder.Register(repo => new TSiteContentRepository
             {
-                Umbraco = DependencyResolver.Current.GetService<UmbracoHelper>()
-            }).As<IPublishedContentRepository>().InstancePerHttpRequest();
+                Umbraco = DependencyResolver.Current.GetService<UmbracoHelper>(),
+                Context = DependencyResolver.Current.GetService<UmbracoContext>()
+            }).As<TRepoInterface>().InstancePerHttpRequest();
 
             return builder;
         }
@@ -78,8 +87,11 @@ namespace Umbraco.Pylon.Autofac
         /// Registers bindings for the controllers.
         /// </summary>
         /// <param name="builder">The builder.</param>
-        /// <returns>The builder, for fluent bindings.</returns>
-        private static ContainerBuilder RegisterControllers(this ContainerBuilder builder)
+        /// <param name="controllersAssembly">The controllers assembly.</param>
+        /// <returns>
+        /// The builder, for fluent bindings.
+        /// </returns>
+        private static ContainerBuilder RegisterAllControllers(this ContainerBuilder builder, Assembly controllersAssembly = null)
         {
             builder.RegisterControllers(typeof(UmbracoApplication).Assembly);
             builder.RegisterApiControllers(typeof(UmbracoApplication).Assembly);
@@ -87,6 +99,11 @@ namespace Umbraco.Pylon.Autofac
             builder.RegisterApiControllers(typeof(DependencyRegistrar).Assembly);
             builder.RegisterControllers(Assembly.GetExecutingAssembly());
             builder.RegisterApiControllers(Assembly.GetExecutingAssembly());
+            if (controllersAssembly != null)
+            {
+                builder.RegisterControllers(controllersAssembly);
+                builder.RegisterApiControllers(controllersAssembly);
+            }
             builder.RegisterModule(new AutofacWebTypesModule());
             return builder;
         }

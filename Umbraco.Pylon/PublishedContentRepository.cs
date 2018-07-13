@@ -1,28 +1,71 @@
-﻿// Copyright (c) 2015 Minotech Ltd.
-//
-// Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files
-// (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, 
-// publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do 
-// so, subject to the following conditions:
-//
-// The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF 
-// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE 
-// FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION 
-// WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-
-using System;
-using umbraco;
+﻿using System;
+using Ministry;
 using Umbraco.Core.Models;
+using Umbraco.Pylon.Models;
 using Umbraco.Web;
 
 namespace Umbraco.Pylon
 {
+    #region | Interface |
+
     /// <summary>
-    /// A repository for providing access to Umbraco media nodes.
+    /// Repository to access non-relative site content elements and collections.
+    /// </summary>
+    public interface IPublishedContentRepository
+    {
+        /// <summary>
+        /// Sets the umbraco helper.
+        /// </summary>
+        /// <remarks>
+        /// Used to set the helper within a view when using <see cref="PylonViewPage"/>.
+        /// </remarks>
+        UmbracoHelper Umbraco { set; }
+
+        /// <summary>
+        /// Gets or Sets the umbraco context.
+        /// </summary>
+        /// <remarks>
+        /// Used to set the context within a view when using <see cref="PylonViewPage"/>.
+        /// </remarks>
+        UmbracoContext Context { get; set; }
+
+        /// <summary>
+        /// Determines if a piece of media exists.
+        /// </summary>
+        /// <param name="nodeId">The media id.</param>
+        /// <returns>A flag</returns>
+        bool MediaExists(int? nodeId);
+
+        /// <summary>
+        /// Gets the media item.
+        /// </summary>
+        /// <param name="nodeId">The id of the item.</param>
+        /// <returns>Content</returns>
+        MediaFile MediaItem(int? nodeId);
+
+        /// <summary>
+        /// Determines if a piece of content exists.
+        /// </summary>
+        /// <param name="nodeId">The node id.</param>
+        /// <returns>A flag</returns>
+        bool ContentExists(int? nodeId);
+
+        /// <summary>
+        /// Returns the content at a specific node.
+        /// </summary>
+        /// <param name="nodeId">The node id.</param>
+        /// <returns>Content</returns>
+        IPublishedContent Content(int? nodeId);
+    }
+
+    #endregion
+
+    /// <summary>
+    /// Repository to access non-relative site content elements and collections.
     /// </summary>
     public class PublishedContentRepository : IPublishedContentRepository
     {
+        private UmbracoContext context;
         private UmbracoHelper umbraco;
 
         #region | Construction |
@@ -30,189 +73,98 @@ namespace Umbraco.Pylon
         /// <summary>
         /// Initializes a new instance of the <see cref="PublishedContentRepository" /> class.
         /// </summary>
-        public PublishedContentRepository()
-            : this(new ContentAccessor(), new MediaAccessor())
-        { }
+        /// <param name="umbraco">The umbraco helper.</param>
+        /// <param name="context">The context.</param>
+        public PublishedContentRepository(UmbracoHelper umbraco, UmbracoContext context)
+        {
+            this.umbraco = umbraco.ThrowIfNull(nameof(umbraco));
+            this.context = context.ThrowIfNull(nameof(context));
+        }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="PublishedContentRepository" /> class.
-        /// </summary>
-        /// <param name="context">The umbraco context.</param>
-        public PublishedContentRepository(UmbracoContext context)
-            : this(new ContentAccessor(), new MediaAccessor(), new UmbracoHelper(context))
-        { }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="PublishedContentRepository" /> class.
+        /// Initializes a new instance of the <see cref="PublishedContentRepository"/> class.
         /// </summary>
         /// <param name="umbraco">The umbraco helper.</param>
         public PublishedContentRepository(UmbracoHelper umbraco)
-            : this(new ContentAccessor(), new MediaAccessor(), umbraco)
+        {
+            this.umbraco = umbraco.ThrowIfNull(nameof(umbraco));
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="PublishedContentRepository"/> class.
+        /// </summary>
+        /// <remarks>
+        /// If constructed without an Umbraco helper instance, the helper must be set before any methods are called.
+        /// </remarks>
+        public PublishedContentRepository()
         { }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="PublishedContentRepository" /> class.
-        /// </summary>
-        /// <param name="contentAccessor">The content accessor.</param>
-        /// <param name="mediaAccessor">The media accessor.</param>
-        public PublishedContentRepository(IContentAccessor contentAccessor, IMediaAccessor mediaAccessor)
-        {
-            SetUpAccessors(contentAccessor, mediaAccessor);
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="PublishedContentRepository" /> class.
-        /// </summary>
-        /// <param name="contentAccessor">The content accessor.</param>
-        /// <param name="mediaAccessor">The media accessor.</param>
-        /// <param name="context">The umbraco context.</param>
-        public PublishedContentRepository(IContentAccessor contentAccessor, IMediaAccessor mediaAccessor, UmbracoContext context)
-            : this(contentAccessor, mediaAccessor, new UmbracoHelper(context))
-        { }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="PublishedContentRepository" /> class.
-        /// </summary>
-        /// <param name="contentAccessor">The content accessor.</param>
-        /// <param name="mediaAccessor">The media accessor.</param>
-        /// <param name="umbraco">The umbraco helper.</param>
-        public PublishedContentRepository(IContentAccessor contentAccessor, IMediaAccessor mediaAccessor, UmbracoHelper umbraco)
-        {
-            Umbraco = umbraco;
-            SetUpAccessors(contentAccessor, mediaAccessor);
-        }
-
-        /// <summary>
-        /// Sets up accessors.
-        /// </summary>
-        /// <param name="contentAccessor">The content accessor.</param>
-        /// <param name="mediaAccessor">The media accessor.</param>
-        private void SetUpAccessors(IContentAccessor contentAccessor, IMediaAccessor mediaAccessor)
-        {
-            if (contentAccessor == null)
-                throw new ArgumentNullException("contentAccessor");
-            if (contentAccessor == null)
-                throw new ArgumentNullException("mediaAccessor");
-
-            GetContent = contentAccessor;
-            GetMedia = mediaAccessor;
-
-            if (!HasValidUmbracoHelper) return;
-
-            GetContent.GetContentFunc = Umbraco.TypedContent;
-            GetMedia.GetContentFunc = Umbraco.TypedMedia;
-        }
 
         #endregion
 
-        // ReSharper disable once UnusedAutoPropertyAccessor.Global
         /// <summary>
-        /// Gets or sets the content accessor.
+        /// Gets or sets the umbraco helper.
         /// </summary>
-        /// <value>
-        /// The content accessor (Get).
-        /// </value>
-        protected IContentAccessor GetContent { get; set; }
-
-        /// <summary>
-        /// Gets or sets the media accessor.
-        /// </summary>
-        /// <value>
-        /// The media accessor (GetMedia).
-        /// </value>
-        protected IMediaAccessor GetMedia { get; set; }
-
-        /// <summary>
-        /// Gets a value indicating whether this instance has a valid umbraco helper.
-        /// </summary>
-        /// <value>
-        /// 	<c>true</c> if this instance has an umbraco helper; otherwise, <c>false</c>.
-        /// </value>
-        public bool HasValidUmbracoHelper
+        /// <remarks>
+        /// The set is used to set the helper within a view when using <see cref="PylonViewPage"/>.
+        /// </remarks>
+        public UmbracoHelper Umbraco
         {
-            get
+            protected get
             {
-                try
-                {
-                    return umbraco != null;
-                }
-                catch
-                {
-                    return false;
-                }
+                if (umbraco == null)
+                    throw new ApplicationException("Unable to use methods on the Content Repository until the UmbracoHelper instance is set. " +
+                                                   "Either use the constructor that thakes a helper or check your IoC configuration.");
+                return umbraco;
             }
+            set => umbraco = value;
         }
 
         /// <summary>
-        /// Gets the umbraco helper.
+        /// Gets or sets the umbraco helper.
         /// </summary>
-        /// <exception cref="UmbracoException">The Umbraco context property in the PublishedContentRepository is null. The value must be set by passing either an UmbracoContext or UmbracoHelper instance into the constructor.</exception>
-        public UmbracoHelper Umbraco
+        /// <remarks>
+        /// The set is used to set the helper within a view when using <see cref="PylonViewPage"/>.
+        /// </remarks>
+        public UmbracoContext Context
         {
             get
             {
-                if (umbraco == null)
-                    throw new UmbracoException("The Umbraco context property in the PublishedContentRepository is null. The value must be set by passing either an UmbracoContext or UmbracoHelper instance into the constructor.");
-
-                return umbraco;
+                if (context == null)
+                    throw new ApplicationException("No context is available. " +
+                                                   "Either use the constructor that thakes a context or check your IoC configuration.");
+                return context;
             }
-            set
-            {
-                umbraco = value; 
-
-                if (GetContent != null && GetMedia != null)
-                    SetUpAccessors(GetContent, GetMedia);
-            }
+            set => context = value;
         }
 
         /// <summary>
         /// Determines if a piece of media exists.
         /// </summary>
-        /// <param name="mediaId">The media id.</param>
-        /// <returns></returns>
-        public bool MediaExists(int? mediaId)
-        {
-            return GetMedia.Exists(mediaId);
-        }
+        /// <param name="nodeId">The media id.</param>
+        /// <returns>A flag</returns>
+        public bool MediaExists(int? nodeId) => MediaItem(nodeId) != null;
 
         /// <summary>
         /// Gets the media item.
         /// </summary>
-        /// <param name="mediaId">The id of the item.</param>
-        /// <returns></returns>
-        public IPublishedContent MediaItem(int mediaId)
-        {
-            return GetMedia.Content(mediaId);
-        }
-
-        /// <summary>s
-        /// Gets the URL for some media content.
-        /// </summary>
-        /// <param name="mediaId">The media id.</param>
-        /// <returns>A nicely formed Url.</returns>
-        public string MediaUrl(int? mediaId)
-        {
-            return GetMedia.Url(mediaId);
-        }
+        /// <param name="nodeId">The id of the item.</param>
+        /// <returns>Content</returns>
+        public MediaFile MediaItem(int? nodeId) 
+            => nodeId == null || nodeId.Value == 0 ? null : new MediaFile(Umbraco.TypedMedia(nodeId));
 
         /// <summary>
-        /// Gets the content URL.
+        /// Determines if a piece of content exists.
         /// </summary>
         /// <param name="nodeId">The node id.</param>
-        /// <returns>A nicely formed Url.</returns>
-        public string ContentUrl(int nodeId)
-        {
-            return GetContent.Content(nodeId).Url;
-        }
+        /// <returns>A flag</returns>
+        public bool ContentExists(int? nodeId) => Content(nodeId) != null;
 
         /// <summary>
         /// Returns the content at a specific node.
         /// </summary>
         /// <param name="nodeId">The node id.</param>
-        /// <returns>Dynamic content.</returns>
-        public dynamic Content(int? nodeId)
-        {
-            return nodeId == null || nodeId.Value == 0 ? null : GetContent.Content(nodeId.Value);
-        }
+        /// <returns>Content</returns>
+        public IPublishedContent Content(int? nodeId)
+            => nodeId == null || nodeId.Value == 0 ? null : Umbraco.TypedContent(nodeId);
     }
 }

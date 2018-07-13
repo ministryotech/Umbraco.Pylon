@@ -1,32 +1,72 @@
-﻿// Copyright (c) 2014 Minotech Ltd.
-//
-// Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files
-// (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge,
-// publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do
-// so, subject to the following conditions:
-//
-// The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE
-// FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
-// WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-
+﻿using System;
+using Umbraco.Core.Models;
 using Umbraco.Web.Mvc;
 
 namespace Umbraco.Pylon
 {
     /// <summary>
-    /// An abstract base class for Umbraco views.
+    /// A Pylon based view page using a standard IPublishedContent model and a generic site repository.
     /// </summary>
-    public abstract class PylonViewPage : PylonViewPage<IUmbracoSite, IPublishedContentRepository>
+    /// <seealso cref="UmbracoViewPage" />
+    /// <remarks>
+    /// Use this over <see cref="UmbracoViewPage" /> to access your IPublishedContentRepository implementation.
+    /// </remarks>
+    public abstract class PylonViewPage : PylonViewPage<DefaultUmbracoSite, PublishedContentRepository, IPublishedContent>
+    { }
+
+    /// <summary>
+    /// A Pylon based view page using a custom model and a generic site repository.
+    /// </summary>
+    /// <seealso cref="UmbracoViewPage" />
+    /// <remarks>
+    /// Use this over <see cref="UmbracoViewPage" /> to access your IPublishedContentRepository implementation.
+    /// </remarks>
+    public abstract class PylonViewPage<TModel> : PylonViewPage<DefaultUmbracoSite, PublishedContentRepository, TModel>
     {
         #region | Construction |
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="PylonViewPage"/> class.
+        /// Initializes a new instance of the <see cref="PylonViewPage{TUmbracoSite, TSiteContentRepository, TModel}"/> class.
+        /// </summary>
+        protected PylonViewPage()
+        {
+            // ReSharper disable once VirtualMemberCallInConstructor
+            UmbracoSite = new DefaultUmbracoSite(new PublishedContentRepository(Umbraco, UmbracoContext));
+        }
+
+        #endregion
+    }
+
+    /// <summary>
+    /// A Pylon based view page using a custom model and a site specific content repository.
+    /// </summary>
+    /// <typeparam name="TUmbracoSite">The type of the umbraco site.</typeparam>
+    /// <typeparam name="TSiteContentRepository">The type of the site content repository.</typeparam>
+    /// <seealso cref="UmbracoViewPage" />
+    /// <remarks>
+    /// Use this over <see cref="UmbracoViewPage" /> to access your IPublishedContentRepository implementation.
+    /// Of the three variants available, this is the preferred usage.
+    /// </remarks>
+    public abstract class PylonViewPage<TUmbracoSite, TSiteContentRepository> : PylonViewPage<TUmbracoSite, TSiteContentRepository, IPublishedContent>
+    where TUmbracoSite : class, IUmbracoSite<TSiteContentRepository>
+    where TSiteContentRepository : class, IPublishedContentRepository
+    {
+        #region | Construction |
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="PylonViewPage{TUmbracoSite, TSiteContentRepository, TModel}"/> class.
+        /// </summary>
+        /// <remarks>
+        /// For subclass initialisation.
+        /// </remarks>
+        internal PylonViewPage()
+        { }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="PylonViewPage{TUmbracoSite, TSiteContentRepository, TModel}"/> class.
         /// </summary>
         /// <param name="umbracoSite">The umbraco site.</param>
-        protected PylonViewPage(IUmbracoSite umbracoSite)
+        protected PylonViewPage(TUmbracoSite umbracoSite)
             : base(umbracoSite)
         { }
 
@@ -34,140 +74,61 @@ namespace Umbraco.Pylon
     }
 
     /// <summary>
-    /// An abstract base class for Umbraco views using strongly typed models.
-    /// </summary>
-    /// <typeparam name="TModel">The type of the model.</typeparam>
-    public abstract class PylonViewPage<TModel> : PylonViewPage<IUmbracoSite, IPublishedContentRepository, TModel>
-    {
-        #region | Construction |
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="PylonViewPage"/> class.
-        /// </summary>
-        /// <param name="umbracoSite">The umbraco site.</param>
-        protected PylonViewPage(IUmbracoSite umbracoSite)
-            : base(umbracoSite)
-        { }
-
-        #endregion
-    }
-
-    /// <summary>
-    /// An abstract base class for Umbraco views with a specific content repository.
+    /// A Pylon based view page using a custom model and a site specific content repository.
     /// </summary>
     /// <typeparam name="TUmbracoSite">The type of the umbraco site.</typeparam>
-    /// <typeparam name="TPublishedContentRepository">The type of the published content repository.</typeparam>
-    public abstract class PylonViewPage<TUmbracoSite, TPublishedContentRepository> : UmbracoTemplatePage
-        where TUmbracoSite : IUmbracoSite<TPublishedContentRepository>
-        where TPublishedContentRepository : IPublishedContentRepository
+    /// <typeparam name="TSiteContentRepository">The type of the site content repository.</typeparam>
+    /// <typeparam name="TModel">The type of the model.</typeparam>
+    /// <seealso cref="UmbracoViewPage" />
+    /// <remarks>
+    /// Use this over <see cref="UmbracoViewPage" /> to access your IPublishedContentRepository implementation.
+    /// Of the three variants available, this is the preferred usage.
+    /// </remarks>
+    public abstract class PylonViewPage<TUmbracoSite, TSiteContentRepository, TModel> : UmbracoViewPage<TModel>
+        where TUmbracoSite : class, IUmbracoSite<TSiteContentRepository>
+        where TSiteContentRepository :class,  IPublishedContentRepository
     {
-        private TUmbracoSite _umbracoSite;
-
         #region | Construction |
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="PylonViewPage{TUmbracoSite, TPublishedContentRepository}"/> class.
+        /// Initializes a new instance of the <see cref="PylonViewPage{TUmbracoSite, TSiteContentRepository, TModel}"/> class.
         /// </summary>
-        protected PylonViewPage()
+        /// <remarks>
+        /// For subclass initialisation.
+        /// </remarks>
+        internal PylonViewPage()
         { }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="PylonViewPage{TUmbracoSite, TPublishedContentRepository}"/> class.
+        /// Initializes a new instance of the <see cref="PylonViewPage{TUmbracoSite, TSiteContentRepository, TModel}"/> class.
         /// </summary>
         /// <param name="umbracoSite">The umbraco site.</param>
         protected PylonViewPage(TUmbracoSite umbracoSite)
         {
-            _umbracoSite = umbracoSite;
+            UmbracoSite = umbracoSite;
         }
 
         #endregion
 
         /// <summary>
-        /// Gets the model in a dynamic form.
-        /// </summary>
-        public dynamic DynamicModel { get { return CurrentPage; } }
-
-        /// <summary>
-        /// Entry point for helper functions defined at root site level.
+        /// Entry point for specified site content.
         /// </summary>
         /// <value>
-        /// The site helper object.
+        /// The umbraco site.
         /// </value>
-        public TUmbracoSite UmbracoSite
-        {
-            get
-            {
-                ((UmbracoSite<TPublishedContentRepository>)(IUmbracoSite<TPublishedContentRepository>)_umbracoSite).Umbraco = Umbraco;
-                return _umbracoSite;
-            }
-            set { _umbracoSite = value; }
-        }
-    }
+        /// <remarks>
+        /// If the content repository has not yet been initialised then it will be done here.
+        /// </remarks>
+        public TUmbracoSite UmbracoSite { get; protected set; }
 
-    /// <summary>
-    /// An abstract base class for Umbraco views with a specific content repository using strongly typed models.
-    /// </summary>
-    /// <typeparam name="TUmbracoSite">The type of the umbraco site.</typeparam>
-    /// <typeparam name="TPublishedContentRepository">The type of the published content repository.</typeparam>
-    /// <typeparam name="TModel">The type of the model.</typeparam>
-    public abstract class PylonViewPage<TUmbracoSite, TPublishedContentRepository, TModel> : UmbracoViewPage<TModel>
-        where TUmbracoSite : IUmbracoSite<TPublishedContentRepository>
-        where TPublishedContentRepository : IPublishedContentRepository
-    {
-        private TUmbracoSite _umbracoSite;
-
-        #region | Construction |
+        #region | Obsolete Members |
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="PylonViewPage{TUmbracoSite, TPublishedContentRepository, TModel}"/> class.
+        /// Gets the dynamic model.
         /// </summary>
-        protected PylonViewPage()
-        { }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="PylonViewPage{TUmbracoSite, TPublishedContentRepository, TModel}"/> class.
-        /// </summary>
-        /// <param name="umbracoSite">The umbraco site.</param>
-        protected PylonViewPage(TUmbracoSite umbracoSite)
-        {
-            _umbracoSite = umbracoSite;
-        }
+        [Obsolete("Pylon is now fully committed to strongly typed modelling using tools such as Umbraco Models Builder. This property now returns 'Model' wrapped in a dynamic. Use 'Model' instead.")]
+        public dynamic DynamicModel => Model;
 
         #endregion
-
-        /// <summary>
-        /// Entry point for helper functions defined at root site level.
-        /// </summary>
-        /// <value>
-        /// The site helper object.
-        /// </value>
-        public TUmbracoSite UmbracoSite
-        {
-            get
-            {
-                ((UmbracoSite<TPublishedContentRepository>)(IUmbracoSite<TPublishedContentRepository>)_umbracoSite).Umbraco = Umbraco;
-                return _umbracoSite;
-            }
-            set { _umbracoSite = value; }
-        }
-
-        /// <summary>
-        /// Gets the current page if available.
-        /// </summary>
-        public dynamic CurrentPage
-        {
-            get
-            {
-                if (Model.GetType().IsSubclassOf(typeof(PylonRenderModel)))
-                    return (Model as PylonRenderModel).DynamicContent;
-
-                return null;
-            }
-        }
-
-        /// <summary>
-        /// Gets the model in a dynamic form if available.
-        /// </summary>
-        public dynamic DynamicModel { get { return CurrentPage; } }
     }
 }

@@ -49,7 +49,7 @@ namespace Umbraco.Pylon.Autofac
             {
                 Umbraco = DependencyResolver.Current.GetService<UmbracoHelper>(),
                 Context = DependencyResolver.Current.GetService<UmbracoContext>()
-            }).As<TRepoInterface>().InstancePerHttpRequest();
+            }).As<TRepoInterface>().InstancePerRequest();
 
             return builder;
         }
@@ -65,7 +65,7 @@ namespace Umbraco.Pylon.Autofac
         /// <returns>The builder, for fluent bindings.</returns>
         public static ContainerBuilder RegisterDefaultContentRepository(this ContainerBuilder builder)
         {
-            builder.RegisterType<PublishedContentRepository>().As<IPublishedContentRepository>().InstancePerHttpRequest();
+            builder.RegisterType<PublishedContentRepository>().As<IPublishedContentRepository>().InstancePerRequest();
             return builder;
         }
 
@@ -78,8 +78,8 @@ namespace Umbraco.Pylon.Autofac
         /// <returns>The builder, for fluent bindings.</returns>
         private static ContainerBuilder RegisterContexts(this ContainerBuilder builder)
         {
-            builder.Register(context => UmbracoContext.Current).As<UmbracoContext>().InstancePerHttpRequest();
-            builder.Register(context => new UmbracoHelper(UmbracoContext.Current)).As<UmbracoHelper>().InstancePerHttpRequest();
+            builder.Register(context => UmbracoContext.Current).As<UmbracoContext>().InstancePerRequest();
+            builder.Register(context => new UmbracoHelper(UmbracoContext.Current)).As<UmbracoHelper>().InstancePerRequest();
             return builder;
         }
 
@@ -115,34 +115,34 @@ namespace Umbraco.Pylon.Autofac
         /// <returns>The builder, for fluent bindings.</returns>
         private static ContainerBuilder RegisterUmbracoServices(this ContainerBuilder builder)
         {
-            builder.Register(srv => ApplicationContext.Current.Services.ApplicationTreeService).As<IApplicationTreeService>().InstancePerHttpRequest();
-            builder.Register(srv => ApplicationContext.Current.Services.AuditService).As<IAuditService>().InstancePerHttpRequest();
-            builder.Register(srv => ApplicationContext.Current.Services.ConsentService).As<IConsentService>().InstancePerHttpRequest();
-            builder.Register(srv => ApplicationContext.Current.Services.ContentService).As<IContentService>().InstancePerHttpRequest();
-            builder.Register(srv => ApplicationContext.Current.Services.ContentTypeService).As<IContentTypeService>().InstancePerHttpRequest();
-            builder.Register(srv => ApplicationContext.Current.Services.DataTypeService).As<IDataTypeService>().InstancePerHttpRequest();
-            builder.Register(srv => ApplicationContext.Current.Services.DomainService).As<IDomainService>().InstancePerHttpRequest();
-            builder.Register(srv => ApplicationContext.Current.Services.EntityService).As<IEntityService>().InstancePerHttpRequest();
-            builder.Register(srv => ApplicationContext.Current.Services.ExternalLoginService).As<IExternalLoginService>().InstancePerHttpRequest();
-            builder.Register(srv => ApplicationContext.Current.Services.FileService).As<IFileService>().InstancePerHttpRequest();
-            builder.Register(srv => ApplicationContext.Current.Services.LocalizationService).As<ILocalizationService>().InstancePerHttpRequest();
-            builder.Register(srv => ApplicationContext.Current.Services.MacroService).As<IMacroService>().InstancePerHttpRequest();
-            builder.Register(srv => ApplicationContext.Current.Services.MediaService).As<IMediaService>().InstancePerHttpRequest();
-            builder.Register(srv => ApplicationContext.Current.Services.MemberService).As<IMemberService>().InstancePerHttpRequest();
-            builder.Register(srv => ApplicationContext.Current.Services.MemberGroupService).As<IMemberGroupService>().InstancePerHttpRequest();
-            builder.Register(srv => ApplicationContext.Current.Services.MemberTypeService).As<IMemberTypeService>().InstancePerHttpRequest();
-            builder.Register(srv => ApplicationContext.Current.Services.MigrationEntryService).As<IMigrationEntryService>().InstancePerHttpRequest();
-            builder.Register(srv => ApplicationContext.Current.Services.NotificationService).As<INotificationService>().InstancePerHttpRequest();
-            builder.Register(srv => ApplicationContext.Current.Services.PackagingService).As<IPackagingService>().InstancePerHttpRequest();
-            builder.Register(srv => ApplicationContext.Current.Services.PublicAccessService).As<IPublicAccessService>().InstancePerHttpRequest();
-            builder.Register(srv => ApplicationContext.Current.Services.RedirectUrlService).As<IRedirectUrlService>().InstancePerHttpRequest();
-            builder.Register(srv => ApplicationContext.Current.Services.RelationService).As<IRelationService>().InstancePerHttpRequest();
-            builder.Register(srv => ApplicationContext.Current.Services.SectionService).As<ISectionService>().InstancePerHttpRequest();
-            builder.Register(srv => ApplicationContext.Current.Services.ServerRegistrationService).As<IServerRegistrationService>().InstancePerHttpRequest();
-            builder.Register(srv => ApplicationContext.Current.Services.TagService).As<ITagService>().InstancePerHttpRequest();
-            builder.Register(srv => ApplicationContext.Current.Services.TaskService).As<ITaskService>().InstancePerHttpRequest();
-            builder.Register(srv => ApplicationContext.Current.Services.TextService).As<ILocalizedTextService>().InstancePerHttpRequest();
-            builder.Register(srv => ApplicationContext.Current.Services.UserService).As<IUserService>().InstancePerHttpRequest();
+            builder.Register(srv => ApplicationContext.Current.Services.ApplicationTreeService).As<IApplicationTreeService>().InstancePerRequest();
+            builder.Register(srv => ApplicationContext.Current.Services.AuditService).As<IAuditService>().InstancePerRequest();
+            builder.Register(srv => ApplicationContext.Current.Services.ConsentService).As<IConsentService>().InstancePerRequest();
+            builder.Register(srv => ApplicationContext.Current.Services.ContentService).As<IContentService>().InstancePerRequest();
+            builder.Register(srv => ApplicationContext.Current.Services.ContentTypeService).As<IContentTypeService>().InstancePerRequest();
+            builder.Register(srv => ApplicationContext.Current.Services.DataTypeService).As<IDataTypeService>().InstancePerRequest();
+            builder.Register(srv => ApplicationContext.Current.Services.DomainService).As<IDomainService>().InstancePerRequest();
+            builder.Register(srv => ApplicationContext.Current.Services.EntityService).As<IEntityService>().InstancePerRequest();
+            builder.Register(srv => ApplicationContext.Current.Services.ExternalLoginService).As<IExternalLoginService>().InstancePerRequest();
+            builder.Register(srv => ApplicationContext.Current.Services.FileService).As<IFileService>().InstancePerRequest();
+            builder.Register(srv => ApplicationContext.Current.Services.LocalizationService).As<ILocalizationService>().InstancePerRequest();
+            builder.Register(srv => ApplicationContext.Current.Services.MacroService).As<IMacroService>().InstancePerRequest();
+            builder.Register(srv => ApplicationContext.Current.Services.MediaService).As<IMediaService>().InstancePerRequest();
+            builder.Register(srv => ApplicationContext.Current.Services.MemberService).As<IMemberService>().InstancePerRequest();
+            builder.Register(srv => ApplicationContext.Current.Services.MemberGroupService).As<IMemberGroupService>().InstancePerRequest();
+            builder.Register(srv => ApplicationContext.Current.Services.MemberTypeService).As<IMemberTypeService>().InstancePerRequest();
+            builder.Register(srv => ApplicationContext.Current.Services.MigrationEntryService).As<IMigrationEntryService>().InstancePerRequest();
+            builder.Register(srv => ApplicationContext.Current.Services.NotificationService).As<INotificationService>().InstancePerRequest();
+            builder.Register(srv => ApplicationContext.Current.Services.PackagingService).As<IPackagingService>().InstancePerRequest();
+            builder.Register(srv => ApplicationContext.Current.Services.PublicAccessService).As<IPublicAccessService>().InstancePerRequest();
+            builder.Register(srv => ApplicationContext.Current.Services.RedirectUrlService).As<IRedirectUrlService>().InstancePerRequest();
+            builder.Register(srv => ApplicationContext.Current.Services.RelationService).As<IRelationService>().InstancePerRequest();
+            builder.Register(srv => ApplicationContext.Current.Services.SectionService).As<ISectionService>().InstancePerRequest();
+            builder.Register(srv => ApplicationContext.Current.Services.ServerRegistrationService).As<IServerRegistrationService>().InstancePerRequest();
+            builder.Register(srv => ApplicationContext.Current.Services.TagService).As<ITagService>().InstancePerRequest();
+            builder.Register(srv => ApplicationContext.Current.Services.TaskService).As<ITaskService>().InstancePerRequest();
+            builder.Register(srv => ApplicationContext.Current.Services.TextService).As<ILocalizedTextService>().InstancePerRequest();
+            builder.Register(srv => ApplicationContext.Current.Services.UserService).As<IUserService>().InstancePerRequest();
             return builder;
         }
 

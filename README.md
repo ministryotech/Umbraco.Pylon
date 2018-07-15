@@ -12,6 +12,9 @@ The down side to this is it makes keeping track of major Pylon versions difficul
 
 Pylon versions are tagged in Github, so if you are looking for older version documentation - It should be there!
 
+### Sample Code ###
+A sample implementation has now been written into /reference/EmptyUmbracoWebApp
+
 ## Core Classes and Interfaces ##
 
 ### PublishedContentRepository \ IPublishedContentRepository ###

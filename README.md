@@ -373,8 +373,6 @@ Older versions can be found at...
 
 * **Umbraco.Pylon** - [https://www.nuget.org/packages/Umbraco.Pylon](/https://www.nuget.org/packages/Umbraco.Pylon)
 
-Remember to look for the version that matches your Umbraco install.
-
 ### Contribution guidelines ###
 If you would like to contribute to the project, please contact me.
 

@@ -243,6 +243,7 @@
   <ItemGroup>
     <None Include="app.config" />
     <None Include="packages.config" />
+    <None Include="Umbraco.Pylon.Ninject.nuspec" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Umbraco.Pylon\Umbraco.Pylon.csproj">

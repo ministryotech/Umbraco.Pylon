@@ -7,7 +7,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyDescription("Core classes to aid with more code orientated Umbraco implementations.")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("The Ministry of Technology")]
-[assembly: AssemblyProduct("Umbraco.Pylon (Ministry)")]
+[assembly: AssemblyProduct("Umbraco Pylon (Ministry)")]
 [assembly: AssemblyCopyright("Copyright © 2018 Minotech Ltd.")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -27,5 +27,5 @@ using System.Runtime.InteropServices;
 // You can specify all the values or you can default the Build and Revision Numbers
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("7.11.1.0")]
-[assembly: AssemblyFileVersion("7.11.1.0")]
+[assembly: AssemblyVersion("3.711.0.0")]
+[assembly: AssemblyFileVersion("3.711.0.0")]

@@ -1,0 +1,19 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
+  <metadata>
+    <id>UmbracoPylon.Ninject</id>
+    <version>$version$</version>
+    <title>UmbracoPylon.Ninject</title>
+    <authors>The Ministry of Technology</authors>
+    <owners>The Ministry of Technology</owners>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>Core classes to aid with more code orientated Umbraco implementations.</description>
+    <copyright>Copyright © 2018 Minotech Ltd.</copyright>
+    <dependencies>
+      <dependency id="Ninject" version="3.3.4" />
+      <dependency id="Ninject.MVC5" version="3.3.0" />
+      <dependency id="Ninject.Web.WebApi" version="3.3.0" />
+      <dependency id="UmbracoPylon" version="$version$" />
+    </dependencies>
+  </metadata>
+</package>

@@ -159,5 +159,5 @@ packages/
 PylonSampleWeb/App_Data/TEMP/
 PylonSampleWeb/App_Data/Logs/UmbracoTraceLog.txt
 .vs/Umbraco.Pylon/v15/Server/sqlite3/*
-
 \.vs/Umbraco\.Pylon/v16/Server/sqlite3/
+EmptyUmbracoWebApp/App_Data/NuGetBackup/

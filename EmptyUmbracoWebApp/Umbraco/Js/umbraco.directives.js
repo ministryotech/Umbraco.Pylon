@@ -2662,6 +2662,11 @@ Use this directive to render a button with a dropdown of alternative actions.
                     }
                     // only allow configuring scheduled publishing if the user has publish ("U") and unpublish ("Z") permissions on this node
                     scope.allowScheduledPublishing = _.contains(scope.node.allowedActions, 'U') && _.contains(scope.node.allowedActions, 'Z');
+                    ensureUniqueUrls();
+                }
+                // make sure we don't show duplicate URLs in case multiple URL providers assign the same URLs to the content (see issue 3842 for details)
+                function ensureUniqueUrls() {
+                    scope.node.urls = _.uniq(scope.node.urls);
                 }
                 scope.auditTrailPageChange = function (pageNumber) {
                     scope.auditTrailOptions.pageNumber = pageNumber;
@@ -2863,6 +2868,7 @@ Use this directive to render a button with a dropdown of alternative actions.
                         loadRedirectUrls();
                         formatDatesToLocal();
                         setNodePublishStatus(scope.node);
+                        ensureUniqueUrls();
                     }
                 });
                 //ensure to unregister from all events!
@@ -7016,7 +7022,15 @@ Opens an overlay to show a custom YSOD. </br>
                         treeService.syncTree({
                             node: treeNode,
                             path: path,
-                            forceReload: forceReload
+                            forceReload: forceReload,
+                            //when the tree node is expanding during sync tree, handle it and raise appropriate events
+                            treeNodeExpanded: function (args) {
+                                emitEvent('treeNodeExpanded', {
+                                    tree: scope.tree,
+                                    node: args.node,
+                                    children: args.children
+                                });
+                            }
                         }).then(function (data) {
                             if (activate === undefined || activate === true) {
                                 scope.currentNode = data;
@@ -7427,6 +7441,7 @@ Opens an overlay to show a custom YSOD. </br>
                 searchFromName: '@',
                 showSearch: '@',
                 section: '@',
+                datatypeId: '@',
                 hideSearchCallback: '=',
                 searchCallback: '='
             },
@@ -7466,6 +7481,10 @@ Opens an overlay to show a custom YSOD. </br>
                         //append a start node context if there is one
                         if (scope.searchFromId) {
                             searchArgs['searchFrom'] = scope.searchFromId;
+                        }
+                        //append dataTypeId value if there is one
+                        if (scope.datatypeId) {
+                            searchArgs['dataTypeId'] = scope.datatypeId;
                         }
                         searcher(searchArgs).then(function (data) {
                             scope.searchCallback(data);

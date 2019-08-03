@@ -8,7 +8,7 @@
     <owners>The Ministry of Technology</owners>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>Core classes to aid with more code orientated Umbraco implementations.</description>
-    <copyright>Copyright © 2018 Minotech Ltd.</copyright>
+    <copyright>Copyright © 2019 Minotech Ltd.</copyright>
     <dependencies>
       <dependency id="Ministry.Compositions" version="1.0.1" />
     </dependencies>

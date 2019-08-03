@@ -8,7 +8,7 @@
     <owners>The Ministry of Technology</owners>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>Core classes to aid with more code orientated Umbraco implementations.</description>
-    <copyright>Copyright © 2018 Minotech Ltd.</copyright>
+    <copyright>Copyright © 2019 Minotech Ltd.</copyright>
     <dependencies>
       <dependency id="Autofac" version="4.8.1" />
       <dependency id="Autofac.Mvc5" version="4.0.2" />

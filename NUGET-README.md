@@ -10,7 +10,7 @@ Pylon is now in it's third major version. With the advent of integrated Umbraco.
 
 The intent is that, hopefully, any version of pylon SHOULD be compatible with any Umbraco version in it's major version number.
 
-The current version has been tested and works with 7.13.X but will probably work fine with any version from 7.4.X upward.
+The current version has been tested and works with 7.14.X but will probably work fine with any version from 7.4.X upward. Pylon does not curently support Umbraco 8 and, as yet, there are no plans to do so.
 
 New versions are as follows...
 
